@@ -7,7 +7,9 @@ const Layout = ({ children }) => {
   return (
     <BrowserRouter>
       <Header />
-      <main>{children}</main>
+      <main className="flex justify-center items-center w-full max-w-screen-lg mx-auto px-4">
+        {children}
+      </main>
       <Footer />
     </BrowserRouter>
   );
