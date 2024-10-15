@@ -1,7 +1,15 @@
 import React from "react";
 
 const Main = () => {
-  return <div>Dodream Main page</div>;
+  return (
+    <>
+      {/* 배너 */}
+
+      {/* 인기 문제집 */}
+
+      {/* 인기 스터디 */}
+    </>
+  );
 };
 
 export default Main;
