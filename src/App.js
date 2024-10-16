@@ -45,9 +45,9 @@ const App = () => {
         />
 
         {/* 스터디 */}
-        <Route path="/study" element={<StudyPage />} />
+        <Route path="/study" element={<StudyMain />} />
         <Route path="/study/create" element={<CreateStudy />} />
-        <Route path="/study/:studyId" element={<StudyMain />} />
+        <Route path="/study/:studyId" element={<StudyPage />} />
         <Route
           path="/study/:studyId/:memberId"
           element={<StudyQuestionPage />}

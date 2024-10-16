@@ -6,7 +6,7 @@ const NotificationMenu = ({ notifications, closeMenu }) => {
   return (
     <div className="absolute right-0 top-10 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg">
       <div className="flex justify-between items-center p-2 border-b m-2">
-        <span className="font-semibold">알람</span>
+        <span className="font-semibold">알림</span>
         <button
           onClick={closeMenu}
           className="text-gray-600 hover:text-gray-800 ml-2"
