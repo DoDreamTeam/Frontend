@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../assets/logo.png";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { IoMdNotifications } from "react-icons/io";
 import { FaCaretDown } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import NotificationMenu from "../notification/NotificationMenu";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // 현재 위치 정보를 가져옴
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
 
-  // 알람 dummy data (추후 삭제 예정)
   const notifications = [
     {
       message: "[정처기 실기 대비] 문제집에 새로운 댓글이  달렸습니다!",
@@ -33,16 +33,25 @@ const Header = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+    if (notificationOpen) setNotificationOpen(false); // 알람 메뉴 닫기
   };
 
   const toggleNotifications = () => {
     setNotificationOpen(!notificationOpen);
+    if (menuOpen) setMenuOpen(false); // 프로필 메뉴 닫기
   };
 
   const handleMenuClick = (path) => {
     setMenuOpen(false);
+    setNotificationOpen(false);
     navigate(path);
   };
+
+  // 페이지 이동 시 메뉴를 닫음
+  useEffect(() => {
+    setMenuOpen(false);
+    setNotificationOpen(false);
+  }, [location]); // location이 변경될 때마다 실행
 
   return (
     <header className="flex justify-center items-center px-8 py-4 bg-white w-full">
@@ -57,13 +66,13 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           <span
             className="cursor-pointer hover:text-blue-400"
-            onClick={() => navigate("/book")}
+            onClick={() => handleMenuClick("/book")}
           >
             문제집
           </span>
           <span
             className="cursor-pointer hover:text-blue-400"
-            onClick={() => navigate("/study")}
+            onClick={() => handleMenuClick("/study")}
           >
             스터디
           </span>
@@ -73,7 +82,6 @@ const Header = () => {
               onClick={toggleNotifications}
             >
               <IoMdNotifications className="w-6 h-6" />
-              {/* 안 읽은 알람이 존재하는 경우*/}
               {notifications.some((notification) => !notification.read) && (
                 <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-blue-500 rounded-full transform -translate-y-1.0" />
               )}
@@ -96,7 +104,7 @@ const Header = () => {
               <FaCaretDown />
             </span>
             {menuOpen && (
-              <div className="absolute right-0 top-10 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div className="absolute right-0 top-10 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 <ul className="py-1">
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"

@@ -4,7 +4,7 @@ import { MdOutlineAccessAlarms } from "react-icons/md";
 
 const NotificationMenu = ({ notifications, closeMenu }) => {
   return (
-    <div className="absolute right-0 top-10 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg">
+    <div className="absolute right-0 top-10 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
       <div className="flex justify-between items-center p-2 border-b m-2">
         <span className="font-semibold">알림</span>
         <button
