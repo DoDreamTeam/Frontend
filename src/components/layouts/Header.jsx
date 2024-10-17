@@ -60,7 +60,7 @@ const Header = () => {
           className="flex items-center cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <img src={logo} alt="logo" className="h-20" />
+          <img src={logo} alt="logo" className="h-[180px]" />
         </div>
 
         <div className="flex items-center space-x-4">
