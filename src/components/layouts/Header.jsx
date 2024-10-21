@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import NotificationMenu from "../notification/NotificationMenu";
 import LoginButton from "../auth/LoginButton";
 import useAuth from "../../hooks/useAuth";
+import LogoutButton from "../auth/LogoutButton";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -130,7 +131,7 @@ const Header = () => {
                         마이페이지
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        로그아웃
+                        <LogoutButton />
                       </li>
                     </ul>
                   </div>
