@@ -13,6 +13,7 @@ import {
   MyPage,
   MyQuestions,
   MyStudies,
+  OAuthVertification,
   QuestionPage,
   StudyAdminPage,
   StudyMain,
@@ -27,6 +28,9 @@ const App = () => {
     <Layout>
       <Routes>
         <Route path="/" element={<Main />} />
+
+        {/* 소셜 로그인 */}
+        <Route path="/oauth/:provider" element={<OAuthVertification />} />
 
         {/* 문제집 */}
         <Route path="/book" element={<BookMain />} />
