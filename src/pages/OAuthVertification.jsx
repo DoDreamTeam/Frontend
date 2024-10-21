@@ -22,7 +22,7 @@ const OAuthVertification = () => {
       console.log(accessToken);
 
       // 쿠키에 저장
-      setCookie("accessToken", accessToken, { paht: "/" });
+      setCookie("accessToken", accessToken, { path: "/" });
 
       // 리다이렉트
       navigate("/");
