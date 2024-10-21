@@ -36,13 +36,11 @@ const OAuthVertification = () => {
   }, [code]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-8 text-center">
-        <h2 className="text-xl font-semibold mb-4">로그인 중</h2>
-        <p className="text-gray-600">잠시만 기다려 주세요...</p>
-        <div className="loader mt-4">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
+    <div className="bg-white shadow-md rounded-lg p-8 text-center">
+      <h2 className="text-xl font-semibold mb-4">로그인 중</h2>
+      <p className="text-gray-600">잠시만 기다려 주세요...</p>
+      <div className="loader mt-4">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     </div>
   );
