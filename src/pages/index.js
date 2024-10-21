@@ -1,5 +1,7 @@
 import Main from "./Main";
 
+import OAuthVertification from "./OAuthVertification.jsx";
+
 import BookMain from "./BookMain";
 import BookPageNoQuestion from "./BookPageNoQuestion";
 import BookPageWithQuestion from "./BookPageWithQuestion";
@@ -22,6 +24,7 @@ import MyStudies from "./MyStudies";
 
 export {
   Main,
+  OAuthVertification,
   BookMain,
   BookPageNoQuestion,
   BookPageWithQuestion,
