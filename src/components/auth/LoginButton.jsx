@@ -4,9 +4,11 @@ import logo from "../../assets/logo.png";
 import GoogleIcon from "../../assets/google.png";
 import KakaoIcon from "../../assets/kakao.png";
 import NaverIcon from "../../assets/naver.png";
+import { useLocation } from "react-router-dom";
 
 const LoginButton = () => {
   const { openModal, Modal } = useModal();
+  const location = useLocation();
 
   const handleGoogleLogin = () => {
     const params = new URLSearchParams({
@@ -14,6 +16,7 @@ const LoginButton = () => {
       response_type: "code",
       redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
       client_id: import.meta.env.VITE_GOOGLE_ID,
+      state: location.pathname,
     });
 
     const GOOGLE_URL = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
@@ -26,6 +29,7 @@ const LoginButton = () => {
       response_type: "code",
       redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
       client_id: import.meta.env.VITE_KAKAO_ID,
+      state: location.pathname,
     });
 
     const KAKAO_URL = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
@@ -38,6 +42,7 @@ const LoginButton = () => {
       response_type: "code",
       redirect_uri: import.meta.env.VITE_NAVER_REDIRECT_URI,
       client_id: import.meta.env.VITE_NAVER_ID,
+      state: location.pathname,
     });
 
     const NAVER_URL = `https://nid.naver.com/oauth2.0/authorize?${params.toString()}`;

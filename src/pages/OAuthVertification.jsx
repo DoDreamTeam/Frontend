@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { oauthAPI } from "../api/services/oauth";
 import { setCookie } from "../utils/cookieUtils";
 import axios from "axios";
 
 const OAuthVertification = () => {
   const { provider } = useParams();
   const code = new URLSearchParams(window.location.search).get("code");
+  const state = new URLSearchParams(window.location.search).get("state");
   const navigate = useNavigate();
 
   const login = async () => {
@@ -19,13 +19,13 @@ const OAuthVertification = () => {
 
       // 응답에서 accessToken 추출
       const accessToken = response.data.accessToken;
-      console.log(accessToken);
 
       // 쿠키에 저장
       setCookie("accessToken", accessToken, { path: "/" });
 
       // 리다이렉트
-      navigate("/");
+      navigate(state || "/");
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }
