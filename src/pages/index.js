@@ -1,4 +1,5 @@
 import Main from "./Main";
+import MainSearch from "./MainSearch.jsx";
 
 import OAuthVertification from "./OAuthVertification.jsx";
 
@@ -24,6 +25,7 @@ import MyStudies from "./MyStudies";
 
 export {
   Main,
+  MainSearch,
   OAuthVertification,
   BookMain,
   BookPageNoQuestion,
