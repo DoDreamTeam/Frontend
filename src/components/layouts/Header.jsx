@@ -8,6 +8,8 @@ import NotificationMenu from "../notification/NotificationMenu";
 import LoginButton from "../auth/LoginButton";
 import useAuth from "../../hooks/useAuth";
 import LogoutButton from "../auth/LogoutButton";
+import { getCookie } from "../../utils/cookieUtils";
+
 
 const Header = () => {
   const navigate = useNavigate();
@@ -56,6 +58,15 @@ const Header = () => {
     setMenuOpen(false);
     setNotificationOpen(false);
   }, [location]); // location이 변경될 때마다 실행
+
+  // 쿠키에서 사용자 ID를 가져오는 함수
+  const getUserId = () => {
+    const token = getCookie("accessToken") // 쿠키에서 토큰 가져오기
+    if (!token) return null // 토큰이 없으면 null 반환
+
+    const payload = JSON.parse(atob(token.split('.')[1])) // 토큰에서 payload 추출
+    return payload.sub; // 사용자 ID 반환
+  }
 
   return (
     <header className="flex justify-center items-center px-8 py-4 bg-white w-full">
@@ -126,7 +137,7 @@ const Header = () => {
                       </li>
                       <li
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleMenuClick("/mypage")}
+                        onClick={() => handleMenuClick(`/mypage/${getUserId()}`)}
                       >
                         마이페이지
                       </li>
