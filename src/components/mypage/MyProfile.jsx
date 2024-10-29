@@ -1,88 +1,108 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BookCard from "../ui/BookCard";
+import useUser from "../../hooks/useUser";
+import { getCookie } from "../../utils/cookieUtils";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import axios from "axios";
 
-const MyProfile = () => {
-  const data = {
-    user: {
-      id: "1",
-      username: "Minsung",
-      profile_image: "",
-      provider: "kakao",
-      provider_id: "12345",
-      created_at: "2022-01-01T10:00:00Z",
-      updated_at: "2023-10-01T12:00:00Z",
-    },
-    books: [
-      {
-        book_id: "1",
-        title: "CS 문제집",
-        category: "자격증",
-        secret: true,
-        author: "Minsung",
-        bookmarkCount: 150,
-        viewCount: 300,
-        created_at: "2023-01-10T09:00:00Z",
-        updated_at: "2023-01-10T09:00:00Z",
-      },
-      {
-        book_id: "2",
-        title: "CS 문제집2",
-        category: "기타",
-        secret: false,
-        author: "Minsung",
-        bookmarkCount: 100,
-        viewCount: 500,
-        created_at: "2023-01-10T09:00:00Z",
-        updated_at: "2023-01-10T09:00:00Z",
-      },
-      {
-        book_id: "3",
-        title: "CS 문제집3",
-        category: "CS",
-        secret: false,
-        author: "Minsung",
-        bookmarkCount: 100,
-        viewCount: 500000,
-        created_at: "2023-01-10T09:00:00Z",
-        updated_at: "2023-01-10T09:00:00Z",
-      },
-    ],
-  };
+const MyProfile = ({ userId }) => {
+  const { userData} = useUser(userId)
+  const [books, setBooks] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalBooksCount, setTotalBooksCount] = useState(0);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      if (!userId) {
+        console.error("User Id 정의안됨")
+        return
+      }
+      try {
+        const token = getCookie("accessToken"); // 토큰 가져오기
+        const response = await axios.get(`${import.meta.env.VITE_REST_SERVER}/mypage/books/${userId}?page=${currentPage}`, {
+            headers: {
+                Authorization: `Bearer ${token}` // 헤더에 토큰 추가
+            }
+        })
+        setBooks(response.data.content) // 사용자 데이터 저장
+        setTotalPages(response.data.totalPages)
+        setTotalBooksCount(response.data.totalElements)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchBooks()
+  }, [userId, currentPage]);
+
+  if (!userData) return null; // userData 가 없으면 null 반환
+  
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
   return (
     <div>
       <div className="flex items-center mb-8">
-        {data.user.profile_image ? (
+        {userData.profileImage ? (
+          // 프로필 이미지가 있으면 표시
           <img
-            src={data.user.profile_image}
-            alt={`${data.user.username}'s profile`}
-            className="w-10 h-10 rounded-full mr-4"
+          src={userData.profileImage}
+          alt={`${userData.userName}'s profile`}
+          className="w-10 h-10 rounded-full mr-4"
           />
         ) : (
+          // 프로필 이미지가 없으면 기본 원형
           <div className="w-10 h-10 rounded-full bg-black mr-4" />
         )}
-        <div className="text-l font-semibold">{data.user.username}</div>
+        <div className="text-l font-semibold">{userData.userName}</div>
       </div>
       <div className="border-b border-gray-300 mb-8" />
 
       <div className="flex justify-between items mb-4">
         <div className="text-xl font-semibold mb-7">
-          {data.user.username}님의 문제집 목록 [{data.books.length}]
+          {userData.userName} 님의 문제집 목록 [{totalBooksCount}]
         </div>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {data.books.map((book, index) => (
-          <div key={index} className="flex h-full">
+        {books.map((book) => (
+          // 책 목록을 BookCard 컴포넌트로 매핑
+          <div key={book.id} className="flex h-full">
             <BookCard
               title={book.title}
-              author={book.author}
+              author={book.username}
               bookmarkCount={book.bookmarkCount}
               category={book.category}
-            />
+              />
           </div>
         ))}
       </div>
+
+      {/* 페이지네이션 */}
+      <div className="flex justify-center mt-8 mb-10">
+        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+          <FaChevronLeft className="text-gray-500 text-sm" />
+        </button>
+        {Array.from({ length: totalPages }).map((_, index) => (
+          <button
+          key={index}
+            onClick={() => handlePageChange(index)}
+            className={`mx-1 ${
+              index + 1 === currentPage
+                ? "font-bold text-blue-400"
+                : "text-gray-500"
+            }`}
+            >
+            {index + 1}
+          </button>
+        ))}
+        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>
+          <FaChevronRight className="text-gray-500 text-sm" />
+        </button>
+      </div>
+
     </div>
   );
-};
+}
 
-export default MyProfile;
+  export default MyProfile;
