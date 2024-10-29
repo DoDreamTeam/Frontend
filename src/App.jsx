@@ -9,6 +9,7 @@ import {
   CreateStudy,
   EditQuestion,
   Main,
+  MainSearch,
   MyBooks,
   MyPage,
   MyQuestions,
@@ -28,6 +29,7 @@ const App = () => {
     <Layout>
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/search" element={<MainSearch />} />
 
         {/* 소셜 로그인 */}
         <Route path="/oauth/:provider" element={<OAuthVertification />} />
