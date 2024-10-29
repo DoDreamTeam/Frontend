@@ -59,7 +59,7 @@ const App = () => {
         <Route path="/study/:studyId/admin" element={<StudyAdminPage />} />
 
         {/* 마이페이지 */}
-        <Route path="/:userId" element={<MyPage />} />
+        <Route path="/mypage/:userId" element={<MyPage />} />
         <Route path="/:userId/books" element={<MyBooks />} />
         <Route path="/:userId/questions" element={<MyQuestions />} />
         <Route path="/:userId/studies" element={<MyStudies />} />

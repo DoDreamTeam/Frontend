@@ -1,7 +1,10 @@
 import React from "react";
 import ActivityCalendar from "react-activity-calendar";
 
-const MyActivityCalendar = () => {
+const MyActivityCalendar = ({userData}) => {
+  if (!userData) {
+    return <div>Loading...</div>; // 또는 다른 적절한 메시지
+  }
   const data = [
     {
       count: 0,
@@ -1851,20 +1854,12 @@ const MyActivityCalendar = () => {
     totalCount: "{{count}} contributions in {{year}}",
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   };
-  const user = {
-    id: "1",
-    username: "Minsung",
-    profile_image: "https://example.com/profile/12345.jpg",
-    provider: "kakao",
-    provider_id: "12345",
-    created_at: "2022-01-01T10:00:00Z",
-    updated_at: "2023-10-01T12:00:00Z",
-  };
+
   return (
     <div>
       <div className="flex justify-between items mb-4">
         <div className="text-xl font-semibold mb-7">
-          {user.username}님의 공부 내역
+          {userData.userName} 님의 공부 내역
         </div>
       </div>
       <div className="flex justify-center items-center">
