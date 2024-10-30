@@ -4,14 +4,7 @@ import defaultProfile from "../../assets/default_profile.jpg";
 import { useNavigate } from "react-router-dom";
 import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
 
-const BookCard = ({
-  id,
-  title,
-  username,
-  bookmarkCount,
-  category,
-  profileImage,
-}) => {
+const BookCard = ({ id, title, username, bookmarkCount, category }) => {
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
