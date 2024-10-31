@@ -19,9 +19,11 @@ const OAuthVertification = () => {
 
       // 응답에서 accessToken 추출
       const accessToken = response.data.accessToken;
+      const refreshToken = response.data.refreshToken;
 
       // 쿠키에 저장
       setCookie("accessToken", accessToken, { path: "/" });
+      setCookie("refreshToken", refreshToken, { path: "/" });
 
       // 리다이렉트
       navigate(state || "/");
