@@ -1,8 +1,8 @@
 import React from "react";
 import ActivityCalendar from "react-activity-calendar";
 
-const MyActivityCalendar = ({userData}) => {
-  if (!userData) {
+const MyActivityCalendar = ({ userInfo }) => {
+  if (!userInfo) {
     return <div>Loading...</div>; // 또는 다른 적절한 메시지
   }
   const data = [
@@ -1859,7 +1859,7 @@ const MyActivityCalendar = ({userData}) => {
     <div>
       <div className="flex justify-between items mb-4">
         <div className="text-xl font-semibold mb-7">
-          {userData.userName} 님의 공부 내역
+          {userInfo.userName} 님의 공부 내역
         </div>
       </div>
       <div className="flex justify-center items-center">
