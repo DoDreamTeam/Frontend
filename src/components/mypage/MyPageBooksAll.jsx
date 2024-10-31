@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import BookCard from '../ui/BookCard';
 import { getCookie } from '../../utils/cookieUtils';
-import axios from 'axios';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import BookLockToggle from './BookLockToggle';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api/api';
 
 const MypageBooksAll = () => {
   const [books, setBooks] = useState([]);
@@ -20,16 +20,12 @@ const MypageBooksAll = () => {
   const fetchBooks = async () => {
     try {
       const token = getCookie('accessToken');
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_REST_SERVER
-        }/mypage/book/books?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get('/mypage/book/books', {
+        params: { page: currentPage },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setBooks(response.data.content);
       setTotalPages(response.data.totalPages);
       setTotalBooksCount(response.data.totalElements);
@@ -49,16 +45,14 @@ const MypageBooksAll = () => {
   const handleDeleteBook = async (id) => {
     try {
       const token = getCookie('accessToken');
-      await axios.delete(`${import.meta.env.VITE_REST_SERVER}/books/${id}`, {
+      await api.delete(`/books/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // 책 삭제 후 데이터를 다시 가져옴
       await fetchBooks();
 
-      // 총 책 수 감소
       setTotalBooksCount((prevCount) => prevCount - 1);
     } catch (err) {
       console.error(err);
@@ -87,16 +81,14 @@ const MypageBooksAll = () => {
               bookmarkCount={book.bookmarkCount}
               category={book.category}
             />
-            <div className="flex items-center abs">
-              <div className="flex absolute bottom-5 right-2">
-                <button
-                  onClick={() => handleDeleteBook(book.id)}
-                  className="bg-red-500 text-white text-xs py-1 px-2 rounded ml-2"
-                >
-                  삭제
-                </button>
-                <BookLockToggle book={book} style={'cursor-pointer'} />
-              </div>
+            <div className="flex items-center absolute bottom-5 right-2">
+              <button
+                onClick={() => handleDeleteBook(book.id)}
+                className="bg-red-500 text-white text-xs py-1 px-2 rounded ml-2"
+              >
+                삭제
+              </button>
+              <BookLockToggle book={book} style={'cursor-pointer'} />
             </div>
           </div>
         ))}

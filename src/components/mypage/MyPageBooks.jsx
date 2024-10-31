@@ -1,45 +1,49 @@
-// src/components/mypage/MypageBooks.jsx
-import React, { useEffect, useState } from "react";
-import BookCard from "../ui/BookCard";
-import { getCookie } from "../../utils/cookieUtils";
-import axios from "axios";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import React, { useEffect, useState } from 'react';
+import BookCard from '../ui/BookCard';
+import { getCookie } from '../../utils/cookieUtils';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import api from '../../api/api';
 
 const MypageBooks = ({ userId }) => {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalBooksCount, setTotalBooksCount] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
       if (!userId) {
-        console.error("User Id 정의안됨");
+        console.error('User Id 정의안됨');
         return;
       }
       try {
-        const token = getCookie("accessToken");
-        const response = await axios.get(
-          `${import.meta.env.VITE_REST_SERVER}/mypage/books/${userId}?page=${currentPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const token = getCookie('accessToken');
+        const response = await api.get(`/mypage/books/${userId}`, {
+          params: { page: currentPage },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        });
+
         setBooks(response.data.content);
         setTotalPages(response.data.totalPages);
         setTotalBooksCount(response.data.totalElements);
       } catch (err) {
+        setError(err);
         console.error(err);
       }
     };
+
     fetchBooks();
   }, [userId, currentPage]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  if (error) return <div className="text-red-500">{error.message}</div>; // 에러 메시지 표시
 
   return (
     <div>
@@ -59,9 +63,11 @@ const MypageBooks = ({ userId }) => {
         ))}
       </div>
 
-      {/* 페이지네이션 */}
       <div className="flex justify-center mt-8 mb-10">
-        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 0}
+        >
           <FaChevronLeft className="text-gray-500 text-sm" />
         </button>
         {Array.from({ length: totalPages }).map((_, index) => (
@@ -69,13 +75,18 @@ const MypageBooks = ({ userId }) => {
             key={index}
             onClick={() => handlePageChange(index)}
             className={`mx-1 ${
-              index === currentPage ? "font-bold text-blue-400" : "text-gray-500"
+              index === currentPage
+                ? 'font-bold text-blue-400'
+                : 'text-gray-500'
             }`}
           >
             {index + 1}
           </button>
         ))}
-        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages - 1}
+        >
           <FaChevronRight className="text-gray-500 text-sm" />
         </button>
       </div>

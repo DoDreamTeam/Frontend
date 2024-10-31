@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { getCookie } from '../../utils/cookieUtils';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import api from '../../api/api';
 
 const MyBookCommentLike = () => {
   const [comments, setComments] = useState([]);
@@ -17,16 +17,12 @@ const MyBookCommentLike = () => {
     const fetchComments = async () => {
       try {
         const token = getCookie('accessToken');
-        const response = await axios.get(
-          `${
-            import.meta.env.VITE_REST_SERVER
-          }/mypage/book/comment?page=${currentCommentPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await api.get('/mypage/book/comment', {
+          params: { page: currentCommentPage },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setComments(response.data.content);
         setTotalPagesComments(response.data.totalPages);
         setItemsPerPage(response.data.pageable.pageSize);
@@ -38,16 +34,12 @@ const MyBookCommentLike = () => {
     const fetchLikes = async () => {
       try {
         const token = getCookie('accessToken');
-        const response = await axios.get(
-          `${
-            import.meta.env.VITE_REST_SERVER
-          }/mypage/book/comment/like?page=${currentLikePage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await api.get('/mypage/book/comment/like', {
+          params: { page: currentLikePage },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setLikes(response.data.content);
         setTotalPagesLikes(response.data.totalPages);
         setItemsPerPage(response.data.pageable.pageSize);
@@ -73,7 +65,6 @@ const MyBookCommentLike = () => {
 
   const handleTabChange = (isComments) => {
     setShowComments(isComments);
-    // 탭 변경 시 페이지를 처음으로 리셋
     if (isComments) {
       setCurrentCommentPage(0);
     } else {
@@ -84,7 +75,8 @@ const MyBookCommentLike = () => {
   return (
     <div>
       <div className="text-xl font-semibold mb-7">
-        내가 작성한 댓글과 좋아요
+        {' '}
+        내가 작성한 댓글과 좋아요{' '}
       </div>
       <div className="flex items-center mb-4 text-gray-500">
         <button
@@ -123,7 +115,6 @@ const MyBookCommentLike = () => {
         ))}
       </div>
 
-      {/* 페이지네이션 */}
       <div className="flex justify-center mt-8 mb-10">
         <button
           onClick={() =>

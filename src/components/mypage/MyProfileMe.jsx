@@ -1,43 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
+import { getUserId } from './GetUserId'; // 로그인 사용자 ID 가져오기
 import { getCookie } from '../../utils/cookieUtils';
-import { getUserId } from './GetUserId';
 import axios from 'axios';
+import { useUser } from '../../context/UserProvider';
 
 const MyProfileMe = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [userData, setUserData] = useState(null);
+  const { userInfo, isLoading, isError } = useUser();
+  const userId = getUserId();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
-  const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
-  const userId = getUserId();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = getCookie('accessToken');
-        const response = await axios.get(
-          `${import.meta.env.VITE_REST_SERVER}/mypage/book/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setUserData(response.data);
-        setUsername(response.data.userName);
-      } catch (err) {
-        setError(err);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    if (userInfo) {
+      setUsername(userInfo.userName);
+    }
+  }, [userInfo]);
 
   const handleMenuClick = (path, pageName) => {
     setMenuOpen(false);
@@ -83,36 +68,30 @@ const MyProfileMe = () => {
         }
       );
 
-      setUserData((prevData) => ({
-        ...prevData,
-        userName: username || prevData.userName,
-        profileImage: profileImage
-          ? URL.createObjectURL(profileImage)
-          : prevData.profileImage,
-      }));
-
+      // 사용자 정보 업데이트
       setIsEditing(false);
     } catch (err) {
-      setError(err);
+      console.error('Error updating profile:', err);
     }
   };
 
-  if (!userData) return null;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching user data</div>;
 
   return (
     <div className="relative">
       <div className="flex items-center mb-8 justify-between">
         <div className="flex items-center">
-          {userData.profileImage ? (
+          {userInfo.profileImage ? (
             <img
-              src={userData.profileImage}
-              alt={`${userData.userName}'s profile`}
+              src={userInfo.profileImage}
+              alt={`${userInfo.userName}'s profile`}
               className="w-10 h-10 rounded-full mr-4"
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-black mr-4" />
           )}
-          <div className="text-l font-semibold">{userData.userName}</div>
+          <div className="text-l font-semibold">{userInfo.userName}</div>
           <button className="ml-2 text-blue-500" onClick={handleEditClick}>
             {isEditing ? '취소' : '수정'}
           </button>
@@ -163,7 +142,6 @@ const MyProfileMe = () => {
         </div>
       </div>
 
-      {/* 수정 입력창 */}
       {isEditing && (
         <div className="mb-4">
           <input

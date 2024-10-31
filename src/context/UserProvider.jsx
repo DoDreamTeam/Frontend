@@ -1,31 +1,34 @@
-import { createContext, useContext } from "react";
-import { getCookie } from "../utils/cookieUtils";
-import { useQuery } from "@tanstack/react-query";
-import api from "../api/api";
+import { createContext, useContext } from 'react';
+import { getCookie } from '../utils/cookieUtils';
+import { useQuery } from '@tanstack/react-query';
+import api from '../api/api';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const token = getCookie("accessToken");
-  const userId = token ? JSON.parse(atob(token.split(".")[1])).sub : null;
+  const token = getCookie('accessToken');
 
   const {
     data: userInfo,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["userInfo", userId],
+    queryKey: ['userInfo'],
     queryFn: async () => {
-      if (!userId) return null;
+      if (!token) return null;
       try {
-        const response = await api.get(`/mypage/${userId}`);
+        const response = await api.get(`/mypage/book/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         return response.data;
       } catch (error) {
-        console.error("Error fetching user info: ", error);
+        console.error('Error fetching user info: ', error);
         throw error;
       }
     },
-    enabled: !!token && !!userId,
+    enabled: !!token,
   });
 
   return (

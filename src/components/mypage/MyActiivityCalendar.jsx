@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ActivityCalendar from 'react-activity-calendar';
+import GetUser from './getUser';
 
-const MyActivityCalendar = ({ userData }) => {
-  if (!userData) return null;
+const MyActivityCalendar = ({ userId }) => {
+  const { userData, error } = GetUser(userId); // GetUser 훅 사용
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    if (userData) {
+      setUserName(userData.userName); // 사용자 이름 설정
+    }
+  }, [userData]);
   const data = [
     {
       count: 0,
@@ -1857,7 +1865,7 @@ const MyActivityCalendar = ({ userData }) => {
     <div>
       <div className="flex justify-between items mb-4">
         <div className="text-xl font-semibold mb-7">
-          {userData.userName} 님의 공부 내역
+          {userName} 님의 공부 내역
         </div>
       </div>
       <div className="flex justify-center items-center">

@@ -1,29 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import useUser from './useUser';
-import { getUserId } from './GetUserId';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
-import { getCookie } from '../../utils/cookieUtils';
-import axios from 'axios';
+import GetUser from './getUser';
+import { getUserId } from './GetUserId'; // 로그인 사용자 ID 가져오기
 
 const MyProfile = ({ userId }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData, setUserData } = useUser(userId);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const logInUserId = getUserId();
-  const [currentPage, setCurrentPage] = useState('');
-  const [error, setError] = useState(null);
+  const { userData: userInfo, error } = GetUser(userId); // GetUser 훅 사용
+  const logInUserId = getUserId(); // 로그인 사용자 ID
+
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState('');
 
   useEffect(() => {
-    if (userData) {
-      setUsername(userData.userName);
-      setMenuOpen(false);
+    if (userInfo) {
+      setUsername(userInfo.userName);
     }
-  }, [location, userData]);
+  }, [userInfo]);
+
+  useEffect(() => {
+    console.log('userId:', userId);
+    console.log('userInfo:', userInfo);
+  }, [userId, userInfo]);
+
+  const handleSave = async () => {
+    try {
+      const token = getCookie('accessToken');
+      const formData = new FormData();
+
+      if (username) {
+        formData.append('newUserName', username);
+      }
+      if (profileImage) {
+        formData.append('file', profileImage);
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_REST_SERVER}/mypage`,
+        {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Profile update failed');
+      }
+
+      const updatedData = await response.json();
+      setUsername(updatedData.userName || username);
+      if (profileImage) {
+        setProfileImage(URL.createObjectURL(profileImage));
+      }
+
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+    }
+  };
+
+  const handleEditClick = () => {
+    setIsEditing((prev) => !prev);
+  };
 
   const handleMenuClick = (path, pageName) => {
     setMenuOpen(false);
@@ -39,67 +85,29 @@ const MyProfile = ({ userId }) => {
       setCurrentPage('문제집 관리');
     } else if (path.includes('myquestions')) {
       setCurrentPage('내가 푼 문제들');
-    } else if (path.includes('study')) {
+    } else if (path.includes('mystudies')) {
       setCurrentPage('스터디 관리');
     }
   }, [location]);
 
-  const handleEditClick = () => {
-    setIsEditing((prev) => !prev);
-  };
-
-  const handleSave = async () => {
-    try {
-      const token = getCookie('accessToken');
-      const formData = new FormData();
-      if (username) {
-        formData.append('newUserName', username);
-      }
-      if (profileImage) {
-        formData.append('file', profileImage);
-      }
-      await axios.patch(
-        `${import.meta.env.VITE_REST_SERVER}/mypage`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-
-      setUserData((prevData) => ({
-        ...prevData,
-        userName: username || prevData.userName,
-        profileImage: profileImage
-          ? URL.createObjectURL(profileImage)
-          : prevData.profileImage,
-      }));
-
-      setIsEditing(false);
-    } catch (err) {
-      setError(err);
-    }
-  };
-
-  if (!userData) return null;
+  if (!userInfo) return <div>Loading...</div>;
+  if (error) return <div>Error fetching user data</div>;
 
   return (
-    <div className="relative">
+    <div>
       <div className="flex items-center mb-8 justify-between">
         <div className="flex items-center">
-          {userData.profileImage ? (
+          {userInfo.profileImage ? (
             <img
-              src={userData.profileImage}
-              alt={`${userData.userName}'s profile`}
+              src={userInfo.profileImage}
+              alt={`${userInfo.userName}'s profile`}
               className="w-10 h-10 rounded-full mr-4"
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-black mr-4" />
           )}
-          <div className="text-l font-semibold">{userData.userName}</div>
-          {logInUserId === userId && (
+          <div className="text-l font-semibold">{userInfo.userName}</div>
+          {logInUserId.toString() === userInfo.userId.toString() && ( // 로그인 사용자 ID와 동일할 때만 수정 버튼 표시
             <button className="ml-2 text-blue-500" onClick={handleEditClick}>
               {isEditing ? '취소' : '수정'}
             </button>
@@ -150,15 +158,14 @@ const MyProfile = ({ userId }) => {
           )}
         </div>
       </div>
-
       {isEditing && (
         <div className="mb-4">
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border border-gray-300 p-2 w-full mb-2"
             placeholder="이름을 입력하세요"
+            className="border border-gray-300 p-2 w-full mb-2"
           />
           <input
             type="file"
