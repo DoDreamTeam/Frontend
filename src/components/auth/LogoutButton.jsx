@@ -1,13 +1,9 @@
 import React from "react";
 import { removeCookie } from "../../utils/cookieUtils";
-import { useNavigate } from "react-router-dom";
 
 const LogoutButton = () => {
-  const navigate = useNavigate();
-
   const handleLogout = () => {
     removeCookie("accessToken");
-    navigate("/");
     window.location.reload();
   };
 
