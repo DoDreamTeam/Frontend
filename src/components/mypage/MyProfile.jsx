@@ -22,11 +22,6 @@ const MyProfile = ({ userId }) => {
     }
   }, [userInfo]);
 
-  useEffect(() => {
-    console.log('userId:', userId);
-    console.log('userInfo:', userInfo);
-  }, [userId, userInfo]);
-
   const handleSave = async () => {
     try {
       const token = getCookie('accessToken');
