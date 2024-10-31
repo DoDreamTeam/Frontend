@@ -1,7 +1,14 @@
-import React from "react";
+import React from 'react';
+import MyProfileMe from '../components/mypage/MyProfileMe';
 
 const MyQuestions = () => {
-  return <div>마이 페이지 - 내가 푼 문제들</div>;
+  return (
+    <div className="flex flex-col items-center w-full">
+      <div className="w-full max-w-screen-lg mb-6">
+        <MyProfileMe />
+      </div>
+    </div>
+  );
 };
 
 export default MyQuestions;
