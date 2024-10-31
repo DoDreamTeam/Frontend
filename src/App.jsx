@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import {
   AddQuestion,
   BookMain,
@@ -21,10 +21,10 @@ import {
   StudyPage,
   StudyQuestionPage,
   SubmitPage,
-} from "./pages";
-import Layout from "./components/layouts/Layout";
-import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/authentication/ProtectedRoute";
+} from './pages';
+import Layout from './components/layouts/Layout';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/authentication/ProtectedRoute';
 
 const App = () => {
   return (
@@ -97,6 +97,40 @@ const App = () => {
             element={<ProtectedRoute element={<MyStudies />} isMemberOnly />}
           />
 
+          {/* 문제집 */}
+          <Route path="/book" element={<BookMain />} />
+          <Route path="/book/create" element={<CreateBook />} />
+          <Route path="/book/:id" element={<BookPageNoQuestion />} />
+          <Route
+            path="/book/:id/questions"
+            element={<BookPageWithQuestion />}
+          />
+          <Route
+            path="/book/:id/questions/:questionId"
+            element={<QuestionPage />}
+          />
+          <Route path="/submit/:id" element={<SubmitPage />} />
+          <Route path="/book/:id/questions/add" element={<AddQuestion />} />
+          <Route
+            path="/book/:id/questions/:questionId/edit"
+            element={<EditQuestion />}
+          />
+
+          {/* 스터디 */}
+          <Route path="/study" element={<StudyMain />} />
+          <Route path="/study/create" element={<CreateStudy />} />
+          <Route path="/study/:studyId" element={<StudyPage />} />
+          <Route
+            path="/study/:studyId/:memberId"
+            element={<StudyQuestionPage />}
+          />
+          <Route path="/study/:studyId/admin" element={<StudyAdminPage />} />
+
+          {/* 마이페이지 */}
+          <Route path="/mypage/:userId" element={<MyPage />} />
+          <Route path="/mybooks" element={<MyBooks />} />
+          <Route path="/myquestions" element={<MyQuestions />} />
+          <Route path="/mystudies" element={<MyStudies />} />
           {/* 추후 수정 예정 : 스터디 관리자만 접근 가능 */}
           <Route
             path="/study/:studyId/admin"

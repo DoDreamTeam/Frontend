@@ -1,75 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
-import GetUser from './getUser';
 import { getUserId } from './GetUserId'; // 로그인 사용자 ID 가져오기
+import { getCookie } from '../../utils/cookieUtils';
+import axios from 'axios';
+import { useUser } from '../../context/UserProvider';
 
-const MyProfile = ({ userId }) => {
+const MyProfileMe = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData: userInfo, error } = GetUser(userId); // GetUser 훅 사용
-  const logInUserId = getUserId(); // 로그인 사용자 ID
+  const { userInfo, isLoading, isError } = useUser();
+  const userId = getUserId();
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState('');
 
   useEffect(() => {
     if (userInfo) {
       setUsername(userInfo.userName);
     }
   }, [userInfo]);
-
-  useEffect(() => {
-    console.log('userId:', userId);
-    console.log('userInfo:', userInfo);
-  }, [userId, userInfo]);
-
-  const handleSave = async () => {
-    try {
-      const token = getCookie('accessToken');
-      const formData = new FormData();
-
-      if (username) {
-        formData.append('newUserName', username);
-      }
-      if (profileImage) {
-        formData.append('file', profileImage);
-      }
-
-      const response = await fetch(
-        `${import.meta.env.VITE_REST_SERVER}/mypage`,
-        {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-          },
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Profile update failed');
-      }
-
-      const updatedData = await response.json();
-      setUsername(updatedData.userName || username);
-      if (profileImage) {
-        setProfileImage(URL.createObjectURL(profileImage));
-      }
-
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Error updating profile:', err);
-    }
-  };
-
-  const handleEditClick = () => {
-    setIsEditing((prev) => !prev);
-  };
 
   const handleMenuClick = (path, pageName) => {
     setMenuOpen(false);
@@ -90,11 +43,43 @@ const MyProfile = ({ userId }) => {
     }
   }, [location]);
 
-  if (!userInfo) return <div>Loading...</div>;
-  if (error) return <div>Error fetching user data</div>;
+  const handleEditClick = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  const handleSave = async () => {
+    try {
+      const token = getCookie('accessToken');
+      const formData = new FormData();
+      if (username) {
+        formData.append('newUserName', username);
+      }
+      if (profileImage) {
+        formData.append('file', profileImage);
+      }
+      await axios.patch(
+        `${import.meta.env.VITE_REST_SERVER}/mypage`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      // 사용자 정보 업데이트
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching user data</div>;
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex items-center mb-8 justify-between">
         <div className="flex items-center">
           {userInfo.profileImage ? (
@@ -107,11 +92,9 @@ const MyProfile = ({ userId }) => {
             <div className="w-10 h-10 rounded-full bg-black mr-4" />
           )}
           <div className="text-l font-semibold">{userInfo.userName}</div>
-          {logInUserId.toString() === userInfo.userId.toString() && ( // 로그인 사용자 ID와 동일할 때만 수정 버튼 표시
-            <button className="ml-2 text-blue-500" onClick={handleEditClick}>
-              {isEditing ? '취소' : '수정'}
-            </button>
-          )}
+          <button className="ml-2 text-blue-500" onClick={handleEditClick}>
+            {isEditing ? '취소' : '수정'}
+          </button>
         </div>
 
         <div className="relative mr-20 flex items-center">
@@ -158,14 +141,15 @@ const MyProfile = ({ userId }) => {
           )}
         </div>
       </div>
+
       {isEditing && (
         <div className="mb-4">
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="이름을 입력하세요"
             className="border border-gray-300 p-2 w-full mb-2"
+            placeholder="이름을 입력하세요"
           />
           <input
             type="file"
@@ -184,4 +168,4 @@ const MyProfile = ({ userId }) => {
   );
 };
 
-export default MyProfile;
+export default MyProfileMe;
