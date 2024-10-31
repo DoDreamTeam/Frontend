@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import {
   AddQuestion,
   BookMain,
@@ -21,8 +21,8 @@ import {
   StudyPage,
   StudyQuestionPage,
   SubmitPage,
-} from "./pages";
-import Layout from "./components/layouts/Layout";
+} from './pages';
+import Layout from './components/layouts/Layout';
 
 const App = () => {
   return (
@@ -62,9 +62,9 @@ const App = () => {
 
         {/* 마이페이지 */}
         <Route path="/mypage/:userId" element={<MyPage />} />
-        <Route path="/:userId/books" element={<MyBooks />} />
-        <Route path="/:userId/questions" element={<MyQuestions />} />
-        <Route path="/:userId/studies" element={<MyStudies />} />
+        <Route path="/mybooks" element={<MyBooks />} />
+        <Route path="/myquestions" element={<MyQuestions />} />
+        <Route path="/mystudies" element={<MyStudies />} />
       </Routes>
     </Layout>
   );
