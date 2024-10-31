@@ -1,7 +1,14 @@
-import React from "react";
+import React from 'react';
+import MyProfileMe from '../components/mypage/MyProfileMe';
 
 const MyStudies = () => {
-  return <div>마이 페이지 - 내가 참여하는 스터디</div>;
+  return (
+    <div className="flex flex-col items-center w-full">
+      <div className="w-full max-w-screen-lg mb-6">
+        <MyProfileMe />
+      </div>
+    </div>
+  );
 };
 
 export default MyStudies;
