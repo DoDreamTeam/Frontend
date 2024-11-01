@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
-import { getUserId } from './GetUserId'; // 로그인 사용자 ID 가져오기
+import { getUserId } from './GetUserId';
 import { getCookie } from '../../utils/cookieUtils';
-import axios from 'axios';
 import { useUser } from '../../context/UserProvider';
+import api from '../../api/api';
 
 const MyProfileMe = () => {
   const navigate = useNavigate();
@@ -17,6 +17,8 @@ const MyProfileMe = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
+  const menuRef = useRef(null);
+
 
   useEffect(() => {
     if (userInfo) {
@@ -32,15 +34,10 @@ const MyProfileMe = () => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes('mypage')) {
-      setCurrentPage('마이페이지');
-    } else if (path.includes('mybooks')) {
-      setCurrentPage('문제집 관리');
-    } else if (path.includes('myquestions')) {
-      setCurrentPage('내가 푼 문제들');
-    } else if (path.includes('mystudies')) {
-      setCurrentPage('스터디 관리');
-    }
+    if (path.includes('mypage')) setCurrentPage('마이페이지');
+    else if (path.includes('mybooks')) setCurrentPage('문제집 관리');
+    else if (path.includes('myquestions')) setCurrentPage('내가 푼 문제들');
+    else if (path.includes('mystudies')) setCurrentPage('스터디 관리');
   }, [location]);
 
   const handleEditClick = () => {
@@ -51,14 +48,10 @@ const MyProfileMe = () => {
     try {
       const token = getCookie('accessToken');
       const formData = new FormData();
-      if (username) {
-        formData.append('newUserName', username);
-      }
-      if (profileImage) {
-        formData.append('file', profileImage);
-      }
-      await axios.patch(
-        `${import.meta.env.VITE_REST_SERVER}/mypage`,
+      if (username) formData.append('newUserName', username);
+      if (profileImage) formData.append('file', profileImage);
+      await api.patch(
+        `/mypage`,
         formData,
         {
           headers: {
@@ -68,12 +61,28 @@ const MyProfileMe = () => {
         }
       );
 
-      // 사용자 정보 업데이트
       setIsEditing(false);
     } catch (err) {
       console.error('Error updating profile:', err);
     }
   };
+
+  const handleOutsideClick = (event) => {
+    if (
+      menuOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target)
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [menuOpen]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching user data</div>;
@@ -97,7 +106,8 @@ const MyProfileMe = () => {
           </button>
         </div>
 
-        <div className="relative mr-20 flex items-center">
+        <div className="relative mr-20 flex items-center" ref={menuRef}>
+
           <div
             className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
             onClick={() => setMenuOpen((prev) => !prev)}

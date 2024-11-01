@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CiLock, CiUnlock } from 'react-icons/ci';
-import { getCookie } from '../../utils/cookieUtils';
-import axios from 'axios';
+import api from '../../api/api';
+
 
 const BookLockToggle = ({ book, style }) => {
   const [isSecret, setIsSecret] = useState(book.secret);
@@ -12,16 +12,7 @@ const BookLockToggle = ({ book, style }) => {
 
   const toggleSecret = async () => {
     try {
-      const token = getCookie('accessToken');
-      const response = await axios.patch(
-        `${import.meta.env.VITE_REST_SERVER}/mypage/book/${book.id}/secret`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.patch(`/mypage/book/${book.id}/secret`, {});
       setIsSecret(response.data.secret);
     } catch (err) {
       console.error(err);

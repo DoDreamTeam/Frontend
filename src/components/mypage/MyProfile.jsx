@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
 import GetUser from './getUser';
 import { getUserId } from './GetUserId'; // 로그인 사용자 ID 가져오기
+import api from '../../api/api';
 
 const MyProfile = ({ userId }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData: userInfo, error } = GetUser(userId); // GetUser 훅 사용
-  const logInUserId = getUserId(); // 로그인 사용자 ID
+  const { userData: userInfo, error } = GetUser(userId);
+  const logInUserId = getUserId();
 
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
+  const menuRef = useRef(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -26,36 +28,17 @@ const MyProfile = ({ userId }) => {
     try {
       const token = getCookie('accessToken');
       const formData = new FormData();
+      if (username) formData.append('newUserName', username);
+      if (profileImage) formData.append('file', profileImage);
 
-      if (username) {
-        formData.append('newUserName', username);
-      }
-      if (profileImage) {
-        formData.append('file', profileImage);
-      }
+      const response = await api.patch('/mypage', formData, {
+      });
 
-      const response = await fetch(
-        `${import.meta.env.VITE_REST_SERVER}/mypage`,
-        {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-          },
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Profile update failed');
-      }
+      if (!response.ok) throw new Error('Profile update failed');
 
       const updatedData = await response.json();
       setUsername(updatedData.userName || username);
-      if (profileImage) {
-        setProfileImage(URL.createObjectURL(profileImage));
-      }
-
+      if (profileImage) setProfileImage(URL.createObjectURL(profileImage));
       setIsEditing(false);
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -74,16 +57,28 @@ const MyProfile = ({ userId }) => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes('mypage')) {
-      setCurrentPage('마이페이지');
-    } else if (path.includes('mybooks')) {
-      setCurrentPage('문제집 관리');
-    } else if (path.includes('myquestions')) {
-      setCurrentPage('내가 푼 문제들');
-    } else if (path.includes('mystudies')) {
-      setCurrentPage('스터디 관리');
-    }
+    if (path.includes('mypage')) setCurrentPage('마이페이지');
+    else if (path.includes('mybooks')) setCurrentPage('문제집 관리');
+    else if (path.includes('myquestions')) setCurrentPage('내가 푼 문제들');
+    else if (path.includes('mystudies')) setCurrentPage('스터디 관리');
   }, [location]);
+
+  const handleOutsideClick = (event) => {
+    if (
+      menuOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target)
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [menuOpen]);
 
   if (!userInfo) return <div>Loading...</div>;
   if (error) return <div>Error fetching user data</div>;
@@ -102,14 +97,14 @@ const MyProfile = ({ userId }) => {
             <div className="w-10 h-10 rounded-full bg-black mr-4" />
           )}
           <div className="text-l font-semibold">{userInfo.userName}</div>
-          {logInUserId.toString() === userInfo.userId.toString() && ( // 로그인 사용자 ID와 동일할 때만 수정 버튼 표시
+          {logInUserId.toString() === userInfo.userId.toString() && (
             <button className="ml-2 text-blue-500" onClick={handleEditClick}>
               {isEditing ? '취소' : '수정'}
             </button>
           )}
         </div>
 
-        <div className="relative mr-20 flex items-center">
+        <div className="relative mr-20 flex items-center" ref={menuRef}>
           <div
             className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
             onClick={() => setMenuOpen((prev) => !prev)}

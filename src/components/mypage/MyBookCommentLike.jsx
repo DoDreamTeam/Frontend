@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { getCookie } from '../../utils/cookieUtils';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import api from '../../api/api';
 
@@ -16,16 +15,12 @@ const MyBookCommentLike = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const token = getCookie('accessToken');
         const response = await api.get('/mypage/book/comment', {
           params: { page: currentCommentPage },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         setComments(response.data.content);
-        setTotalPagesComments(response.data.totalPages);
-        setItemsPerPage(response.data.pageable.pageSize);
+        setTotalPagesComments(response.data.page.totalPages);
+        setItemsPerPage(response.data.page.size);
       } catch (err) {
         console.error(err);
       }
@@ -33,16 +28,12 @@ const MyBookCommentLike = () => {
 
     const fetchLikes = async () => {
       try {
-        const token = getCookie('accessToken');
         const response = await api.get('/mypage/book/comment/like', {
           params: { page: currentLikePage },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         setLikes(response.data.content);
-        setTotalPagesLikes(response.data.totalPages);
-        setItemsPerPage(response.data.pageable.pageSize);
+        setTotalPagesLikes(response.data.page.totalPages);
+        setItemsPerPage(response.data.page.size);
       } catch (err) {
         console.error(err);
       }

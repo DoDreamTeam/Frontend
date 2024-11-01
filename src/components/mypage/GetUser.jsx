@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { getCookie } from '../../utils/cookieUtils';
-import api from '../../api/api'; // axios 설정된 api 모듈
-import { getUserId } from './GetUserId'; // 로그인한 사용자 ID 가져오기
+import api from '../../api/api'; 
+import { getUserId } from './GetUserId';
 
 const GetUser = (userId) => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
-  const logInUserId = getUserId(); // 로그인한 사용자 ID
+  const logInUserId = getUserId();
 
   const fetchUserData = async () => {
     try {
-      const token = getCookie('accessToken');
       const response = await api.get(`/mypage/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
       });
-
       setUserData(response.data);
     } catch (err) {
       setError(err);
