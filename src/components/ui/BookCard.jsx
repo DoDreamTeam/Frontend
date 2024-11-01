@@ -1,15 +1,36 @@
-import React, { useState } from "react";
-import { FaBookmark } from "react-icons/fa";
-import defaultProfile from "../../assets/default_profile.jpg";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
+import BookmarkButton from "./BookmarkButton";
+import api from "../../api/api";
+import defaultProfile from "../../assets/default_profile.jpg";
 
-const BookCard = ({ id, title, username, bookmarkCount, category }) => {
+const BookCard = ({
+  id,
+  title,
+  userId,
+  username,
+  profileImage,
+  bookmarkCount: initialBookmarkCount,
+  category,
+}) => {
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [count, setCount] = useState(initialBookmarkCount);
 
-  const toggleBookmark = () => {
+  useEffect(() => {
+    const fetchBookmarkStatus = async () => {
+      const response = await api.get(`/books/${id}`);
+      setIsBookmarked(response.data.isBookmarked);
+      setCount(response.data.bookmarkCount);
+    };
+
+    fetchBookmarkStatus();
+  }, [id]);
+
+  const toggleBookmark = (deleted) => {
     setIsBookmarked((prev) => !prev);
+    setCount((prev) => (deleted ? prev - 1 : prev + 1));
   };
 
   return (
@@ -22,16 +43,12 @@ const BookCard = ({ id, title, username, bookmarkCount, category }) => {
         >
           {categoryNames[category] || category}
         </div>
-        <div className="flex items-center text-xs">
-          <button onClick={toggleBookmark}>
-            {isBookmarked ? (
-              <FaBookmark className="text-blue-500 mr-1" />
-            ) : (
-              <FaBookmark className="text-gray-500 mr-1" />
-            )}
-          </button>
-          <span className="text-sm text-gray-500">{bookmarkCount}</span>
-        </div>
+        <BookmarkButton
+          isBookmarked={isBookmarked}
+          bookmarkCount={count}
+          onToggleBookmark={toggleBookmark}
+          bookId={id}
+        />
       </div>
       {/* 문제집 제목 */}
       <div
@@ -43,11 +60,16 @@ const BookCard = ({ id, title, username, bookmarkCount, category }) => {
       {/* 작성자 및 프로필 사진 */}
       <div className="flex items-center text-sm text-gray-500 mt-auto">
         <img
-          src={defaultProfile}
+          src={profileImage || defaultProfile}
           alt="profile"
           className="h-6 w-6 rounded-full mr-2"
         />
-        <span>{username}</span>
+        <span
+          className="hover:underline cursor-pointer"
+          onClick={() => navigate(`/mypage/${userId}`)}
+        >
+          {username}
+        </span>
       </div>
     </div>
   );
