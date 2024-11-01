@@ -1,5 +1,5 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import {
   AddQuestion,
   BookMain,
@@ -21,10 +21,10 @@ import {
   StudyPage,
   StudyQuestionPage,
   SubmitPage,
-} from './pages';
-import Layout from './components/layouts/Layout';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/authentication/ProtectedRoute';
+} from "./pages";
+import Layout from "./components/layouts/Layout";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/authentication/ProtectedRoute";
 
 const App = () => {
   return (

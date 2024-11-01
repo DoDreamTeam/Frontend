@@ -79,11 +79,13 @@ const BookList = ({ searchResults }) => {
           filteredBooks.map((book) => (
             <BookCard
               key={book.id}
-              id={book.id}
               title={book.title}
+              userId={book.userId}
               username={book.username}
               bookmarkCount={book.bookmarkCount}
               category={book.category}
+              id={book.id}
+              profileImage={book.userProfile}
             />
           ))
         ) : (
