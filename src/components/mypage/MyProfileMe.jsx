@@ -1,21 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
-import GetUser from './getUser';
-import { getUserId } from './GetUserId'; // 로그인 사용자 ID 가져오기
+import { getUserId } from './GetUserId';
+import { getCookie } from '../../utils/cookieUtils';
+import { useUser } from '../../context/UserProvider';
 import api from '../../api/api';
 
-const MyProfile = ({ userId }) => {
+const MyProfileMe = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData: userInfo, error } = GetUser(userId);
-  const logInUserId = getUserId();
+  const { userInfo, isLoading, isError } = useUser();
+  const userId = getUserId();
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState('');
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -23,31 +24,6 @@ const MyProfile = ({ userId }) => {
       setUsername(userInfo.userName);
     }
   }, [userInfo]);
-
-  const handleSave = async () => {
-    try {
-      const token = getCookie('accessToken');
-      const formData = new FormData();
-      if (username) formData.append('newUserName', username);
-      if (profileImage) formData.append('file', profileImage);
-
-      const response = await api.patch('/mypage', formData, {
-      });
-
-      if (!response.ok) throw new Error('Profile update failed');
-
-      const updatedData = await response.json();
-      setUsername(updatedData.userName || username);
-      if (profileImage) setProfileImage(URL.createObjectURL(profileImage));
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Error updating profile:', err);
-    }
-  };
-
-  const handleEditClick = () => {
-    setIsEditing((prev) => !prev);
-  };
 
   const handleMenuClick = (path, pageName) => {
     setMenuOpen(false);
@@ -62,6 +38,33 @@ const MyProfile = ({ userId }) => {
     else if (path.includes('myquestions')) setCurrentPage('내가 푼 문제들');
     else if (path.includes('mystudies')) setCurrentPage('스터디 관리');
   }, [location]);
+
+  const handleEditClick = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  const handleSave = async () => {
+    try {
+      const token = getCookie('accessToken');
+      const formData = new FormData();
+      if (username) formData.append('newUserName', username);
+      if (profileImage) formData.append('file', profileImage);
+      await api.patch(
+        `/mypage`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+    }
+  };
 
   const handleOutsideClick = (event) => {
     if (
@@ -80,11 +83,11 @@ const MyProfile = ({ userId }) => {
     };
   }, [menuOpen]);
 
-  if (!userInfo) return <div>Loading...</div>;
-  if (error) return <div>Error fetching user data</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching user data</div>;
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex items-center mb-8 justify-between">
         <div className="flex items-center">
           {userInfo.profileImage ? (
@@ -97,11 +100,9 @@ const MyProfile = ({ userId }) => {
             <div className="w-10 h-10 rounded-full bg-black mr-4" />
           )}
           <div className="text-l font-semibold">{userInfo.userName}</div>
-          {logInUserId.toString() === userInfo.userId.toString() && (
-            <button className="ml-2 text-blue-500" onClick={handleEditClick}>
-              {isEditing ? '취소' : '수정'}
-            </button>
-          )}
+          <button className="ml-2 text-blue-500" onClick={handleEditClick}>
+            {isEditing ? '취소' : '수정'}
+          </button>
         </div>
 
         <div className="relative mr-20 flex items-center" ref={menuRef}>
@@ -148,14 +149,15 @@ const MyProfile = ({ userId }) => {
           )}
         </div>
       </div>
+
       {isEditing && (
         <div className="mb-4">
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="이름을 입력하세요"
             className="border border-gray-300 p-2 w-full mb-2"
+            placeholder="이름을 입력하세요"
           />
           <input
             type="file"
@@ -174,4 +176,4 @@ const MyProfile = ({ userId }) => {
   );
 };
 
-export default MyProfile;
+export default MyProfileMe;
