@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import BookCard from '../ui/BookCard';
-import { getCookie } from '../../utils/cookieUtils';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import api from '../../api/api';
+import React, { useEffect, useState } from "react";
+import BookCard from "../ui/BookCard";
+import { getCookie } from "../../utils/cookieUtils";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import api from "../../api/api";
 
 const MypageBookmarkBooks = () => {
   const [books, setBooks] = useState([]);
@@ -14,12 +14,12 @@ const MypageBookmarkBooks = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const token = getCookie('accessToken');
-        const response = await api.get('/mypage/book/bookmarks', {
+        const token = getCookie("accessToken");
+        const response = await api.get("/mypage/book/bookmarks", {
           params: { page: currentPage },
           headers: {
             Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
+            Accept: "application/json",
           },
         });
 
@@ -51,7 +51,7 @@ const MypageBookmarkBooks = () => {
           <div key={book.id} className="flex h-full">
             <BookCard
               title={book.title}
-              author={book.username}
+              username={book.username}
               bookmarkCount={book.bookmarkCount}
               category={book.category}
             />
@@ -72,8 +72,8 @@ const MypageBookmarkBooks = () => {
             onClick={() => handlePageChange(index)}
             className={`mx-1 ${
               index === currentPage
-                ? 'font-bold text-blue-400'
-                : 'text-gray-500'
+                ? "font-bold text-blue-400"
+                : "text-gray-500"
             }`}
           >
             {index + 1}
