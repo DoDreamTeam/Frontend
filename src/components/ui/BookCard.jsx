@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
-import BookmarkButton from "./BookmarkButton";
+import { FaBookmark } from "react-icons/fa";
 import api from "../../api/api";
 import defaultProfile from "../../assets/default_profile.jpg";
+import BookmarkButton from "./BookmarkButton";
 
 const BookCard = ({
   id,
@@ -11,27 +12,12 @@ const BookCard = ({
   userId,
   username,
   profileImage,
-  bookmarkCount: initialBookmarkCount,
+  bookmarkCount,
   category,
+  isBookmarked,
+  onBookmarkToggle,
 }) => {
   const navigate = useNavigate();
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [count, setCount] = useState(initialBookmarkCount);
-
-  useEffect(() => {
-    const fetchBookmarkStatus = async () => {
-      const response = await api.get(`/books/${id}`);
-      setIsBookmarked(response.data.isBookmarked);
-      setCount(response.data.bookmarkCount);
-    };
-
-    fetchBookmarkStatus();
-  }, [id]);
-
-  const toggleBookmark = (deleted) => {
-    setIsBookmarked((prev) => !prev);
-    setCount((prev) => (deleted ? prev - 1 : prev + 1));
-  };
 
   return (
     <div className="border border-black shadow-lg rounded-lg p-4 flex flex-col h-60 w-60 justify-between">
@@ -43,12 +29,15 @@ const BookCard = ({
         >
           {categoryNames[category] || category}
         </div>
-        <BookmarkButton
-          isBookmarked={isBookmarked}
-          bookmarkCount={count}
-          onToggleBookmark={toggleBookmark}
-          bookId={id}
-        />
+        <div className="flex items-center">
+          <BookmarkButton
+            bookId={id}
+            isBookmarked={isBookmarked}
+            onBookmarkToggle={onBookmarkToggle}
+            bookOwnerName={username}
+          />
+          <div className="ml-1">{bookmarkCount}</div>
+        </div>
       </div>
       {/* 문제집 제목 */}
       <div

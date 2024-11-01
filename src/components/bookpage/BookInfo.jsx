@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../../api/api";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { useNavigate } from "react-router-dom";
-import BookmarkButton from "../ui/BookmarkButton";
 import { useUser } from "../../context/UserProvider";
+import { FaBookmark } from "react-icons/fa";
+import { MdEdit, MdDelete } from "react-icons/md";
+import BookmarkButton from "../ui/BookmarkButton";
 
-const BookInfo = ({ bookId }) => {
+const BookInfo = ({ bookId, onBookmarkToggle }) => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [bookmarkCount, setBookmarkCount] = useState(0);
 
   const getBookInfo = async () => {
     const response = await api.get(`/books/${bookId}`);
@@ -22,22 +22,10 @@ const BookInfo = ({ bookId }) => {
     queryFn: getBookInfo,
   });
 
-  useEffect(() => {
-    if (data) {
-      setIsBookmarked(data.isBookmarked); // 초기값 설정
-      setBookmarkCount(data.bookmarkCount); // 초기 북마크 수 설정
-    }
-  }, [data]);
-
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const { title, username, userProfile, userId } = data;
-
-  const toggleBookmark = (deleted) => {
-    setIsBookmarked((prev) => !prev); // 북마크 상태 토글
-    setBookmarkCount((prev) => (deleted ? prev - 1 : prev + 1)); // deleted가 true면 -1, 아니면 +1
-  };
+  const { title, username, userProfile, userId, bookmarked } = data;
 
   return (
     <div className="flex justify-between items-start w-full mb-16">
@@ -46,10 +34,10 @@ const BookInfo = ({ bookId }) => {
           <div className="mr-2 text-3xl font-semibold">{title}</div>
           {userInfo?.userName !== username && (
             <BookmarkButton
-              isBookmarked={isBookmarked}
-              bookmarkCount={bookmarkCount}
-              onToggleBookmark={toggleBookmark}
               bookId={bookId}
+              isBookmarked={bookmarked}
+              onBookmarkToggle={onBookmarkToggle}
+              bookOwnerName={username}
             />
           )}
           {userInfo?.userName === username && (
