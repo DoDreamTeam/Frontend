@@ -86,6 +86,7 @@ const BookList = ({ searchResults }) => {
               category={book.category}
               id={book.id}
               profileImage={book.userProfile}
+              isBookmarked={book.bookmarked}
             />
           ))
         ) : (
