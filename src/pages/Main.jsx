@@ -5,7 +5,6 @@ import BestBook from "../components/main/BestBook";
 import BestStudy from "../components/main/BestStudy";
 
 const Main = () => {
-  console.log("a");
   return (
     <div className="flex flex-col items-center w-full">
       {/* 배너 */}
