@@ -19,6 +19,7 @@ const MyProfileMe = () => {
   const [profileImage, setProfileImage] = useState(null);
   const menuRef = useRef(null);
 
+
   useEffect(() => {
     if (userInfo) {
       setUsername(userInfo.userName);
@@ -106,6 +107,7 @@ const MyProfileMe = () => {
         </div>
 
         <div className="relative mr-20 flex items-center" ref={menuRef}>
+
           <div
             className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
             onClick={() => setMenuOpen((prev) => !prev)}

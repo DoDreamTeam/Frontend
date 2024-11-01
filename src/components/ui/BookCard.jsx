@@ -1,16 +1,23 @@
-import React, { useState } from "react";
-import { FaBookmark } from "react-icons/fa";
-import defaultProfile from "../../assets/default_profile.jpg";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
+import { FaBookmark } from "react-icons/fa";
+import api from "../../api/api";
+import defaultProfile from "../../assets/default_profile.jpg";
+import BookmarkButton from "./BookmarkButton";
 
-const BookCard = ({ id, title, username, bookmarkCount, category }) => {
+const BookCard = ({
+  id,
+  title,
+  userId,
+  username,
+  profileImage,
+  bookmarkCount,
+  category,
+  isBookmarked,
+  onBookmarkToggle,
+}) => {
   const navigate = useNavigate();
-  const [isBookmarked, setIsBookmarked] = useState(false);
-
-  const toggleBookmark = () => {
-    setIsBookmarked((prev) => !prev);
-  };
 
   return (
     <div className="border border-black shadow-lg rounded-lg p-4 flex flex-col h-60 w-60 justify-between">
@@ -22,15 +29,14 @@ const BookCard = ({ id, title, username, bookmarkCount, category }) => {
         >
           {categoryNames[category] || category}
         </div>
-        <div className="flex items-center text-xs">
-          <button onClick={toggleBookmark}>
-            {isBookmarked ? (
-              <FaBookmark className="text-blue-500 mr-1" />
-            ) : (
-              <FaBookmark className="text-gray-500 mr-1" />
-            )}
-          </button>
-          <span className="text-sm text-gray-500">{bookmarkCount}</span>
+        <div className="flex items-center">
+          <BookmarkButton
+            bookId={id}
+            isBookmarked={isBookmarked}
+            onBookmarkToggle={onBookmarkToggle}
+            bookOwnerName={username}
+          />
+          <div className="ml-1">{bookmarkCount}</div>
         </div>
       </div>
       {/* 문제집 제목 */}
@@ -43,11 +49,16 @@ const BookCard = ({ id, title, username, bookmarkCount, category }) => {
       {/* 작성자 및 프로필 사진 */}
       <div className="flex items-center text-sm text-gray-500 mt-auto">
         <img
-          src={defaultProfile}
+          src={profileImage || defaultProfile}
           alt="profile"
           className="h-6 w-6 rounded-full mr-2"
         />
-        <span>{username}</span>
+        <span
+          className="hover:underline cursor-pointer"
+          onClick={() => navigate(`/mypage/${userId}`)}
+        >
+          {username}
+        </span>
       </div>
     </div>
   );

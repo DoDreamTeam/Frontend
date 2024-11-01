@@ -2,6 +2,7 @@ import React from 'react';
 import MyProfileMe from '../components/mypage/MyProfileMe';
 import MyAnswer from '../components/mypage/MyAnswers';
 
+
 const MyQuestions = () => {
   return (
     <div className="flex flex-col items-center w-full">

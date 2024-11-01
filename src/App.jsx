@@ -21,10 +21,10 @@ import {
   StudyPage,
   StudyQuestionPage,
   SubmitPage,
-} from './pages';
-import Layout from './components/layouts/Layout';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/authentication/ProtectedRoute';
+} from "./pages";
+import Layout from "./components/layouts/Layout";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/authentication/ProtectedRoute";
 
 const App = () => {
   return (

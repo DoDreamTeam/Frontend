@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CiLock, CiUnlock } from 'react-icons/ci';
 import api from '../../api/api';
 
+
 const BookLockToggle = ({ book, style }) => {
   const [isSecret, setIsSecret] = useState(book.secret);
 
