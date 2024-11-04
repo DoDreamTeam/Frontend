@@ -12,6 +12,7 @@ import CreateBook from "./CreateBook";
 import AddQuestion from "./AddQuestion";
 import EditQuestion from "./EditQuestion";
 import SubmitPage from "./SubmitPage";
+import AddToStudy from "./AddToStudy.jsx";
 
 import StudyPage from "./StudyPage";
 import StudyMain from "./StudyMain";
@@ -37,6 +38,7 @@ export {
   AddQuestion,
   EditQuestion,
   SubmitPage,
+  AddToStudy,
   StudyPage,
   StudyMain,
   StudyQuestionPage,
