@@ -1,6 +1,6 @@
 import React from "react";
-import CommentForm from "../bookmain/comment/BookCommentForm";
-import CommentList from "../bookmain/comment/CommentList";
+import CommentForm from "./comment/BookCommentForm";
+import CommentList from "./comment/CommentList";
 
 const BookComment = ({ bookId }) => {
   return (

@@ -47,7 +47,7 @@ const CommentList = ({ bookId }) => {
             />
           ))
         ) : (
-          <p>댓글이 없습니다.</p>
+          <p className="text-center m-5">댓글이 없습니다.</p>
         )}
       </div>
 
