@@ -55,8 +55,11 @@ const SolveQuestionForm = ({ bookId, questionId }) => {
           onChange={handleAnswerChange}
           className="border border-gray-300 rounded-md p-2 pr-10 w-full h-48 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-xs resize-none"
         />
-        <div className="text-right text-gray-500 text-sm">
+        <div className="text-right text-gray-500 text-xs">
           {maxAnswerLength - answer.length}자 남음
+        </div>
+        <div className="text-left text-gray-500 text-sm">
+          *아예 모르는 경우에는 그냥 [제출] 버튼을 누를 수 있습니다.
         </div>
       </div>
 
