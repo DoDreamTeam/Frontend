@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import {
   AddQuestion,
+  AddToStudy,
   BookMain,
   BookPageNoQuestion,
   BookPageWithQuestion,
@@ -74,6 +75,10 @@ const App = () => {
           <Route
             path="/book/:bookId/questions/:questionId/submit/:id"
             element={<ProtectedRoute element={<SubmitPage />} isMemberOnly />}
+          />
+          <Route
+            path="/book/:bookId/questions/:questionId/submit/:id/add"
+            element={<ProtectedRoute element={<AddToStudy />} isMemberOnly />}
           />
           <Route
             path="/study/create"
