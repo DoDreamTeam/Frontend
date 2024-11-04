@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import BookCard from '../ui/BookCard';
-import { getCookie } from '../../utils/cookieUtils';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import api from '../../api/api';
 
@@ -18,18 +17,13 @@ const MypageBooks = ({ userId }) => {
         return;
       }
       try {
-        const token = getCookie('accessToken');
         const response = await api.get(`/mypage/books/${userId}`, {
           params: { page: currentPage },
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-          },
         });
 
         setBooks(response.data.content);
-        setTotalPages(response.data.totalPages);
-        setTotalBooksCount(response.data.totalElements);
+        setTotalPages(response.data.page.totalPages);
+        setTotalBooksCount(response.data.page.totalElements);
       } catch (err) {
         setError(err);
         console.error(err);
