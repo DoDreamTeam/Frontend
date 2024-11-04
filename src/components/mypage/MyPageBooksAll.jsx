@@ -4,6 +4,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import BookLockToggle from './BookLockToggle';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
+import useModal from '../../hooks/useModal';
 
 const MypageBooksAll = () => {
   const [books, setBooks] = useState([]);
@@ -11,6 +12,8 @@ const MypageBooksAll = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalBooksCount, setTotalBooksCount] = useState(0);
   const navigate = useNavigate();
+  const { openModal, closeModal, Modal } = useModal();
+  const [selectedBookId, setSelectedBookId] = useState(null);
 
   useEffect(() => {
     fetchBooks();
@@ -37,13 +40,11 @@ const MypageBooksAll = () => {
     navigate('/book/create');
   };
 
-  const handleDeleteBook = async (id) => {
+  const handleDeleteBook = async () => {
     try {
-      await api.delete(`/books/${id}`, {});
-
+      await api.delete(`/books/${selectedBookId}`, {});
       await fetchBooks();
-
-      setTotalBooksCount((prevCount) => prevCount - 1);
+      closeModal();
     } catch (err) {
       console.error(err);
     }
@@ -67,13 +68,20 @@ const MypageBooksAll = () => {
           <div key={book.id} className="flex flex-col relative h-full">
             <BookCard
               title={book.title}
-              author={book.username}
+              userId={book.userId}
+              username={book.username}
               bookmarkCount={book.bookmarkCount}
+              id={book.id}
+              profileImage={book.userProfile}
               category={book.category}
+              isBookmarked={book.bookmarked}
             />
             <div className="flex items-center absolute bottom-5 right-2">
               <button
-                onClick={() => handleDeleteBook(book.id)}
+                onClick={() => {
+                  setSelectedBookId(book.id);
+                  openModal();
+                }}
                 className="bg-red-500 text-white text-xs py-1 px-2 rounded ml-2"
               >
                 삭제
@@ -112,6 +120,27 @@ const MypageBooksAll = () => {
           <FaChevronRight className="text-gray-500 text-sm" />
         </button>
       </div>
+
+      {/* 삭제 모달 */}
+      <Modal style="w-120 text-center">
+        <div className="text-2xl font-semibold m-6">
+          정말 문제집을 삭제하시겠습니까?
+        </div>
+        <div className="flex justify-around mt-4 w-full">
+          <button
+            className="w-3/4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 m-4"
+            onClick={handleDeleteBook}
+          >
+            삭제
+          </button>
+          <button
+            className="w-3/4 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-400 m-4"
+            onClick={closeModal}
+          >
+            취소
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };

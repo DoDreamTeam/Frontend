@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 
 const MyBookCommentLike = () => {
@@ -63,11 +64,12 @@ const MyBookCommentLike = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="text-xl font-semibold mb-7">
-        {' '}
-        내가 작성한 댓글과 좋아요{' '}
+        내가 작성한 댓글과 좋아요
       </div>
       <div className="flex items-center mb-4 text-gray-500">
         <button
@@ -88,22 +90,37 @@ const MyBookCommentLike = () => {
         </button>
       </div>
       <div className="flex flex-col gap-4">
-        {(showComments ? comments : likes).map((item, index) => (
-          <div
-            key={item.id || item.commentId}
-            className="flex justify-between p-2"
-          >
-            <div className="mr-8 ml-7">
-              {showComments
-                ? currentCommentPage * itemsPerPage + index + 1
-                : currentLikePage * itemsPerPage + index + 1}
-            </div>
-            <div className="flex-grow mx-12">{item.comment}</div>
-            <div className="mr-8">
-              {new Date(item.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-        ))}
+        {showComments
+          ? comments.map((item, index) => (
+              <div
+                key={item.id}
+                className="flex justify-between p-2 cursor-pointer"
+                onClick={() => navigate(`/book/${item.bookId}/questions`)} // 댓글 클릭 시 해당 책 페이지로 이동
+              >
+                <div className="mr-8 ml-7">
+                  {currentCommentPage * itemsPerPage + index + 1}
+                </div>
+                <div className="flex-grow mx-12">{item.comment}</div>
+                <div className="mr-8">
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            ))
+          : likes.map((item, index) => (
+              <div
+                key={item.commentId}
+                className="flex justify-between p-2 cursor-pointer"
+                onClick={() => navigate(`/book/${item.bookId}/questions`)} // 좋아요 클릭 시 해당 책 페이지로 이동
+              >
+                <div className="mr-8 ml-7">
+                  {currentLikePage * itemsPerPage + index + 1}
+                </div>
+                <div className="flex-grow mx-12">{item.comment}</div>
+                <div className="mr-8">
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            ))}
       </div>
 
       <div className="flex justify-center mt-8 mb-10">
