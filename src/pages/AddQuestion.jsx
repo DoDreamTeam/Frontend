@@ -1,5 +1,5 @@
 import React from "react";
-import QuestionForm from "../components/question/QuestionForm";
+import QuestionForm from "../components/question/AddQuestionForm";
 import { useParams } from "react-router-dom";
 
 const AddQuestion = () => {
