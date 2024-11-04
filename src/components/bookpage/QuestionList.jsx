@@ -73,11 +73,9 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
       const response = await api.delete(
         `/books/${bookId}/questions/${selectedQuestionId}`
       );
-      if (response.status === 200) {
+      if (response.status === 204) {
+        // 질문 삭제 후 페이지 새로고침
         window.location.reload();
-        queryClient.invalidateQueries(["questions", bookId]); // 해당 문제집의 질문 리스트를 무효화
-        closeModal();
-        refetch(); // 리스트 리패치
       }
     } catch (error) {
       console.error("Delete question ERROR: ", error);
