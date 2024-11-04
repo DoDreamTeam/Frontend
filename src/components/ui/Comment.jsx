@@ -3,7 +3,7 @@ import { FaHeart } from "react-icons/fa";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { formatDate } from "../../utils/formatDateUtils";
 import { useNavigate } from "react-router-dom";
-import LikeButton from "./LikeButton";
+import LikeButton from "../bookmain/comment/LikeButton";
 
 const Comment = ({
   bookId,
