@@ -2,6 +2,7 @@ import React from "react";
 import BookInfo from "../components/bookpage/BookInfo";
 import { useParams } from "react-router-dom";
 import QuestionList from "../components/bookpage/QuestionList";
+import BookComment from "../components/bookpage/BookComment";
 
 const BookPageWithQuestion = () => {
   const { id } = useParams();
@@ -12,6 +13,9 @@ const BookPageWithQuestion = () => {
 
       {/* 문제 리스트 */}
       <QuestionList bookId={id} />
+
+      {/* 문제집 댓글 */}
+      <BookComment bookId={id} />
     </div>
   );
 };

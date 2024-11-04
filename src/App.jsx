@@ -7,6 +7,7 @@ import {
   BookPageWithQuestion,
   CreateBook,
   CreateStudy,
+  EditBook,
   EditQuestion,
   Main,
   MainSearch,
@@ -57,6 +58,10 @@ const App = () => {
             element={
               <ProtectedRoute element={<BookPageNoQuestion />} isMemberOnly />
             }
+          />
+          <Route
+            path="/book/:id/edit"
+            element={<ProtectedRoute element={<EditBook />} isMemberOnly />}
           />
           <Route
             path="/book/:id/questions/add"

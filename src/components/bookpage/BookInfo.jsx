@@ -4,13 +4,16 @@ import api from "../../api/api";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserProvider";
-import { FaBookmark } from "react-icons/fa";
 import { MdEdit, MdDelete } from "react-icons/md";
 import BookmarkButton from "../ui/BookmarkButton";
+import useModal from "../../hooks/useModal";
+import useAlert from "../../hooks/useAlert";
 
 const BookInfo = ({ bookId, onBookmarkToggle }) => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
+  const { openModal, closeModal, Modal } = useModal();
+  const { showAlert, Alert } = useAlert();
 
   const getBookInfo = async () => {
     const response = await api.get(`/books/${bookId}`);
@@ -26,6 +29,20 @@ const BookInfo = ({ bookId, onBookmarkToggle }) => {
   if (error) return <p>Error: {error.message}</p>;
 
   const { title, username, userProfile, userId, bookmarked } = data;
+
+  // 문제집 삭제
+  const handleDelete = async () => {
+    try {
+      const response = await api.delete(`/books/${bookId}`);
+      if (response.status === 204) {
+        navigate("/book");
+        closeModal();
+        showAlert("정상적으로 문제집이 삭제되었습니다.");
+      }
+    } catch (error) {
+      console.error("Delete Book Error: ", error);
+    }
+  };
 
   return (
     <div className="flex justify-between items-start w-full mb-16">
@@ -43,10 +60,13 @@ const BookInfo = ({ bookId, onBookmarkToggle }) => {
           {userInfo?.userName === username && (
             <div className="flex justify-center mt-2">
               <button className="mx-1">
-                <MdEdit className="hover:text-blue-400" />
+                <MdEdit
+                  className="hover:text-blue-400"
+                  onClick={() => navigate(`/book/${bookId}/edit`)}
+                />
               </button>
               <button className="mx-1">
-                <MdDelete className="hover:text-blue-400" />
+                <MdDelete className="hover:text-blue-400" onClick={openModal} />
               </button>
             </div>
           )}
@@ -75,6 +95,33 @@ const BookInfo = ({ bookId, onBookmarkToggle }) => {
           </button>
         </div>
       )}
+
+      {/* 삭제 모달 */}
+      <Modal style="w-120 text-center">
+        <div className="text-2xl font-semibold m-6">
+          정말 문제집을 삭제하시겠습니까?
+        </div>
+        <div className="text-xs text-gray-500">
+          삭제하면 더 이상 이 문제집을 풀던 사람들이 이용할 수 없습니다.
+        </div>
+        <div className="flex justify-around mt-4 w-full">
+          <button
+            className="w-3/4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 m-4"
+            onClick={handleDelete}
+          >
+            삭제
+          </button>
+          <button
+            className="w-3/4 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-400 m-4"
+            onClick={closeModal}
+          >
+            취소
+          </button>
+        </div>
+      </Modal>
+
+      {/* 삭제 확인 alert */}
+      <Alert />
     </div>
   );
 };
