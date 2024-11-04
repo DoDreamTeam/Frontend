@@ -1,8 +1,16 @@
-import React from "react";
+import React from 'react';
+import StudyQuestion from '../components/study/StudyQuestion';
+import StudyQuestionComment from '../components/study/StudyQuestionComment';
+import { useParams } from 'react-router-dom';
 
 const StudyQuestionPage = () => {
+  const { userAnswerId } = useParams();
+
   return (
-    <div>스터디방 내부 스터디 참여하는 사람의 답변 페이지 (답변 + 댓글)</div>
+    <div className="w-full max-w-screen-lg mb-6">
+      <StudyQuestion />
+      <StudyQuestionComment userAnswerId={userAnswerId} />
+    </div>
   );
 };
 
