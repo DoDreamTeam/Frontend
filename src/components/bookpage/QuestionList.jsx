@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import api from "../../api/api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import usePagination from "../../hooks/usePagination";
 import {
   evaluationStyles,
@@ -11,14 +11,21 @@ import { formatDate } from "../../utils/formatDateUtils";
 import { useNavigate } from "react-router-dom";
 import SearchInput from "../ui/SearchInput";
 import { useUser } from "../../context/UserProvider";
+import { MdEdit, MdDelete } from "react-icons/md";
+import useModal from "../../hooks/useModal";
 
-const QuestionList = ({ bookId }) => {
+const QuestionList = ({ bookId, bookOwnerName }) => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { openModal, closeModal, Modal } = useModal();
+
   const { currentPage, setPage } = usePagination(0);
   const questionsPerPage = 5;
+
   const [excludeAnswered, setExcludeAnswered] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null); // 선택된 질문 ID
 
   const handleSearchKeyword = (e) => {
     setKeyword(e.target.value);
@@ -58,6 +65,21 @@ const QuestionList = ({ bookId }) => {
     const buttonStyle = evaluationStyles[evaluation.evaluationType];
 
     return <button className={buttonStyle}>{buttonLabel}</button>;
+  };
+
+  // 문제 삭제
+  const handleDelete = async () => {
+    try {
+      const response = await api.delete(
+        `/books/${bookId}/questions/${selectedQuestionId}`
+      );
+      if (response.status === 204) {
+        // 질문 삭제 후 페이지 새로고침
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Delete question ERROR: ", error);
+    }
   };
 
   return (
@@ -110,6 +132,31 @@ const QuestionList = ({ bookId }) => {
                   }
                 >
                   {question.question}
+                </div>
+                <div>
+                  {userInfo?.userName === bookOwnerName && (
+                    <div className="flex justify-center mt-2">
+                      <button className="mx-1">
+                        <MdEdit
+                          className="hover:text-blue-400"
+                          onClick={() =>
+                            navigate(
+                              `/book/${bookId}/questions/${question.id}/edit`
+                            )
+                          }
+                        />
+                      </button>
+                      <button className="mx-1">
+                        <MdDelete
+                          className="hover:text-blue-400"
+                          onClick={() => {
+                            setSelectedQuestionId(question.id); // 선택된 질문 ID 설정
+                            openModal();
+                          }}
+                        />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="ml-4 flex items-center">
                   <div
@@ -175,6 +222,27 @@ const QuestionList = ({ bookId }) => {
           <FaChevronRight className="text-gray-600 text-sm" />
         </button>
       </div>
+
+      {/* 삭제 모달 */}
+      <Modal style="w-120 text-center">
+        <div className="text-2xl font-semibold m-6">
+          정말 문제를 삭제하시겠습니까?
+        </div>
+        <div className="flex justify-around mt-4 w-full">
+          <button
+            className="w-3/4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 m-4"
+            onClick={handleDelete}
+          >
+            삭제
+          </button>
+          <button
+            className="w-3/4 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-400 m-4"
+            onClick={closeModal}
+          >
+            취소
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
