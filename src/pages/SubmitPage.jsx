@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
+import EvaluationModal from "../components/questionEvaluate/EvaluationModal";
+import useModal from "../hooks/useModal";
 
 const SubmitPage = () => {
   const { bookId, questionId, id } = useParams();
   const [submissionDetails, setSubmissionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { openModal, closeModal, Modal } = useModal(); // 수정
 
   useEffect(() => {
     const fetchSubmissionDetails = async () => {
@@ -78,10 +81,23 @@ const SubmitPage = () => {
       )}
 
       <div className="flex justify-center">
-        <button className="w-full border bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md">
+        <button
+          onClick={openModal}
+          className="w-full border bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md"
+        >
           문제 평가하기
         </button>
       </div>
+
+      {/* Modal을 사용하여 EvaluationModal을 렌더링 */}
+      <Modal>
+        <EvaluationModal
+          bookId={bookId}
+          questionId={questionId}
+          answerId={id}
+          onClose={closeModal}
+        />
+      </Modal>
     </div>
   );
 };
