@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import BookCard from '../ui/BookCard';
-import { getCookie } from '../../utils/cookieUtils';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import BookLockToggle from './BookLockToggle';
 import { useNavigate } from 'react-router-dom';
@@ -19,16 +18,12 @@ const MypageBooksAll = () => {
 
   const fetchBooks = async () => {
     try {
-      const token = getCookie('accessToken');
       const response = await api.get('/mypage/book/books', {
         params: { page: currentPage },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
       setBooks(response.data.content);
-      setTotalPages(response.data.totalPages);
-      setTotalBooksCount(response.data.totalElements);
+      setTotalPages(response.data.page.totalPages);
+      setTotalBooksCount(response.data.page.totalElements);
     } catch (err) {
       console.error(err);
     }
@@ -44,12 +39,7 @@ const MypageBooksAll = () => {
 
   const handleDeleteBook = async (id) => {
     try {
-      const token = getCookie('accessToken');
-      await api.delete(`/books/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/books/${id}`, {});
 
       await fetchBooks();
 
