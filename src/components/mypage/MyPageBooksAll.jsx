@@ -58,7 +58,7 @@ const MypageBooksAll = () => {
         </div>
         <button
           onClick={handleCreateBook}
-          className="bg-gray-200 text-black py-1 px-3 rounded-full ml-5"
+          className="bg-[#ACC7FF] text-white px-2 py-2 rounded-lg text-sm w-[12%] hover:bg-[#6686FA]"
         >
           문제집 만들기
         </button>
