@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
+import { formatDate } from '../../utils/formatDateUtils';
 
 const MyBookCommentLike = () => {
   const [comments, setComments] = useState([]);
@@ -74,7 +75,7 @@ const MyBookCommentLike = () => {
       <div className="flex items-center mb-4 text-gray-500">
         <button
           onClick={() => handleTabChange(true)}
-          className={`p-2 ${
+          className={`p-2 transition-all duration-200 hover:bg-gray-200 rounded ${
             showComments ? 'font-bold text-black underline' : ''
           }`}
         >
@@ -82,7 +83,7 @@ const MyBookCommentLike = () => {
         </button>
         <button
           onClick={() => handleTabChange(false)}
-          className={`p-2 ${
+          className={`p-2 transition-all duration-200 hover:bg-gray-200 rounded ${
             !showComments ? 'font-bold text-black underline' : ''
           }`}
         >
@@ -95,14 +96,16 @@ const MyBookCommentLike = () => {
               <div
                 key={item.id}
                 className="flex justify-between p-2 cursor-pointer"
-                onClick={() => navigate(`/book/${item.bookId}/questions`)} // 댓글 클릭 시 해당 책 페이지로 이동
+                onClick={() => navigate(`/book/${item.bookId}/questions`)}
               >
                 <div className="mr-8 ml-7">
                   {currentCommentPage * itemsPerPage + index + 1}
                 </div>
-                <div className="flex-grow mx-12">{item.comment}</div>
-                <div className="mr-8">
-                  {new Date(item.createdAt).toLocaleDateString()}
+                <div className="flex-grow mx-12 hover:underline">
+                  {item.comment}
+                </div>
+                <div className="mr-8 flex items-center justify-center">
+                  {formatDate(item.createdAt)}
                 </div>
               </div>
             ))
@@ -110,14 +113,16 @@ const MyBookCommentLike = () => {
               <div
                 key={item.commentId}
                 className="flex justify-between p-2 cursor-pointer"
-                onClick={() => navigate(`/book/${item.bookId}/questions`)} // 좋아요 클릭 시 해당 책 페이지로 이동
+                onClick={() => navigate(`/book/${item.bookId}/questions`)}
               >
                 <div className="mr-8 ml-7">
                   {currentLikePage * itemsPerPage + index + 1}
                 </div>
-                <div className="flex-grow mx-12">{item.comment}</div>
-                <div className="mr-8">
-                  {new Date(item.createdAt).toLocaleDateString()}
+                <div className="flex-grow mx-12 hover:underline">
+                  {item.comment}
+                </div>
+                <div className="mr-8 flex items-center justify-center">
+                  {formatDate(item.createdAt)}
                 </div>
               </div>
             ))}
@@ -142,7 +147,7 @@ const MyBookCommentLike = () => {
           <button
             key={index}
             onClick={() => handlePageChange(index)}
-            className={`mx-1 ${
+            className={`mx-1 transition-all duration-200 ${
               showComments
                 ? index === currentCommentPage
                   ? 'font-bold text-blue-400'

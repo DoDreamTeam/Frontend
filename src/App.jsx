@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import {
   AddQuestion,
   AddToStudy,
@@ -23,10 +23,10 @@ import {
   StudyPage,
   StudyQuestionPage,
   SubmitPage,
-} from "./pages";
-import Layout from "./components/layouts/Layout";
-import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/authentication/ProtectedRoute";
+} from './pages';
+import Layout from './components/layouts/Layout';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/authentication/ProtectedRoute';
 
 const App = () => {
   return (
@@ -89,7 +89,7 @@ const App = () => {
             element={<ProtectedRoute element={<StudyPage />} isMemberOnly />}
           />
           <Route
-            path="/study/:studyId/:memberId"
+            path="/study/:studyId/:userAnswerId"
             element={
               <ProtectedRoute element={<StudyQuestionPage />} isMemberOnly />
             }

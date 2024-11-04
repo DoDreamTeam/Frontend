@@ -2,6 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { FaChevronLeft, FaChevronRight, FaCaretDown } from 'react-icons/fa';
 import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
+import {
+  evaluationStyles,
+  evaluationMessages,
+} from '../../utils/evaluationUtils';
+import { formatDate } from '../../utils/formatDateUtils'; // 이미 있는 formatDate 가져오기
 
 const EVALUATION_OPTIONS = {
   전체: '전체',
@@ -82,19 +87,6 @@ const MyAnswer = () => {
     };
   }, [menuOpen]);
 
-  const getEvaluationLabel = (evaluation) => {
-    switch (evaluation) {
-      case 'EVALUATION_DONE':
-        return '이해완료';
-      case 'EVALUATION_SOSO':
-        return '애매해요';
-      case 'EVALUATION_UNKNOWN':
-        return '모르겠어요';
-      default:
-        return evaluation;
-    }
-  };
-
   return (
     <div>
       <div className="flex items-center justify-between mb-8 mt-8">
@@ -113,28 +105,15 @@ const MyAnswer = () => {
           {menuOpen && (
             <div className="absolute right-0 top-10 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <ul className="py-1">
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleMenuClick(EVALUATION_OPTIONS.전체)}
-                >
-                  {EVALUATION_OPTIONS.전체}
-                </li>
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() =>
-                    handleMenuClick(EVALUATION_OPTIONS.EVALUATION_SOSO)
-                  }
-                >
-                  {EVALUATION_OPTIONS.EVALUATION_SOSO}
-                </li>
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() =>
-                    handleMenuClick(EVALUATION_OPTIONS.EVALUATION_UNKNOWN)
-                  }
-                >
-                  {EVALUATION_OPTIONS.EVALUATION_UNKNOWN}
-                </li>
+                {Object.values(EVALUATION_OPTIONS).map((option) => (
+                  <li
+                    key={option}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleMenuClick(option)}
+                  >
+                    {option}
+                  </li>
+                ))}
               </ul>
             </div>
           )}
@@ -159,11 +138,18 @@ const MyAnswer = () => {
             >
               {answer.title}
             </span>
-            <div className="mr-8 w-32">
-              {new Date(answer.createdAt).toLocaleDateString()}
+            <div className="mr-8 w-32 flex items-center justify-center text-gray-500 text-sm">
+              {formatDate(answer.createdAt)}
             </div>
-            <div className="mr-8 w-32 text-right">
-              {getEvaluationLabel(answer.evaluation)}
+            <div className="mr-8 w-32 text-center">
+              <span
+                className={`${
+                  evaluationStyles[answer.evaluation]
+                } inline-block`}
+                style={{ width: '80px', padding: '4px', textAlign: 'center' }}
+              >
+                {evaluationMessages[answer.evaluation]}
+              </span>
             </div>
           </div>
         ))}
