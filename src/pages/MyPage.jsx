@@ -1,7 +1,6 @@
 import React from 'react';
 import MyActivityCalendar from '../components/mypage/MyActiivityCalendar';
 import MyProfile from '../components/mypage/MyProfile';
-import { useUser } from '../context/UserProvider';
 import { useParams } from 'react-router-dom';
 import MypageBooks from '../components/mypage/MyPageBooks';
 

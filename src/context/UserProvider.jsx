@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { getCookie } from '../utils/cookieUtils';
 import { useQuery } from '@tanstack/react-query';
 import api from '../api/api';
@@ -7,9 +7,10 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const token = getCookie('accessToken');
+  const [userInfo, setUserInfo] = useState(null); // 사용자 정보를 상태로 관리
 
   const {
-    data: userInfo,
+    data: fetchedUserInfo,
     isLoading,
     isError,
   } = useQuery({
@@ -31,8 +32,14 @@ export const UserProvider = ({ children }) => {
     enabled: !!token,
   });
 
+  useEffect(() => {
+    if (fetchedUserInfo) {
+      setUserInfo(fetchedUserInfo);
+    }
+  }, [fetchedUserInfo]);
+
   return (
-    <UserContext.Provider value={{ userInfo, isLoading, isError }}>
+    <UserContext.Provider value={{ userInfo, setUserInfo, isLoading, isError }}>
       {children}
     </UserContext.Provider>
   );
