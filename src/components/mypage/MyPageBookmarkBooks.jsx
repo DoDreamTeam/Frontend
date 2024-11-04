@@ -44,10 +44,15 @@ const MypageBookmarkBooks = () => {
         {books.map((book) => (
           <div key={book.id} className="flex h-full">
             <BookCard
+              key={book.id}
               title={book.title}
-              author={book.username}
+              userId={book.userId}
+              username={book.username}
               bookmarkCount={book.bookmarkCount}
+              id={book.id}
+              profileImage={book.userProfile}
               category={book.category}
+              isBookmarked={book.bookmarked}
             />
           </div>
         ))}
