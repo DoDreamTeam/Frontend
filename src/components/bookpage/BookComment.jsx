@@ -5,7 +5,7 @@ import CommentList from "../bookmain/comment/CommentList";
 const BookComment = ({ bookId }) => {
   return (
     <div>
-      <CommentForm />
+      <CommentForm bookId={bookId} />
 
       <CommentList bookId={bookId} />
     </div>

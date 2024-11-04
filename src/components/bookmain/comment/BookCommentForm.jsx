@@ -1,9 +1,29 @@
 import React from "react";
 import CommentForm from "../../ui/CommentForm";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../../api/api";
 
-const BookCommentForm = () => {
-  const handleCommentSubmit = () => {
-    alert("댓글");
+const BookCommentForm = ({ bookId }) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (comment) => {
+      const response = await api.post(`/books/${bookId}/comments`, {
+        comment: comment,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      // 댓글 작성 성공 후 쿼리 무효화
+      queryClient.invalidateQueries(["comments", bookId]);
+    },
+    onError: () => {
+      console.log("COMMENT ERROR!");
+    },
+  });
+
+  const handleCommentSubmit = (comment) => {
+    mutation.mutate(comment); // 댓글 내용을 인자로 전달
   };
 
   return (
