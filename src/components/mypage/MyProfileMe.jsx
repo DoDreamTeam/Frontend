@@ -4,12 +4,13 @@ import { FaCaretDown } from 'react-icons/fa';
 import { getUserId } from './GetUserId';
 import { getCookie } from '../../utils/cookieUtils';
 import { useUser } from '../../context/UserProvider';
-import api from '../../api/api';
+import { FaEdit } from 'react-icons/fa';
+import { MdCancel } from 'react-icons/md';
 
 const MyProfileMe = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userInfo, isLoading, isError } = useUser();
+  const { userInfo, isLoading, isError, setUserInfo } = useUser();
   const userId = getUserId();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,7 +19,6 @@ const MyProfileMe = () => {
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const menuRef = useRef(null);
-
 
   useEffect(() => {
     if (userInfo) {
@@ -48,10 +48,17 @@ const MyProfileMe = () => {
     try {
       const token = getCookie('accessToken');
       const formData = new FormData();
-      if (username) formData.append('newUserName', username);
-      if (profileImage) formData.append('file', profileImage);
-      await api.patch(
-        `/mypage`,
+
+      if (username) {
+        formData.append('newUserName', username);
+      }
+
+      if (profileImage) {
+        formData.append('file', profileImage);
+      }
+
+      const response = await axios.patch(
+        `${import.meta.env.VITE_REST_SERVER}/mypage`,
         formData,
         {
           headers: {
@@ -61,9 +68,18 @@ const MyProfileMe = () => {
         }
       );
 
+      // 사용자 정보를 context에서 업데이트
+      setUserInfo({
+        ...userInfo,
+        userName: response.data.userName,
+        profileImage: response.data.profileImage,
+      });
+
       setIsEditing(false);
+      alert('프로필이 성공적으로 업데이트되었습니다.');
     } catch (err) {
       console.error('Error updating profile:', err);
+      alert('프로필 업데이트에 실패했습니다.');
     }
   };
 
@@ -91,7 +107,7 @@ const MyProfileMe = () => {
     <div className="relative">
       <div className="flex items-center mb-8 justify-between">
         <div className="flex items-center">
-          {userInfo.profileImage ? (
+          {userInfo && userInfo.profileImage ? (
             <img
               src={userInfo.profileImage}
               alt={`${userInfo.userName}'s profile`}
@@ -100,14 +116,19 @@ const MyProfileMe = () => {
           ) : (
             <div className="w-10 h-10 rounded-full bg-black mr-4" />
           )}
-          <div className="text-l font-semibold">{userInfo.userName}</div>
-          <button className="ml-2 text-blue-500" onClick={handleEditClick}>
-            {isEditing ? '취소' : '수정'}
+          <div className="text-l font-semibold">
+            {userInfo ? userInfo.userName : '이름 없음'}
+          </div>
+          <button className="ml-5 text-blue-500" onClick={handleEditClick}>
+            {isEditing ? (
+              <MdCancel size={25} color="black" />
+            ) : (
+              <FaEdit size={25} color="black" />
+            )}
           </button>
         </div>
 
         <div className="relative mr-20 flex items-center" ref={menuRef}>
-
           <div
             className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
             onClick={() => setMenuOpen((prev) => !prev)}

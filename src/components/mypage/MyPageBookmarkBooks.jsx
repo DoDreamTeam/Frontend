@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import BookCard from '../ui/BookCard';
-import { getCookie } from '../../utils/cookieUtils';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import api from '../../api/api';
 

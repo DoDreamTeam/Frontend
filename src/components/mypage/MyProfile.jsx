@@ -2,16 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
 import GetUser from './getUser';
-import { getUserId } from './GetUserId'; // 로그인 사용자 ID 가져오기
-import api from '../../api/api';
+import { getUserId } from './GetUserId'; // getUserId 가져오기
 
 const MyProfile = ({ userId }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userData: userInfo, error } = GetUser(userId);
-  const logInUserId = getUserId();
+  const logInUserId = getUserId(); // 로그인한 사용자 ID 가져오기
 
-  const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,33 +19,9 @@ const MyProfile = ({ userId }) => {
   useEffect(() => {
     if (userInfo) {
       setUsername(userInfo.userName);
+      setProfileImage(userInfo.profileImage);
     }
   }, [userInfo]);
-
-  const handleSave = async () => {
-    try {
-      const token = getCookie('accessToken');
-      const formData = new FormData();
-      if (username) formData.append('newUserName', username);
-      if (profileImage) formData.append('file', profileImage);
-
-      const response = await api.patch('/mypage', formData, {
-      });
-
-      if (!response.ok) throw new Error('Profile update failed');
-
-      const updatedData = await response.json();
-      setUsername(updatedData.userName || username);
-      if (profileImage) setProfileImage(URL.createObjectURL(profileImage));
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Error updating profile:', err);
-    }
-  };
-
-  const handleEditClick = () => {
-    setIsEditing((prev) => !prev);
-  };
 
   const handleMenuClick = (path, pageName) => {
     setMenuOpen(false);
@@ -87,89 +61,65 @@ const MyProfile = ({ userId }) => {
     <div>
       <div className="flex items-center mb-8 justify-between">
         <div className="flex items-center">
-          {userInfo.profileImage ? (
+          {profileImage ? (
             <img
-              src={userInfo.profileImage}
-              alt={`${userInfo.userName}'s profile`}
+              src={profileImage}
+              alt={`${username}'s profile`}
               className="w-10 h-10 rounded-full mr-4"
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-black mr-4" />
           )}
-          <div className="text-l font-semibold">{userInfo.userName}</div>
-          {logInUserId.toString() === userInfo.userId.toString() && (
-            <button className="ml-2 text-blue-500" onClick={handleEditClick}>
-              {isEditing ? '취소' : '수정'}
-            </button>
-          )}
+          <div className="text-l font-semibold">{username}</div>
         </div>
 
-        <div className="relative mr-20 flex items-center" ref={menuRef}>
-          <div
-            className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
-            onClick={() => setMenuOpen((prev) => !prev)}
-          >
-            <span className="mr-2">{currentPage}</span>
-            <FaCaretDown />
-          </div>
-          {menuOpen && (
-            <div className="absolute right-0 top-10 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-              <ul className="py-1">
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() =>
-                    handleMenuClick(`/mypage/${userId}`, '마이페이지')
-                  }
-                >
-                  마이페이지
-                </li>
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleMenuClick('/mybooks', '문제집 관리')}
-                >
-                  문제집 관리
-                </li>
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() =>
-                    handleMenuClick('/myquestions', '내가 푼 문제들')
-                  }
-                >
-                  내가 푼 문제들
-                </li>
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleMenuClick('/mystudies', '스터디 관리')}
-                >
-                  스터디 관리
-                </li>
-              </ul>
+        {/* 로그인한 사용자 ID와 현재 프로필의 ID가 같은 경우에만 메뉴 표시 */}
+        {logInUserId === userId && (
+          <div className="relative mr-20 flex items-center">
+            <div
+              className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              <span className="mr-2">{currentPage}</span>
+              <FaCaretDown />
             </div>
-          )}
-        </div>
+            {menuOpen && (
+              <div className="absolute right-0 top-10 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <ul className="py-1">
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() =>
+                      handleMenuClick(`/mypage/${userId}`, '마이페이지')
+                    }
+                  >
+                    마이페이지
+                  </li>
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleMenuClick('/mybooks', '문제집 관리')}
+                  >
+                    문제집 관리
+                  </li>
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() =>
+                      handleMenuClick('/myquestions', '내가 푼 문제들')
+                    }
+                  >
+                    내가 푼 문제들
+                  </li>
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleMenuClick('/mystudies', '스터디 관리')}
+                  >
+                    스터디 관리
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      {isEditing && (
-        <div className="mb-4">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="이름을 입력하세요"
-            className="border border-gray-300 p-2 w-full mb-2"
-          />
-          <input
-            type="file"
-            onChange={(e) => setProfileImage(e.target.files[0])}
-            className="border border-gray-300 p-2 w-full mb-2"
-          />
-          <button
-            onClick={handleSave}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            저장
-          </button>
-        </div>
-      )}
     </div>
   );
 };

@@ -16,7 +16,9 @@ const MyAnswer = () => {
   const [totalAnswersCount, setTotalAnswersCount] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [currentEvaluation, setCurrentEvaluation] = useState(EVALUATION_OPTIONS.전체);
+  const [currentEvaluation, setCurrentEvaluation] = useState(
+    EVALUATION_OPTIONS.전체
+  );
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
@@ -36,12 +38,10 @@ const MyAnswer = () => {
           currentEvaluation === EVALUATION_OPTIONS.EVALUATION_SOSO
             ? 'EVALUATION_SOSO'
             : 'EVALUATION_UNKNOWN';
-  
         response = await api.get(`mypage/book/answer/evaluation`, {
           params: { evaluation: evaluationParam, page: currentAnswerPage },
         });
       }
-  
       setAnswers(response.data.content);
       setTotalPagesAnswer(response.data.page.totalPages);
       setTotalAnswersCount(response.data.page.totalElements);
@@ -66,7 +66,11 @@ const MyAnswer = () => {
   };
 
   const handleOutsideClick = (event) => {
-    if (menuOpen && menuRef.current && !menuRef.current.contains(event.target)) {
+    if (
+      menuOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target)
+    ) {
       setMenuOpen(false);
     }
   };
@@ -117,13 +121,17 @@ const MyAnswer = () => {
                 </li>
                 <li
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleMenuClick(EVALUATION_OPTIONS.EVALUATION_SOSO)}
+                  onClick={() =>
+                    handleMenuClick(EVALUATION_OPTIONS.EVALUATION_SOSO)
+                  }
                 >
                   {EVALUATION_OPTIONS.EVALUATION_SOSO}
                 </li>
                 <li
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleMenuClick(EVALUATION_OPTIONS.EVALUATION_UNKNOWN)}
+                  onClick={() =>
+                    handleMenuClick(EVALUATION_OPTIONS.EVALUATION_UNKNOWN)
+                  }
                 >
                   {EVALUATION_OPTIONS.EVALUATION_UNKNOWN}
                 </li>
@@ -144,7 +152,9 @@ const MyAnswer = () => {
             </div>
             <span
               className="flex-grow mx-12 cursor-pointer hover:underline"
-              onClick={() => handleAnswerClick(answer.questionId, answer.bookId)}
+              onClick={() =>
+                handleAnswerClick(answer.questionId, answer.bookId)
+              }
               style={{ display: 'inline-block' }}
             >
               {answer.title}
@@ -163,7 +173,6 @@ const MyAnswer = () => {
         <button
           onClick={() => handlePageChange(currentAnswerPage - 1)}
           disabled={currentAnswerPage === 0}
-          className="mr-2"
         >
           <FaChevronLeft className="text-gray-500 text-sm" />
         </button>
@@ -183,7 +192,6 @@ const MyAnswer = () => {
         <button
           onClick={() => handlePageChange(currentAnswerPage + 1)}
           disabled={currentAnswerPage === totalPagesAnswer - 1}
-          className="ml-2"
         >
           <FaChevronRight className="text-gray-500 text-sm" />
         </button>

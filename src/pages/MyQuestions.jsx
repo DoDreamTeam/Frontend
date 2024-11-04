@@ -1,7 +1,6 @@
 import React from 'react';
 import MyProfileMe from '../components/mypage/MyProfileMe';
-import MyAnswer from '../components/mypage/MyAnswers';
-
+import MyAnswers from '../components/mypage/MyAnswers';
 
 const MyQuestions = () => {
   return (
@@ -9,8 +8,8 @@ const MyQuestions = () => {
       <div className="w-full max-w-screen-lg mb-6">
         <MyProfileMe />
       </div>
-      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
-        <MyAnswer />
+      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-300 pt-5">
+        <MyAnswers />
       </div>
     </div>
   );
