@@ -7,6 +7,7 @@ import {
   BookPageWithQuestion,
   CreateBook,
   CreateStudy,
+  EditBook,
   EditQuestion,
   Main,
   MainSearch,
@@ -21,10 +22,10 @@ import {
   StudyPage,
   StudyQuestionPage,
   SubmitPage,
-} from './pages';
-import Layout from './components/layouts/Layout';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/authentication/ProtectedRoute';
+} from "./pages";
+import Layout from "./components/layouts/Layout";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/authentication/ProtectedRoute";
 
 const App = () => {
   return (
@@ -57,6 +58,10 @@ const App = () => {
             element={
               <ProtectedRoute element={<BookPageNoQuestion />} isMemberOnly />
             }
+          />
+          <Route
+            path="/book/:id/edit"
+            element={<ProtectedRoute element={<EditBook />} isMemberOnly />}
           />
           <Route
             path="/book/:id/questions/add"

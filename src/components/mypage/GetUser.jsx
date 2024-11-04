@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getCookie } from '../../utils/cookieUtils';
-import api from '../../api/api'; // axios 설정된 api 모듈
+import api from '../../api/api';
 import { getUserId } from './GetUserId';
 
 const GetUser = (userId) => {
@@ -10,14 +10,7 @@ const GetUser = (userId) => {
 
   const fetchUserData = async () => {
     try {
-      const token = getCookie('accessToken');
-      const response = await api.get(`/mypage/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
-      });
-
+      const response = await api.get(`/mypage/${userId}`, {});
       setUserData(response.data);
     } catch (err) {
       setError(err);

@@ -38,12 +38,10 @@ const MyAnswer = () => {
           currentEvaluation === EVALUATION_OPTIONS.EVALUATION_SOSO
             ? 'EVALUATION_SOSO'
             : 'EVALUATION_UNKNOWN';
-
         response = await api.get(`mypage/book/answer/evaluation`, {
           params: { evaluation: evaluationParam, page: currentAnswerPage },
         });
       }
-
       setAnswers(response.data.content);
       setTotalPagesAnswer(response.data.page.totalPages);
       setTotalAnswersCount(response.data.page.totalElements);

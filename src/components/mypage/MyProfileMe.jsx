@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
 import { getUserId } from './GetUserId';
 import { getCookie } from '../../utils/cookieUtils';
-import axios from 'axios';
 import { useUser } from '../../context/UserProvider';
 import { FaEdit } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
@@ -19,6 +18,7 @@ const MyProfileMe = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -34,15 +34,10 @@ const MyProfileMe = () => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes('mypage')) {
-      setCurrentPage('마이페이지');
-    } else if (path.includes('mybooks')) {
-      setCurrentPage('문제집 관리');
-    } else if (path.includes('myquestions')) {
-      setCurrentPage('내가 푼 문제들');
-    } else if (path.includes('mystudies')) {
-      setCurrentPage('스터디 관리');
-    }
+    if (path.includes('mypage')) setCurrentPage('마이페이지');
+    else if (path.includes('mybooks')) setCurrentPage('문제집 관리');
+    else if (path.includes('myquestions')) setCurrentPage('내가 푼 문제들');
+    else if (path.includes('mystudies')) setCurrentPage('스터디 관리');
   }, [location]);
 
   const handleEditClick = () => {
@@ -88,6 +83,23 @@ const MyProfileMe = () => {
     }
   };
 
+  const handleOutsideClick = (event) => {
+    if (
+      menuOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target)
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [menuOpen]);
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching user data</div>;
 
@@ -116,7 +128,7 @@ const MyProfileMe = () => {
           </button>
         </div>
 
-        <div className="relative mr-20 flex items-center">
+        <div className="relative mr-20 flex items-center" ref={menuRef}>
           <div
             className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
             onClick={() => setMenuOpen((prev) => !prev)}

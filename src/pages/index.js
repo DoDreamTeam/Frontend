@@ -6,6 +6,7 @@ import OAuthVertification from "./OAuthVertification.jsx";
 import BookMain from "./BookMain";
 import BookPageNoQuestion from "./BookPageNoQuestion";
 import BookPageWithQuestion from "./BookPageWithQuestion";
+import EditBook from "./EditBook.jsx";
 import QuestionPage from "./QuestionPage.jsx";
 import CreateBook from "./CreateBook";
 import AddQuestion from "./AddQuestion";
@@ -30,6 +31,7 @@ export {
   BookMain,
   BookPageNoQuestion,
   BookPageWithQuestion,
+  EditBook,
   QuestionPage,
   CreateBook,
   AddQuestion,

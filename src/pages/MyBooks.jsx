@@ -10,13 +10,13 @@ const MyBooks = () => {
       <div className="w-full max-w-screen-lg mb-6">
         <MyProfileMe />
       </div>
-      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-300 pt-5">
+      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
         <MypageBookmarkBooks />
       </div>
-      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-300 pt-5">
+      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
         <MypageBooksAll />
       </div>
-      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-300 pt-5">
+      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
         <MyBookCommentLike />
       </div>
     </div>

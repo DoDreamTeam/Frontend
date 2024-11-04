@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
 import GetUser from './getUser';
@@ -14,6 +14,7 @@ const MyProfile = ({ userId }) => {
   const [profileImage, setProfileImage] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
+  const menuRef = useRef(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -30,16 +31,28 @@ const MyProfile = ({ userId }) => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes('mypage')) {
-      setCurrentPage('마이페이지');
-    } else if (path.includes('mybooks')) {
-      setCurrentPage('문제집 관리');
-    } else if (path.includes('myquestions')) {
-      setCurrentPage('내가 푼 문제들');
-    } else if (path.includes('mystudies')) {
-      setCurrentPage('스터디 관리');
-    }
+    if (path.includes('mypage')) setCurrentPage('마이페이지');
+    else if (path.includes('mybooks')) setCurrentPage('문제집 관리');
+    else if (path.includes('myquestions')) setCurrentPage('내가 푼 문제들');
+    else if (path.includes('mystudies')) setCurrentPage('스터디 관리');
   }, [location]);
+
+  const handleOutsideClick = (event) => {
+    if (
+      menuOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target)
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [menuOpen]);
 
   if (!userInfo) return <div>Loading...</div>;
   if (error) return <div>Error fetching user data</div>;

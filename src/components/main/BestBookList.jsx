@@ -28,11 +28,13 @@ const BestBookList = () => {
         <div key={index} className="flex h-full">
           <BookCard
             title={book.title}
+            userId={book.userId}
             username={book.username}
             bookmarkCount={book.bookmarkCount}
             category={book.category}
             id={book.id}
-            profileImage={book.profileImage}
+            profileImage={book.userProfile}
+            isBookmarked={book.bookmarked}
           />
         </div>
       ))}

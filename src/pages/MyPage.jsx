@@ -12,10 +12,10 @@ const MyPage = () => {
       <div className="w-full max-w-screen-lg mb-6">
         <MyProfile userId={userId} />
       </div>
-      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-300 pt-5">
+      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
         <MypageBooks userId={userId} />
       </div>
-      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-300 pt-5">
+      <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
         <MyActivityCalendar userId={userId} />
       </div>
     </div>
