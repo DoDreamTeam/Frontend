@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
+import { formatDate } from '../../utils/formatDateUtils'; // formatDate 함수 임포트
 
-const MyStudyCommentLike = () => {
+const MyBookCommentLike = () => {
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [currentCommentPage, setCurrentCommentPage] = useState(0);
@@ -28,7 +30,7 @@ const MyStudyCommentLike = () => {
 
     const fetchLikes = async () => {
       try {
-        const response = await api.get('/mypage/book/comment/study/like', {
+        const response = await api.get('/mypage/book/comment/like', {
           params: { page: currentLikePage },
         });
         setLikes(response.data.content);
@@ -63,16 +65,17 @@ const MyStudyCommentLike = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="text-xl font-semibold mb-7">
-        {' '}
-        내가 작성한 댓글과 좋아요{' '}
+        내가 작성한 댓글과 좋아요
       </div>
       <div className="flex items-center mb-4 text-gray-500">
         <button
           onClick={() => handleTabChange(true)}
-          className={`p-2 ${
+          className={`p-2 transition-all duration-200 hover:bg-gray-200 rounded ${
             showComments ? 'font-bold text-black underline' : ''
           }`}
         >
@@ -80,7 +83,7 @@ const MyStudyCommentLike = () => {
         </button>
         <button
           onClick={() => handleTabChange(false)}
-          className={`p-2 ${
+          className={`p-2 transition-all duration-200 hover:bg-gray-200 rounded ${
             !showComments ? 'font-bold text-black underline' : ''
           }`}
         >
@@ -88,22 +91,45 @@ const MyStudyCommentLike = () => {
         </button>
       </div>
       <div className="flex flex-col gap-4">
-        {(showComments ? comments : likes).map((item, index) => (
-          <div
-            key={item.id || item.commentId}
-            className="flex justify-between p-2"
-          >
-            <div className="mr-8 ml-7">
-              {showComments
-                ? currentCommentPage * itemsPerPage + index + 1
-                : currentLikePage * itemsPerPage + index + 1}
-            </div>
-            <div className="flex-grow mx-12">{item.comment}</div>
-            <div className="mr-8">
-              {new Date(item.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-        ))}
+        {showComments
+          ? comments.map((item, index) => (
+              <div
+                key={item.id}
+                className="flex justify-between p-2 cursor-pointer"
+                onClick={() =>
+                  navigate(`/study/${item.studyId}/${item.studyAnswerId}`)
+                }
+              >
+                <div className="mr-8 ml-7">
+                  {currentCommentPage * itemsPerPage + index + 1}
+                </div>
+                <div className="flex-grow mx-12 hover:underline">
+                  {item.comment}
+                </div>
+                <div className="mr-8 flex items-center justify-center">
+                  {formatDate(item.createdAt)} {/* formatDate 함수 사용 */}
+                </div>
+              </div>
+            ))
+          : likes.map((item, index) => (
+              <div
+                key={item.commentId}
+                className="flex justify-between p-2 cursor-pointer"
+                onClick={() =>
+                  navigate(`/study/${item.studyId}/${item.studyAnswerId}`)
+                }
+              >
+                <div className="mr-8 ml-7">
+                  {currentLikePage * itemsPerPage + index + 1}
+                </div>
+                <div className="flex-grow mx-12 hover:underline">
+                  {item.comment}
+                </div>
+                <div className="mr-8 flex items-center justify-center">
+                  {formatDate(item.createdAt)} {/* formatDate 함수 사용 */}
+                </div>
+              </div>
+            ))}
       </div>
 
       <div className="flex justify-center mt-8 mb-10">
@@ -157,4 +183,4 @@ const MyStudyCommentLike = () => {
   );
 };
 
-export default MyStudyCommentLike;
+export default MyBookCommentLike;
