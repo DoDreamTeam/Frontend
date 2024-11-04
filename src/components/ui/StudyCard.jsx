@@ -3,19 +3,16 @@ import { MdOutlinePeopleOutline } from "react-icons/md";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { useNavigate } from "react-router-dom";
 import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
-
-const statusStyles = {
-  참여하기: "text-black hover:underline hover:text-gray-400",
-  "승인 대기중": "text-yellow-600",
-  참여중: "text-green-600 ",
-};
+import { statusNames, statusStyles } from "../../utils/statusUtils";
 
 const StudyCard = ({
+  id,
   title,
-  creator,
-  participants,
-  category,
+  username,
+  userCount,
+  profileImage,
   description,
+  category,
   status,
 }) => {
   const navigate = useNavigate();
@@ -30,8 +27,9 @@ const StudyCard = ({
         >
           {categoryNames[category] || category}
         </div>
-        <button className={`text-xs text-gray-500 ${statusStyles[status]}`}>
-          {status}
+        <button
+          className={`text-xs font-semibold ${statusStyles[status]}`}>
+          {statusNames[status] || status}
         </button>
       </div>
 
@@ -40,6 +38,7 @@ const StudyCard = ({
         className="text-lg mt-3 mb-1 flex-grow hover:underline hover:text-gray-400 cursor-pointer"
         onClick={() => navigate("/study/:studyId")}
       >
+        {id}
         {title}
       </div>
 
@@ -50,15 +49,15 @@ const StudyCard = ({
       <div className="flex justify-between items-center mt-2">
         <div className="flex items-center text-sm text-gray-500">
           <img
-            src={defaultProfile}
+            src={profileImage || defaultProfile}
             alt="Profile"
             className="h-6 w-6 rounded-full mr-2"
           />
-          <span>{creator}</span>
+          <span>{username}</span>
         </div>
         <div className="flex items-center text-sm text-gray-500">
           <MdOutlinePeopleOutline className="mr-1" />
-          <span>{participants}명</span>
+          <span>{userCount}명</span>
         </div>
       </div>
     </div>
