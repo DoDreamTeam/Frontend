@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { formatDate } from "../../utils/formatDateUtils";
 import { useNavigate } from "react-router-dom";
-import LikeButton from "../bookmain/comment/LikeButton";
+import LikeButton from "../bookpage/comment/LikeButton";
 import { useUser } from "../../context/UserProvider";
 import useModal from "../../hooks/useModal";
 import api from "../../api/api";

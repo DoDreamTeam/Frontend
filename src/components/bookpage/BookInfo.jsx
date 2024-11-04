@@ -1,6 +1,4 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import api from "../../api/api";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserProvider";
@@ -9,31 +7,18 @@ import BookmarkButton from "../ui/BookmarkButton";
 import useModal from "../../hooks/useModal";
 import useAlert from "../../hooks/useAlert";
 
-const BookInfo = ({ bookId, onBookmarkToggle }) => {
+const BookInfo = ({ bookData, onBookmarkToggle }) => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
   const { openModal, closeModal, Modal } = useModal();
   const { showAlert, Alert } = useAlert();
 
-  const getBookInfo = async () => {
-    const response = await api.get(`/books/${bookId}`);
-    return response.data;
-  };
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["book", bookId],
-    queryFn: getBookInfo,
-  });
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  const { title, username, userProfile, userId, bookmarked } = data;
+  const { title, username, userProfile, userId, bookmarked } = bookData;
 
   // 문제집 삭제
   const handleDelete = async () => {
     try {
-      const response = await api.delete(`/books/${bookId}`);
+      const response = await api.delete(`/books/${bookData.id}`);
       if (response.status === 204) {
         navigate("/book");
         closeModal();
@@ -51,7 +36,7 @@ const BookInfo = ({ bookId, onBookmarkToggle }) => {
           <div className="mr-2 text-3xl font-semibold">{title}</div>
           {userInfo?.userName !== username && (
             <BookmarkButton
-              bookId={bookId}
+              bookId={bookData.id}
               isBookmarked={bookmarked}
               onBookmarkToggle={onBookmarkToggle}
               bookOwnerName={username}
@@ -62,7 +47,7 @@ const BookInfo = ({ bookId, onBookmarkToggle }) => {
               <button className="mx-1">
                 <MdEdit
                   className="hover:text-blue-400"
-                  onClick={() => navigate(`/book/${bookId}/edit`)}
+                  onClick={() => navigate(`/book/${bookData.id}/edit`)}
                 />
               </button>
               <button className="mx-1">
@@ -89,7 +74,7 @@ const BookInfo = ({ bookId, onBookmarkToggle }) => {
         <div className="ml-auto">
           <button
             className="bg-blue-400 text-white text-xs py-2 px-2 rounded hover:bg-blue-600"
-            onClick={() => navigate(`/book/${bookId}/questions/add`)}
+            onClick={() => navigate(`/book/${bookData.id}/questions/add`)}
           >
             문제 추가하기
           </button>
