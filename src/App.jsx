@@ -1,5 +1,5 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import {
   AddQuestion,
   BookMain,
@@ -72,7 +72,7 @@ const App = () => {
             element={<ProtectedRoute element={<EditQuestion />} isMemberOnly />}
           />
           <Route
-            path="/submit/:id"
+            path="/book/:bookId/questions/:questionId/submit/:id"
             element={<ProtectedRoute element={<SubmitPage />} isMemberOnly />}
           />
           <Route
