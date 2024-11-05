@@ -66,8 +66,8 @@ const MyAnswer = () => {
     setMenuOpen(false);
   };
 
-  const handleAnswerClick = (questionId, bookId, userId) => {
-    navigate(`/book/${bookId}/questions/${questionId}/submit/${userId}`);
+  const handleAnswerClick = (questionId, bookId, id) => {
+    navigate(`/book/${bookId}/questions/${questionId}/submit/${id}`);
   };
 
   const handleOutsideClick = (event) => {
@@ -132,11 +132,7 @@ const MyAnswer = () => {
             <span
               className="flex-grow mx-12 cursor-pointer hover:underline"
               onClick={() =>
-                handleAnswerClick(
-                  answer.questionId,
-                  answer.bookId,
-                  answer.userId
-                )
+                handleAnswerClick(answer.questionId, answer.bookId, answer.id)
               }
               style={{ display: 'inline-block' }}
             >
