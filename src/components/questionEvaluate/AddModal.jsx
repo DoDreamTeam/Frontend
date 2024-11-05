@@ -128,26 +128,19 @@ const AddModal = () => {
             ))}
           </>
         ) : (
-          <div className="h-[400px] w-full flex flex-col items-center justify-center">
+          <div className="w-full flex flex-col items-center justify-center">
             <div className="text-3xl text-blue-600 font-bold mb-6 text-left">
               내가 만든 문제집이 없습니다!
             </div>
             <p className="text-gray-500 text-sm">
               문제집을 만드실 경우 아래 버튼을 클릭해주세요.
             </p>
-            <div className="flex justify-center mt-16 mb-16 w-full">
+            <div className="flex justify-center mt-16 mb-6 w-full">
               <button
                 onClick={() => navigate("/book/create")}
                 className="w-full text-white bg-blue-600 px-4 py-2 rounded-md mr-2 hover:bg-blue-400"
               >
                 문제집 만들기
-              </button>
-              <button
-                type="button"
-                onClick={closeModal}
-                className="w-full border bg-gray-300 hover:bg-gray-100 px-4 py-2 rounded-md"
-              >
-                문제로 돌아가기
               </button>
             </div>
           </div>
