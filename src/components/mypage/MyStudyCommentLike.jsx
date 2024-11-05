@@ -1,3 +1,5 @@
+commentlike;
+
 import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +32,7 @@ const MyBookCommentLike = () => {
 
     const fetchLikes = async () => {
       try {
-        const response = await api.get('/mypage/book/comment/like', {
+        const response = await api.get('/mypage/book/comment/study/like', {
           params: { page: currentLikePage },
         });
         setLikes(response.data.content);
@@ -126,7 +128,7 @@ const MyBookCommentLike = () => {
                   {item.comment}
                 </div>
                 <div className="mr-8 flex items-center justify-center">
-                  {formatDate(item.createdAt)} {/* formatDate 함수 사용 */}
+                  {formatDate(item.createdAt)}
                 </div>
               </div>
             ))}
