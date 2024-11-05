@@ -11,7 +11,7 @@ const BookSearch = ({ setSearchResults }) => {
 
   const handleSearch = async () => {
     if (keyword.trim()) {
-      const response = await api.get(`/search?keyword=${keyword}`);
+      const response = await api.get(`/books/search?keyword=${keyword}`);
       setSearchResults(response.data.content);
     } else {
       setSearchResults(null);
