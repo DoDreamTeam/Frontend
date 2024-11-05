@@ -43,30 +43,41 @@ const MyStudiesList = () => {
         <div className="text-xl font-semibold">내가 참여 중인 스터디</div>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         {studies.map((study, index) => (
           <div
             key={study.id}
-            className="flex justify-between p-2 border-t border-gray-300 pt-5"
+            className="relative p-4"
+            style={{ display: 'flex', alignItems: 'center' }}
           >
-            <div className="mr-8 ml-7 text-center">
+            <div className="absolute top-1/2 left-0 ml-7 text-center transform -translate-y-1/2">
               {currentStudyPage * itemsPerPage + index + 1}
             </div>
+
             <span
-              className="flex-grow mx-12 cursor-pointer hover:underline"
+              className="absolute top-1/2 left-20 cursor-pointer hover:underline transform -translate-y-1/2 ml-9"
               onClick={() => handleStudyClick(study.id)}
-              style={{ display: 'inline-block' }}
             >
               {study.title}
             </span>
-            <div className="flex items-center">
-              <IoMdPeople className="mr-1" />
-              <div className="mr-8 w-32 text-right">{study.userCount}</div>
+
+            <div className="absolute top-1/2 right-80 flex items-center space-x-2 transform -translate-y-1/2">
+              <img src={study.profileImage} className="w-6 h-6 rounded-full" />
+            </div>
+
+            <div className="absolute top-1/2 left-[700px] w-30 text-center transform -translate-y-1/2">
+              <div>{study.username}</div>
+            </div>
+
+            <div className="absolute top-1/2 right-5 flex items-center space-x-2 transform -translate-y-1/2">
+              <IoMdPeople className="text-gray-600" />
+              <div>{study.userCount}</div>
             </div>
           </div>
         ))}
       </div>
 
+      {/* 페이지 네비게이션 */}
       <div className="flex justify-center mt-8 mb-10">
         <button
           onClick={() => handlePageChange(currentStudyPage - 1)}

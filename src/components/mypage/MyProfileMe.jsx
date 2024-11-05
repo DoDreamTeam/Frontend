@@ -2,10 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
 import { getUserId } from './GetUserId';
-import { getCookie } from '../../utils/cookieUtils';
+
 import { useUser } from '../../context/UserProvider';
 import { FaEdit } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
+import api from '../../api/api';
 
 const MyProfileMe = () => {
   const navigate = useNavigate();
@@ -46,7 +47,6 @@ const MyProfileMe = () => {
 
   const handleSave = async () => {
     try {
-      const token = getCookie('accessToken');
       const formData = new FormData();
 
       if (username) {
@@ -57,16 +57,11 @@ const MyProfileMe = () => {
         formData.append('file', profileImage);
       }
 
-      const response = await axios.patch(
-        `${import.meta.env.VITE_REST_SERVER}/mypage`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await api.patch('/mypage', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       // 사용자 정보를 context에서 업데이트
       setUserInfo({
