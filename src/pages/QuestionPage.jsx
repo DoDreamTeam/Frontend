@@ -37,7 +37,7 @@ const QuestionPage = () => {
     <div className="w-full mb-16">
       <div
         className="text-xl text-black font-bold mb-16 text-left hover:text-gray-500 cursor-pointer hover:underline"
-        onClick={() => navigate(`/book/${id}/questions`)}
+        onClick={() => navigate(`/book/${id}`)}
       >
         {bookTitle}
       </div>

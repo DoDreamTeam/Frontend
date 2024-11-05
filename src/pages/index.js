@@ -4,8 +4,7 @@ import MainSearch from "./MainSearch.jsx";
 import OAuthVertification from "./OAuthVertification.jsx";
 
 import BookMain from "./BookMain";
-import BookPageNoQuestion from "./BookPageNoQuestion";
-import BookPageWithQuestion from "./BookPageWithQuestion";
+import BookPage from "./BookPage.jsx";
 import EditBook from "./EditBook.jsx";
 import QuestionPage from "./QuestionPage.jsx";
 import CreateBook from "./CreateBook";
@@ -30,8 +29,7 @@ export {
   MainSearch,
   OAuthVertification,
   BookMain,
-  BookPageNoQuestion,
-  BookPageWithQuestion,
+  BookPage,
   EditBook,
   QuestionPage,
   CreateBook,

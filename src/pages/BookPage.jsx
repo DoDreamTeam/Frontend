@@ -6,7 +6,7 @@ import BookComment from "../components/bookpage/BookComment";
 import api from "../api/api";
 import { useQuery } from "@tanstack/react-query";
 
-const BookPageWithQuestion = () => {
+const BookPage = () => {
   const { id } = useParams();
 
   // 문제집 정보 가져오기
@@ -40,4 +40,4 @@ const BookPageWithQuestion = () => {
   );
 };
 
-export default BookPageWithQuestion;
+export default BookPage;

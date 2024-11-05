@@ -42,7 +42,7 @@ const BookCard = ({
       {/* 문제집 제목 */}
       <div
         className="text-lg mt-3 mb-2 flex-grow hover:underline hover:text-gray-400 cursor-pointer"
-        onClick={() => navigate(`/book/${id}/questions`)}
+        onClick={() => navigate(`/book/${id}`)}
       >
         {title}
       </div>

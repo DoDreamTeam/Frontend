@@ -43,7 +43,7 @@ const SelectStudy = () => {
     onSuccess: () => {
       showAlert("스터디에 추가되었습니다!", "success");
       // 다시 해당 문제집 메인 페이지로 이동
-      navigate(`/book/${bookId}/questions`);
+      navigate(`/book/${bookId}`);
     },
     onError: (err) => {
       console.error("스터디에 추가 ERROR : ", err);
@@ -136,7 +136,7 @@ const SelectStudy = () => {
               </button>
               <button
                 type="button"
-                onClick={() => navigate(`/book/${bookId}/questions`)}
+                onClick={() => navigate(`/book/${bookId}`)}
                 className="w-full border bg-gray-300 hover:bg-gray-100 px-4 py-2 rounded-md"
               >
                 문제집으로 돌아가기
@@ -200,7 +200,7 @@ const SelectStudy = () => {
             </button>
             <button
               type="button"
-              onClick={() => navigate(`/book/${bookId}/questions`)}
+              onClick={() => navigate(`/book/${bookId}`)}
               className="w-full border hover:bg-gray-100 px-4 py-2 rounded-md"
             >
               취소
