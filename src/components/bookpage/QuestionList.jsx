@@ -178,50 +178,59 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
             );
           })
         ) : (
-          <p>질문이 없습니다.</p>
+          <div className="w-full mb-16 text-center">
+            <div className="flex flex-col justify-center items-center h-80">
+              <div className="text-xl font-medium text-center my-4">
+                문제가 존재하지 않습니다.
+                <br /> 문제를 추가해주세요!
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
       {/* 페이지네이션 */}
-      <div className="flex justify-center mt-8 mb-10">
-        <button
-          onClick={() => setPage(currentPage - 1, data.page.totalPages)}
-          disabled={currentPage === 0}
-          className={`p-2 ${
-            currentPage === 0
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-gray-200"
-          }`}
-        >
-          <FaChevronLeft className="text-gray-600 text-sm" />
-        </button>
-
-        {Array.from({ length: data.page.totalPages }).map((_, index) => (
+      {questions.length > 0 && (
+        <div className="flex justify-center mt-8 mb-10">
           <button
-            key={index}
-            onClick={() => setPage(index, data.page.totalPages)}
-            className={`mx-1 p-2 ${
-              index === currentPage
-                ? "font-bold text-blue-400"
-                : "text-gray-500 hover:text-gray-200"
+            onClick={() => setPage(currentPage - 1, data.page.totalPages)}
+            disabled={currentPage === 0}
+            className={`p-2 ${
+              currentPage === 0
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-200"
             }`}
           >
-            {index + 1}
+            <FaChevronLeft className="text-gray-600 text-sm" />
           </button>
-        ))}
 
-        <button
-          onClick={() => setPage(currentPage + 1, data.page.totalPages)}
-          disabled={currentPage === data.page.totalPages - 1}
-          className={`p-2 ${
-            currentPage === data.page.totalPages - 1
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-gray-200"
-          }`}
-        >
-          <FaChevronRight className="text-gray-600 text-sm" />
-        </button>
-      </div>
+          {Array.from({ length: data.page.totalPages }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setPage(index, data.page.totalPages)}
+              className={`mx-1 p-2 ${
+                index === currentPage
+                  ? "font-bold text-blue-400"
+                  : "text-gray-500 hover:text-gray-200"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setPage(currentPage + 1, data.page.totalPages)}
+            disabled={currentPage === data.page.totalPages - 1}
+            className={`p-2 ${
+              currentPage === data.page.totalPages - 1
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-200"
+            }`}
+          >
+            <FaChevronRight className="text-gray-600 text-sm" />
+          </button>
+        </div>
+      )}
 
       {/* 삭제 모달 */}
       <Modal style="w-120 text-center">
