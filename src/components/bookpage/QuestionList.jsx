@@ -13,6 +13,7 @@ import SearchInput from "../ui/SearchInput";
 import { useUser } from "../../context/UserProvider";
 import { MdEdit, MdDelete } from "react-icons/md";
 import useModal from "../../hooks/useModal";
+import Pagination from "../ui/Pagination";
 
 const QuestionList = ({ bookId, bookOwnerName }) => {
   const { userInfo } = useUser();
@@ -207,45 +208,11 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
 
       {/* 페이지네이션 */}
       {questions.length > 0 && (
-        <div className="flex justify-center mt-8 mb-10">
-          <button
-            onClick={() => setPage(currentPage - 1, data.page.totalPages)}
-            disabled={currentPage === 0}
-            className={`p-2 ${
-              currentPage === 0
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            <FaChevronLeft className="text-gray-600 text-sm" />
-          </button>
-
-          {Array.from({ length: data.page.totalPages }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setPage(index, data.page.totalPages)}
-              className={`mx-1 p-2 ${
-                index === currentPage
-                  ? "font-bold text-blue-400"
-                  : "text-gray-500 hover:text-gray-200"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => setPage(currentPage + 1, data.page.totalPages)}
-            disabled={currentPage === data.page.totalPages - 1}
-            className={`p-2 ${
-              currentPage === data.page.totalPages - 1
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            <FaChevronRight className="text-gray-600 text-sm" />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={data.page.totalPages}
+          setPage={setPage}
+        />
       )}
 
       {/* 삭제 모달 */}
