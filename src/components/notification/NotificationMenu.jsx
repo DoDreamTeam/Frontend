@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { MdOutlineAccessAlarms } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { CiMenuKebab } from "react-icons/ci";
 
 // 상대 시간 계산 함수
 const timeAgo = (dateString) => {
@@ -31,7 +32,12 @@ const timeAgo = (dateString) => {
   }
 };
 
-const NotificationMenu = ({ notifications, closeMenu, markAllAsRead }) => {
+const NotificationMenu = ({
+  notifications,
+  closeMenu,
+  markAllAsRead,
+  removeNotification,
+}) => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅 사용
 
   // 알림 클릭 시 해당 URL로 이동하는 함수
@@ -88,6 +94,25 @@ const NotificationMenu = ({ notifications, closeMenu, markAllAsRead }) => {
     }
   };
 
+  // 알림 삭제 함수 (부모로부터 전달받은 removeNotification 함수 사용)
+  const handleRemoveNotification = (notificationId) => {
+    removeNotification(notificationId);
+  };
+
+  // 알림 읽음 처리 함수
+  const handleMarkAsRead = (notificationId) => {
+    // 예시: 알림을 읽음 처리하는 로직 (알림을 "읽음" 상태로 변경)
+    // 이를 위한 상태 관리가 필요합니다.
+  };
+
+  // 드롭다운 메뉴 열기/닫기 상태 관리
+  const [dropdownOpen, setDropdownOpen] = useState(null); // 각 알림의 드롭다운 상태를 관리
+
+  // 드롭다운 토글 함수
+  const toggleDropdown = (index) => {
+    setDropdownOpen((prev) => (prev === index ? null : index));
+  };
+
   return (
     <div className="absolute right-0 top-10 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
       <div className="flex justify-between items-center p-2 border-b m-2">
@@ -106,8 +131,10 @@ const NotificationMenu = ({ notifications, closeMenu, markAllAsRead }) => {
           notifications.map((notification, index) => (
             <li
               key={index}
-              className={`flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer ${
-                notification.read ? "bg-transparent" : "bg-blue-100"
+              className={`flex items-center px-4 py-2 cursor-pointer ${
+                notification.read
+                  ? "bg-transparent hober:bg-gray-100"
+                  : "bg-blue-100 hover:bg-blue-200"
               }`}
             >
               <span className="mr-3 w-4 h-4">
@@ -123,10 +150,44 @@ const NotificationMenu = ({ notifications, closeMenu, markAllAsRead }) => {
                   </span>
                 </div>
               </div>
-              <IoIosArrowForward
-                onClick={() => handleNotificationClick(notification.url)}
-                className="ml-2 text-gray-500"
-              />
+
+              {/* 드롭다운 메뉴 아이콘 */}
+              <div className="relative">
+                <CiMenuKebab
+                  onClick={() => toggleDropdown(index)} // 드롭다운 토글
+                  className="cursor-pointer text-gray-600"
+                />
+
+                {/* 드롭다운 메뉴 */}
+                {dropdownOpen === index && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <ul>
+                      <li
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleMarkAsRead(notification.id)} // 읽음 처리
+                      >
+                        읽음 처리
+                      </li>
+                      <li
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                        onClick={() =>
+                          handleNotificationClick(notification.url)
+                        } // 바로가기
+                      >
+                        바로가기
+                      </li>
+                      <li
+                        className="px-4 py-2 text-sm text-red-500 hover:bg-red-100 cursor-pointer"
+                        onClick={() =>
+                          handleRemoveNotification(notification.id)
+                        } // 삭제
+                      >
+                        삭제
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </li>
           ))
         )}
