@@ -6,37 +6,38 @@ import { FaCaretDown } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import NotificationMenu from "../notification/NotificationMenu";
 import LoginButton from "../auth/LoginButton";
-import LogoutButton from "../auth/LogoutButton";
+import { useAuth } from "../../context/AuthContext"; // useAuth를 사용하여 로그인 상태 확인
 import { useUser } from "../../context/UserProvider";
+import api from "../../api/api";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 현재 위치 정보를 가져옴
+  const { isAuthenticated, logout } = useAuth(); // AuthContext에서 인증 상태와 로그아웃 함수 가져오기
+  const { userInfo } = useUser(); // 사용자 정보 가져오기
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const { userInfo } = useUser();
+  const [notifications, setNotifications] = useState([]); // 알림 상태 추가
 
-  const notifications = [
-    {
-      message: "[정처기 실기 대비] 문제집에 새로운 댓글이  달렸습니다!",
-      read: false,
-    },
-    {
-      message: "[정처기 실기 스터디] 누군가 스터디 가입 승인을 요청했습니다.",
-      read: true,
-    },
-    {
-      message: "[정처기 실기 스터디] 누군가 스터디 가입 승인을 요청했습니다.",
-      read: true,
-    },
-    {
-      message: "[면접 대비 스터디] 스터디 인증글에 새로운 댓글이  달렸습니다!",
-      read: false,
-    },
-  ];
+  // 알림 가져오기
+  const getNotifications = async () => {
+    try {
+      if (userInfo && userInfo.userId) {
+        const response = await api.get(`/notification/${userInfo.userId}`);
+        setNotifications(response.data);
+      }
+    } catch (error) {
+      console.error("알림 가져오기 실패", error);
+    }
+  };
 
-  // 사용자 정보가 있으면 인증
-  const isAuthenticated = !!userInfo;
+  // 알림 상태가 변경될 때마다 알림을 다시 가져옴
+  useEffect(() => {
+    if (isAuthenticated) {
+      getNotifications();
+    }
+  }, [isAuthenticated, userInfo]); // 인증 상태와 사용자 정보가 변경될 때마다 실행
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -104,7 +105,7 @@ const Header = () => {
               </div>
               <div className="relative flex items-center">
                 <img
-                  src={userInfo.profileImage || defaultProfile}
+                  src={userInfo?.profileImage || defaultProfile}
                   alt="Profile"
                   className="w-8 h-8 rounded-full cursor-pointer border-2 border-gray-300"
                   onClick={toggleMenu}
@@ -135,8 +136,14 @@ const Header = () => {
                       >
                         마이페이지
                       </li>
-                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <LogoutButton />
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          logout(); // 로그아웃 처리
+                          navigate("/"); // 홈으로 이동
+                        }}
+                      >
+                        로그아웃
                       </li>
                     </ul>
                   </div>
