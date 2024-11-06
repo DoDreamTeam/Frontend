@@ -48,7 +48,7 @@ const StudyCommentList = ({ userAnswerId }) => {
               likeCount={comment.likeCount}
               createdAt={comment.createdAt}
               liked={comment.liked}
-              userAnswerId={userAnswerId} // 추가: userAnswerId를 props로 전달
+              userAnswerId={userAnswerId}
               onCommentAdded={refetch}
             />
           ))

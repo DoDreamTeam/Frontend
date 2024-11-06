@@ -18,7 +18,7 @@ const MyActivityCalendar = ({ userId }) => {
   const fetchUserAnswers = async () => {
     try {
       const response = await api.get(`mypage/answers/${userId}`);
-      const answers = response.data;
+      const answers = response?.data || [];
 
       const currentYear = new Date().getFullYear();
       const startDate = new Date(currentYear, 0, 1);

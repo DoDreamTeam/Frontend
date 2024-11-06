@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
 import { getUserId } from './GetUserId';
-
 import { useUser } from '../../context/UserProvider';
 import { FaEdit } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
@@ -100,16 +99,16 @@ const MyProfileMe = () => {
 
   return (
     <div className="relative">
-      <div className="flex items-center mb-8 justify-between">
+      <div className="flex items-center mb-10 justify-between">
         <div className="flex items-center">
           {userInfo && userInfo.profileImage ? (
             <img
               src={userInfo.profileImage}
               alt={`${userInfo.userName}'s profile`}
-              className="w-10 h-10 rounded-full mr-4"
+              className="w-14 h-14 rounded-full mr-4 object-cover"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-black mr-4" />
+            <div className="w-14 h-14 rounded-full bg-gray-300 mr-4" />
           )}
           <div className="text-l font-semibold">
             {userInfo ? userInfo.userName : '이름 없음'}
@@ -125,7 +124,7 @@ const MyProfileMe = () => {
 
         <div className="relative mr-20 flex items-center" ref={menuRef}>
           <div
-            className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
+            className="flex items-center border border-gray-300 rounded-md px-4 py-2 cursor-pointer"
             onClick={() => setMenuOpen((prev) => !prev)}
           >
             <span className="mr-2">{currentPage}</span>
@@ -168,28 +167,45 @@ const MyProfileMe = () => {
         </div>
       </div>
 
-      {isEditing && (
-        <div className="mb-4">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="border border-gray-300 p-2 w-full mb-2"
-            placeholder="이름을 입력하세요"
-          />
-          <input
-            type="file"
-            onChange={(e) => setProfileImage(e.target.files[0])}
-            className="border border-gray-300 p-2 w-full mb-2"
-          />
-          <button
-            onClick={handleSave}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            저장
-          </button>
+      {/* 수정창 애니메이션 추가 */}
+      <div
+        className={`transition-all duration-700 ease-in-out transform ${
+          isEditing ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+        } overflow-hidden`}
+      >
+        <div className="mb-6">
+          <div className="mb-4">
+            <div className="mb-2 text-xl font-semibold text-gray-700">이름</div>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="p-3 w-full mb-4 rounded-lg focus:outline-none border-b-2 focus:ring-2 focus:ring-blue-500"
+              placeholder="이름을 입력하세요"
+            />
+          </div>
+
+          <div className="mb-4">
+            <div className="mb-2 text-xl font-semibold text-gray-700">
+              프로필 이미지
+            </div>
+            <input
+              type="file"
+              onChange={(e) => setProfileImage(e.target.files[0])}
+              className="p-3 w-full mb-4 rounded-lg focus:outline-none border-b-2 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="mt-6 flex space-x-4">
+            <button
+              onClick={handleSave}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
+            >
+              저장
+            </button>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

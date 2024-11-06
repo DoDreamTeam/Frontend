@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FaChevronLeft, FaChevronRight, FaCaretDown } from 'react-icons/fa';
 import api from '../../api/api';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   evaluationStyles,
   evaluationMessages,
 } from '../../utils/evaluationUtils';
-import { formatDate } from '../../utils/formatDateUtils'; // 이미 있는 formatDate 가져오기
+import { formatDate } from '../../utils/formatDateUtils';
+import { FaRegFaceSadCry } from 'react-icons/fa6';
 
 const EVALUATION_OPTIONS = {
   전체: '전체',
@@ -47,10 +48,16 @@ const MyAnswer = () => {
           params: { evaluation: evaluationParam, page: currentAnswerPage },
         });
       }
-      setAnswers(response.data.content);
-      setTotalPagesAnswer(response.data.page.totalPages);
-      setTotalAnswersCount(response.data.page.totalElements);
-      setItemsPerPage(response.data.page.size);
+      if (response.data.content) {
+        setAnswers(response.data.content);
+        setTotalPagesAnswer(response.data.page.totalPages);
+        setTotalAnswersCount(response.data.page.totalElements);
+        setItemsPerPage(response.data.page.size);
+      } else {
+        setAnswers([]);
+        setTotalAnswersCount(0);
+        setItemsPerPage(0);
+      }
     } catch (error) {
       console.error('Error fetching answers:', error);
     }
@@ -120,68 +127,94 @@ const MyAnswer = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {answers.map((answer, index) => (
-          <div
-            key={answer.id}
-            className="flex justify-between p-2 border-t border-gray-300 pt-5"
-          >
-            <div className="mr-8 ml-7">
-              {currentAnswerPage * itemsPerPage + index + 1}
-            </div>
-            <span
-              className="flex-grow mx-12 cursor-pointer hover:underline"
-              onClick={() =>
-                handleAnswerClick(answer.questionId, answer.bookId, answer.id)
-              }
-              style={{ display: 'inline-block' }}
-            >
-              {answer.title}
-            </span>
-            <div className="mr-8 w-32 flex items-center justify-center text-gray-500 text-sm">
-              {formatDate(answer.createdAt)}
-            </div>
-            <div className="mr-8 w-32 text-center">
-              <span
-                className={`${
-                  evaluationStyles[answer.evaluation]
-                } inline-block`}
-                style={{ width: '80px', padding: '4px', textAlign: 'center' }}
-              >
-                {evaluationMessages[answer.evaluation]}
-              </span>
-            </div>
+      {answers.length === 0 ? (
+        <div className="text-gray-500 text-center flex items-center justify-center flex-col">
+          <div className="flex items-center">
+            내가 푼 문제가 없습니다.
+            <FaRegFaceSadCry className="ml-2 text-xl" />
           </div>
-        ))}
-      </div>
-
-      <div className="flex justify-center mt-8 mb-10">
-        <button
-          onClick={() => handlePageChange(currentAnswerPage - 1)}
-          disabled={currentAnswerPage === 0}
-        >
-          <FaChevronLeft className="text-gray-500 text-sm" />
-        </button>
-        {Array.from({ length: totalPagesAnswer }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index)}
-            className={`mx-1 ${
-              index === currentAnswerPage
-                ? 'font-bold text-blue-400'
-                : 'text-gray-500'
-            }`}
+          <Link
+            to="/book"
+            className="mt-4 text-gray-500 font-semibold underline hover:text-gray-500 text-base
+         hover:text-[17px] transition-all duration-300 ease-in-out"
           >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          onClick={() => handlePageChange(currentAnswerPage + 1)}
-          disabled={currentAnswerPage === totalPagesAnswer - 1}
-        >
-          <FaChevronRight className="text-gray-500 text-sm" />
-        </button>
-      </div>
+            문제풀러 가기
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col gap-4">
+            {answers.map((answer, index) => (
+              <div
+                key={answer.id}
+                className="flex justify-between p-2 border-t border-gray-300 pt-5"
+              >
+                <div className="mr-8 ml-7">
+                  {currentAnswerPage * itemsPerPage + index + 1}
+                </div>
+                <span
+                  className="flex-grow mx-12 cursor-pointer hover:underline"
+                  onClick={() =>
+                    handleAnswerClick(
+                      answer.questionId,
+                      answer.bookId,
+                      answer.id
+                    )
+                  }
+                  style={{ display: 'inline-block' }}
+                >
+                  {answer.title}
+                </span>
+                <div className="mr-8 w-32 flex items-center justify-center text-gray-500 text-sm">
+                  {formatDate(answer.createdAt)}
+                </div>
+                <div className="mr-8 w-32 text-center">
+                  <span
+                    className={`${
+                      evaluationStyles[answer.evaluation]
+                    } inline-block`}
+                    style={{
+                      width: '80px',
+                      padding: '4px',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {evaluationMessages[answer.evaluation]}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center mt-8 mb-10">
+            <button
+              onClick={() => handlePageChange(currentAnswerPage - 1)}
+              disabled={currentAnswerPage === 0}
+            >
+              <FaChevronLeft className="text-gray-500 text-sm" />
+            </button>
+            {Array.from({ length: totalPagesAnswer }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index)}
+                className={`mx-1 ${
+                  index === currentAnswerPage
+                    ? 'font-bold text-blue-400'
+                    : 'text-gray-500'
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => handlePageChange(currentAnswerPage + 1)}
+              disabled={currentAnswerPage === totalPagesAnswer - 1}
+            >
+              <FaChevronRight className="text-gray-500 text-sm" />
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
