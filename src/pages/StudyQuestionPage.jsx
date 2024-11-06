@@ -1,6 +1,6 @@
 import React from 'react';
-import StudyQuestion from '../components/study/StudyQuestion';
-import StudyQuestionComment from '../components/study/StudyQuestionComment';
+import StudyQuestion from '../components/study/questionpage/StudyQuestion';
+import StudyQuestionComment from '../components/study/questionpage/StudyQuestionComment';
 import { useParams } from 'react-router-dom';
 
 const StudyQuestionPage = () => {
