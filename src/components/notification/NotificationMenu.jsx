@@ -4,6 +4,8 @@ import { MdOutlineAccessAlarms } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../api/api";
 
 // 상대 시간 계산 함수
 const timeAgo = (dateString) => {
@@ -32,13 +34,9 @@ const timeAgo = (dateString) => {
   }
 };
 
-const NotificationMenu = ({
-  notifications,
-  closeMenu,
-  markAllAsRead,
-  removeNotification,
-}) => {
-  const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅 사용
+const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // 알림 클릭 시 해당 URL로 이동하는 함수
   const handleNotificationClick = (url) => {
@@ -94,19 +92,57 @@ const NotificationMenu = ({
     }
   };
 
-  // 알림 삭제 함수 (부모로부터 전달받은 removeNotification 함수 사용)
+  // 알림 읽음 처리
+  const markAsReadMutation = useMutation({
+    mutationFn: (notificationId) =>
+      api.patch(`/notification/${notificationId}`, { read: true }),
+    onSuccess: (data, notificationId) => {
+      queryClient.invalidateQueries(["notifications"]); // 알림 데이터를 refetch
+      // 성공적으로 읽음 처리 후 상태 업데이트
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          notification.id === notificationId
+            ? { ...notification, read: true }
+            : notification
+        )
+      );
+      setDropdownOpen(null);
+    },
+    onError: (error) => {
+      console.error("알림 읽음 처리 실패:", error);
+    },
+  });
+
+  // 알림 삭제
+  const removeNotificationMutation = useMutation({
+    mutationFn: (notificationId) =>
+      api.delete(`/notification/${notificationId}`),
+    onSuccess: (data, notificationId) => {
+      // 삭제가 성공하면 해당 알림을 목록에서 제거
+      setNotifications((prevNotifications) =>
+        prevNotifications.filter(
+          (notification) => notification.id !== notificationId
+        )
+      );
+      setDropdownOpen(null);
+    },
+    onError: (error) => {
+      console.error("알림 삭제 실패:", error);
+    },
+  });
+
+  // 알림 삭제 함수
   const handleRemoveNotification = (notificationId) => {
-    removeNotification(notificationId);
+    removeNotificationMutation.mutate(notificationId);
   };
 
   // 알림 읽음 처리 함수
   const handleMarkAsRead = (notificationId) => {
-    // 예시: 알림을 읽음 처리하는 로직 (알림을 "읽음" 상태로 변경)
-    // 이를 위한 상태 관리가 필요합니다.
+    markAsReadMutation.mutate(notificationId);
   };
 
   // 드롭다운 메뉴 열기/닫기 상태 관리
-  const [dropdownOpen, setDropdownOpen] = useState(null); // 각 알림의 드롭다운 상태를 관리
+  const [dropdownOpen, setDropdownOpen] = useState(null);
 
   // 드롭다운 토글 함수
   const toggleDropdown = (index) => {
@@ -154,7 +190,7 @@ const NotificationMenu = ({
               {/* 드롭다운 메뉴 아이콘 */}
               <div className="relative">
                 <CiMenuKebab
-                  onClick={() => toggleDropdown(index)} // 드롭다운 토글
+                  onClick={() => toggleDropdown(index)}
                   className="cursor-pointer text-gray-600"
                 />
 
@@ -164,7 +200,7 @@ const NotificationMenu = ({
                     <ul>
                       <li
                         className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleMarkAsRead(notification.id)} // 읽음 처리
+                        onClick={() => handleMarkAsRead(notification.id)}
                       >
                         읽음 처리
                       </li>

@@ -6,19 +6,21 @@ import { FaCaretDown } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import NotificationMenu from "../notification/NotificationMenu";
 import LoginButton from "../auth/LoginButton";
-import { useAuth } from "../../context/AuthContext"; // useAuth를 사용하여 로그인 상태 확인
+import LogoutButton from "../auth/LogoutButton";
 import { useUser } from "../../context/UserProvider";
 import api from "../../api/api";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 현재 위치 정보를 가져옴
-  const { isAuthenticated, logout } = useAuth(); // AuthContext에서 인증 상태와 로그아웃 함수 가져오기
   const { userInfo } = useUser(); // 사용자 정보 가져오기
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState([]); // 알림 상태 추가
+
+  // 사용자 정보가 있으면 인증
+  const isAuthenticated = !!userInfo;
 
   // 알림 가져오기
   const getNotifications = async () => {
@@ -100,6 +102,7 @@ const Header = () => {
                   <NotificationMenu
                     notifications={notifications}
                     closeMenu={toggleNotifications}
+                    setNotifications={setNotifications}
                   />
                 )}
               </div>
@@ -136,14 +139,8 @@ const Header = () => {
                       >
                         마이페이지
                       </li>
-                      <li
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          logout(); // 로그아웃 처리
-                          navigate("/"); // 홈으로 이동
-                        }}
-                      >
-                        로그아웃
+                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        <LogoutButton />
                       </li>
                     </ul>
                   </div>
