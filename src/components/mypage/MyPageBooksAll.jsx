@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import BookCard from '../ui/BookCard';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import BookLockToggle from './BookLockToggle';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import useModal from '../../hooks/useModal';
+import { FaRegFaceSadCry } from 'react-icons/fa6';
 
 const MypageBooksAll = () => {
   const [books, setBooks] = useState([]);
@@ -24,9 +25,14 @@ const MypageBooksAll = () => {
       const response = await api.get('/mypage/book/books', {
         params: { page: currentPage },
       });
-      setBooks(response.data.content);
-      setTotalPages(response.data.page.totalPages);
-      setTotalBooksCount(response.data.page.totalElements);
+      if (response.data.content) {
+        setBooks(response.data.content);
+        setTotalPages(response.data.page.totalPages);
+        setTotalBooksCount(response.data.page.totalElements);
+      } else {
+        setBooks([]);
+        setTotalBooksCount(0);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -34,10 +40,6 @@ const MypageBooksAll = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-  };
-
-  const handleCreateBook = () => {
-    navigate('/book/create');
   };
 
   const handleDeleteBook = async () => {
@@ -56,70 +58,83 @@ const MypageBooksAll = () => {
         <div className="text-xl font-semibold mr-2">
           문제집 목록 [{totalBooksCount}]
         </div>
-        <button
-          onClick={handleCreateBook}
-          className="bg-[#ACC7FF] text-white px-2 py-2 rounded-lg text-sm w-[12%] hover:bg-[#6686FA]"
-        >
-          문제집 만들기
-        </button>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {books.map((book) => (
-          <div key={book.id} className="flex flex-col relative h-full">
-            <BookCard
-              title={book.title}
-              userId={book.userId}
-              username={book.username}
-              bookmarkCount={book.bookmarkCount}
-              id={book.id}
-              profileImage={book.userProfile}
-              category={book.category}
-              isBookmarked={book.bookmarked}
-            />
-            <div className="flex items-center absolute bottom-5 right-2">
-              <button
-                onClick={() => {
-                  setSelectedBookId(book.id);
-                  openModal();
-                }}
-                className="bg-red-500 text-white text-xs py-1 px-2 rounded ml-2"
-              >
-                삭제
-              </button>
-              <BookLockToggle book={book} style={'cursor-pointer'} />
-            </div>
-          </div>
-        ))}
       </div>
 
-      {/* 페이지네이션 */}
-      <div className="flex justify-center mt-8 mb-10">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 0}
-        >
-          <FaChevronLeft className="text-gray-500 text-sm" />
-        </button>
-        {Array.from({ length: totalPages }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index)}
-            className={`mx-1 ${
-              index === currentPage
-                ? 'font-bold text-blue-400'
-                : 'text-gray-500'
-            }`}
+      {books.length === 0 ? (
+        <div className="text-gray-500 text-center flex items-center justify-center flex-col">
+          <div className="flex items-center">
+            문제집 목록이 없습니다.
+            <FaRegFaceSadCry className="ml-2 text-xl" />
+          </div>
+          <Link
+            to="/book/create"
+            className="mt-4 text-gray-500 font-semibold underline hover:text-gray-500 text-base
+           hover:text-[17px] transition-all duration-300 ease-in-out"
           >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages - 1}
-        >
-          <FaChevronRight className="text-gray-500 text-sm" />
-        </button>
-      </div>
+            문제집 만들러가기
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {books.map((book) => (
+              <div key={book.id} className="flex flex-col relative h-full">
+                <BookCard
+                  title={book.title}
+                  userId={book.userId}
+                  username={book.username}
+                  bookmarkCount={book.bookmarkCount}
+                  id={book.id}
+                  profileImage={book.userProfile}
+                  category={book.category}
+                  isBookmarked={book.bookmarked}
+                />
+                <div className="flex items-center absolute bottom-5 right-2">
+                  <button
+                    onClick={() => {
+                      setSelectedBookId(book.id);
+                      openModal();
+                    }}
+                    className="bg-red-500 text-white text-xs py-1 px-2 rounded ml-2"
+                  >
+                    삭제
+                  </button>
+                  <BookLockToggle book={book} style={'cursor-pointer'} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 페이지네이션 */}
+          <div className="flex justify-center mt-8 mb-10">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 0}
+            >
+              <FaChevronLeft className="text-gray-500 text-sm" />
+            </button>
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index)}
+                className={`mx-1 ${
+                  index === currentPage
+                    ? 'font-bold text-blue-400'
+                    : 'text-gray-500'
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages - 1}
+            >
+              <FaChevronRight className="text-gray-500 text-sm" />
+            </button>
+          </div>
+        </>
+      )}
 
       {/* 삭제 모달 */}
       <Modal style="w-120 text-center">

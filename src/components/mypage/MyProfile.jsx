@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
 import GetUser from './getUser';
-import { getUserId } from './GetUserId'; // getUserId 가져오기
+import { getUserId } from './GetUserId';
 
 const MyProfile = ({ userId }) => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const MyProfile = ({ userId }) => {
   const [profileImage, setProfileImage] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
-  const menuRef = useRef(null);
+  const menuRef = useRef(null); // 메뉴를 참조하는 ref
 
   useEffect(() => {
     if (userInfo) {
@@ -24,7 +24,7 @@ const MyProfile = ({ userId }) => {
   }, [userInfo]);
 
   const handleMenuClick = (path, pageName) => {
-    setMenuOpen(false);
+    setMenuOpen(false); // 메뉴 클릭 시 메뉴 닫기
     navigate(path);
     setCurrentPage(pageName);
   };
@@ -37,13 +37,14 @@ const MyProfile = ({ userId }) => {
     else if (path.includes('mystudies')) setCurrentPage('스터디 관리');
   }, [location]);
 
+  // 메뉴 외부 클릭 시 메뉴 닫기
   const handleOutsideClick = (event) => {
     if (
-      menuOpen &&
+      menuOpen && // 메뉴가 열려 있을 때만 작동
       menuRef.current &&
-      !menuRef.current.contains(event.target)
+      !menuRef.current.contains(event.target) // 메뉴 외부 클릭 시
     ) {
-      setMenuOpen(false);
+      setMenuOpen(false); // 메뉴 닫기
     }
   };
 
@@ -75,14 +76,16 @@ const MyProfile = ({ userId }) => {
 
         {/* 로그인한 사용자 ID와 현재 프로필의 ID가 같은 경우에만 메뉴 표시 */}
         {logInUserId === userId && (
-          <div className="relative mr-20 flex items-center">
+          <div className="relative mr-20 flex items-center" ref={menuRef}>
             <div
               className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
-              onClick={() => setMenuOpen((prev) => !prev)}
+              onClick={() => setMenuOpen((prev) => !prev)} // 메뉴 토글
             >
               <span className="mr-2">{currentPage}</span>
-              <FaCaretDown />
+              <FaCaretDown /> {/* 드롭다운 아이콘 */}
             </div>
+
+            {/* 메뉴가 열렸을 때만 메뉴 표시 */}
             {menuOpen && (
               <div className="absolute right-0 top-10 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 <ul className="py-1">

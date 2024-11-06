@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import BookCard from '../ui/BookCard';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import api from '../../api/api';
+import { FaRegFaceSadCry } from 'react-icons/fa6';
 
 const MypageBooks = ({ userId }) => {
   const [books, setBooks] = useState([]);
@@ -20,10 +21,14 @@ const MypageBooks = ({ userId }) => {
         const response = await api.get(`/mypage/books/${userId}`, {
           params: { page: currentPage },
         });
-
-        setBooks(response.data.content);
-        setTotalPages(response.data.page.totalPages);
-        setTotalBooksCount(response.data.page.totalElements);
+        if (response.data.content) {
+          setBooks(response.data.content);
+          setTotalPages(response.data.page.totalPages);
+          setTotalBooksCount(response.data.page.totalElements);
+        } else {
+          setBooks([]);
+          setTotalBooksCount(0);
+        }
       } catch (err) {
         setError(err);
         console.error(err);
@@ -44,51 +49,60 @@ const MypageBooks = ({ userId }) => {
       <div className="text-xl font-semibold mb-7">
         문제집 목록 [{totalBooksCount}]
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {books.map((book) => (
-          <div key={book.id} className="flex h-full">
-            <BookCard
-              key={book.id}
-              title={book.title}
-              userId={book.userId}
-              username={book.username}
-              bookmarkCount={book.bookmarkCount}
-              category={book.category}
-              id={book.id}
-              profileImage={book.userProfile}
-              isBookmarked={book.bookmarked}
-            />
-          </div>
-        ))}
-      </div>
 
-      <div className="flex justify-center mt-8 mb-10">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 0}
-        >
-          <FaChevronLeft className="text-gray-500 text-sm" />
-        </button>
-        {Array.from({ length: totalPages }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index)}
-            className={`mx-1 ${
-              index === currentPage
-                ? 'font-bold text-blue-400'
-                : 'text-gray-500'
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages - 1}
-        >
-          <FaChevronRight className="text-gray-500 text-sm" />
-        </button>
-      </div>
+      {books.length === 0 ? (
+        <div className="text-gray-500 text-center flex items-center justify-center">
+          문제집 목록이 없습니다.
+          <FaRegFaceSadCry className="ml-2 text-xl" />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {books.map((book) => (
+              <div key={book.id} className="flex h-full">
+                <BookCard
+                  key={book.id}
+                  title={book.title}
+                  userId={book.userId}
+                  username={book.username}
+                  bookmarkCount={book.bookmarkCount}
+                  category={book.category}
+                  id={book.id}
+                  profileImage={book.userProfile}
+                  isBookmarked={book.bookmarked}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center mt-8 mb-10">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 0}
+            >
+              <FaChevronLeft className="text-gray-500 text-sm" />
+            </button>
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index)}
+                className={`mx-1 ${
+                  index === currentPage
+                    ? 'font-bold text-blue-400'
+                    : 'text-gray-500'
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages - 1}
+            >
+              <FaChevronRight className="text-gray-500 text-sm" />
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import { formatDate } from '../../utils/formatDateUtils';
+import { FaRegFaceSadCry } from 'react-icons/fa6';
 
 const MyBookCommentLike = () => {
   const [comments, setComments] = useState([]);
@@ -20,9 +21,14 @@ const MyBookCommentLike = () => {
         const response = await api.get('/mypage/book/comment', {
           params: { page: currentCommentPage },
         });
-        setComments(response.data.content);
-        setTotalPagesComments(response.data.page.totalPages);
-        setItemsPerPage(response.data.page.size);
+        if (response.data.content) {
+          setComments(response.data.content);
+          setTotalPagesComments(response.data.page.totalPages);
+          setItemsPerPage(response.data.page.size);
+        } else {
+          setComments([]);
+          setTotalPagesComments(0);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -33,9 +39,14 @@ const MyBookCommentLike = () => {
         const response = await api.get('/mypage/book/comment/like', {
           params: { page: currentLikePage },
         });
-        setLikes(response.data.content);
-        setTotalPagesLikes(response.data.page.totalPages);
-        setItemsPerPage(response.data.page.size);
+        if (response.data.content) {
+          setLikes(response.data.content);
+          setTotalPagesLikes(response.data.page.totalPages);
+          setItemsPerPage(response.data.page.size);
+        } else {
+          setLikes([]);
+          setTotalPagesComments(0);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -90,9 +101,11 @@ const MyBookCommentLike = () => {
           좋아요
         </button>
       </div>
+
       <div className="flex flex-col gap-4">
-        {showComments
-          ? comments.map((item, index) => (
+        {showComments ? (
+          comments.length > 0 ? (
+            comments.map((item, index) => (
               <div
                 key={item.id}
                 className="flex justify-between p-2 cursor-pointer"
@@ -109,72 +122,98 @@ const MyBookCommentLike = () => {
                 </div>
               </div>
             ))
-          : likes.map((item, index) => (
-              <div
-                key={item.commentId}
-                className="flex justify-between p-2 cursor-pointer"
-                onClick={() => navigate(`/book/${item.bookId}/questions`)}
-              >
-                <div className="mr-8 ml-7">
-                  {currentLikePage * itemsPerPage + index + 1}
-                </div>
-                <div className="flex-grow mx-12 hover:underline">
-                  {item.comment}
-                </div>
-                <div className="mr-8 flex items-center justify-center">
-                  {formatDate(item.createdAt)}
-                </div>
+          ) : (
+            <div className="text-gray-500 text-center flex items-center justify-center">
+              작성한 댓글이 없습니다.
+              <FaRegFaceSadCry className="ml-2 text-xl" />
+            </div>
+          )
+        ) : likes.length > 0 ? (
+          likes.map((item, index) => (
+            <div
+              key={item.commentId}
+              className="flex justify-between p-2 cursor-pointer"
+              onClick={() => navigate(`/book/${item.bookId}/questions`)}
+            >
+              <div className="mr-8 ml-7">
+                {currentLikePage * itemsPerPage + index + 1}
               </div>
-            ))}
+              <div className="flex-grow mx-12 hover:underline">
+                {item.comment}
+              </div>
+              <div className="mr-8 flex items-center justify-center">
+                {formatDate(item.createdAt)}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-gray-500 text-center flex items-center justify-center">
+            좋아요 한 목록이 없습니다.
+            <FaRegFaceSadCry className="ml-2 text-xl" />
+          </div>
+        )}
       </div>
 
-      <div className="flex justify-center mt-8 mb-10">
-        <button
-          onClick={() =>
-            handlePageChange(
-              showComments ? currentCommentPage - 1 : currentLikePage - 1
-            )
-          }
-          disabled={
-            showComments ? currentCommentPage === 0 : currentLikePage === 0
-          }
-        >
-          <FaChevronLeft className="text-gray-500 text-sm" />
-        </button>
-        {Array.from({
-          length: showComments ? totalPagesComments : totalPagesLikes,
-        }).map((_, index) => (
+      {/* 페이지 네비게이션 */}
+      {showComments && comments.length > 0 && totalPagesComments > 1 && (
+        <div className="flex justify-center mt-8 mb-10">
           <button
-            key={index}
-            onClick={() => handlePageChange(index)}
-            className={`mx-1 transition-all duration-200 ${
-              showComments
-                ? index === currentCommentPage
+            onClick={() => handlePageChange(currentCommentPage - 1)}
+            disabled={currentCommentPage === 0}
+          >
+            <FaChevronLeft className="text-gray-500 text-sm" />
+          </button>
+          {Array.from({ length: totalPagesComments }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handlePageChange(index)}
+              className={`mx-1 transition-all duration-200 ${
+                index === currentCommentPage
                   ? 'font-bold text-blue-400'
                   : 'text-gray-500'
-                : index === currentLikePage
-                ? 'font-bold text-blue-400'
-                : 'text-gray-500'
-            }`}
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentCommentPage + 1)}
+            disabled={currentCommentPage === totalPagesComments - 1}
           >
-            {index + 1}
+            <FaChevronRight className="text-gray-500 text-sm" />
           </button>
-        ))}
-        <button
-          onClick={() =>
-            handlePageChange(
-              showComments ? currentCommentPage + 1 : currentLikePage + 1
-            )
-          }
-          disabled={
-            showComments
-              ? currentCommentPage === totalPagesComments - 1
-              : currentLikePage === totalPagesLikes - 1
-          }
-        >
-          <FaChevronRight className="text-gray-500 text-sm" />
-        </button>
-      </div>
+        </div>
+      )}
+
+      {(!showComments || likes.length > 0) && totalPagesLikes > 1 && (
+        <div className="flex justify-center mt-8 mb-10">
+          <button
+            onClick={() => handlePageChange(currentLikePage - 1)}
+            disabled={currentLikePage === 0}
+          >
+            <FaChevronLeft className="text-gray-500 text-sm" />
+          </button>
+          {Array.from({ length: totalPagesLikes }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handlePageChange(index)}
+              className={`mx-1 transition-all duration-200 ${
+                index === currentLikePage
+                  ? 'font-bold text-blue-400'
+                  : 'text-gray-500'
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentLikePage + 1)}
+            disabled={currentLikePage === totalPagesLikes - 1}
+          >
+            <FaChevronRight className="text-gray-500 text-sm" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
