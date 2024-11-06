@@ -36,19 +36,55 @@ const NotificationMenu = ({ notifications, closeMenu, markAllAsRead }) => {
 
   // 알림 클릭 시 해당 URL로 이동하는 함수
   const handleNotificationClick = (url) => {
-    // /api/books/17/comments 와 같은 형태의 URL에서 /book/17 으로 변환
-    const regex = /\/api\/books\/(\d+)\/comments/;
-    const match = url.match(regex);
+    // 각 URL을 처리하기 위한 정규식 패턴
+    const bookCommentRegex = /\/api\/books\/(\d+)\/comments/;
+    const studyAnswerCommentRegex = /\/api\/study\/answer\/(\d+)\/comments/;
+    const studyMemberRequestRegex = /\/api\/study\/(\d+)\/members/;
+    const studyMemberApproveRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
+    const studyExitRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
+    const studyLeaderChangeRegex = /\/api\/study\/leader\/(\d+)/;
 
-    // study 알람인 경우는 추후에 추가 예정
+    // URL 패턴에 따른 알림 처리
+    switch (true) {
+      case bookCommentRegex.test(url):
+        const bookMatch = url.match(bookCommentRegex);
+        const bookId = bookMatch[1];
+        navigate(`/book/${bookId}`);
+        break;
 
-    if (match) {
-      // 매칭되는 경우 /book/{id} 페이지로 이동
-      const id = match[1];
-      navigate(`/book/${id}`);
-    } else {
-      // URL이 다른 형식일 경우 처리 (예: 다른 API URL)
-      console.log("알 수 없는 URL 형식:", url);
+      case studyAnswerCommentRegex.test(url):
+        const answerMatch = url.match(studyAnswerCommentRegex);
+        const studyAnswerId = answerMatch[1];
+        navigate(`/study/${studyAnswerId}`);
+        break;
+
+      case studyMemberRequestRegex.test(url):
+        const requestMatch = url.match(studyMemberRequestRegex);
+        const studyIdForRequest = requestMatch[1];
+        navigate(`/study/${studyIdForRequest}/admin`);
+        break;
+
+      case studyMemberApproveRegex.test(url):
+        const approveMatch = url.test(studyMemberApproveRegex);
+        const studyIdForApprove = approveMatch[1];
+        navigate(`/study/${studyIdForApprove}`);
+        break;
+
+      case studyExitRegex.test(url):
+        const exitMatch = url.test(studyExitRegex);
+        const studyIdForExit = exitMatch[1];
+        navigate(`/study/${studyIdForExit}/admin`);
+        break;
+
+      case studyLeaderChangeRegex.test(url):
+        const leaderChangeMatch = url.match(studyLeaderChangeRegex);
+        const studyIdForLeaderChange = leaderChangeMatch[1];
+        navigate(`/study/${studyIdForLeaderChange}/admin`);
+        break;
+
+      default:
+        console.log("알 수 없는 URL 형식: ", url);
+        break;
     }
   };
 
@@ -64,8 +100,6 @@ const NotificationMenu = ({ notifications, closeMenu, markAllAsRead }) => {
         </button>
       </div>
       <ul className="py-1 max-h-[400px] overflow-y-auto">
-        {" "}
-        {/* max-height와 overflow-y-auto로 스크롤 활성화 */}
         {notifications.length === 0 ? (
           <li className="px-4 py-2 text-gray-500">알림이 없습니다.</li>
         ) : (
