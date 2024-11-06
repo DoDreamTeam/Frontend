@@ -79,6 +79,10 @@ const App = () => {
             element={<ProtectedRoute element={<StudyPage />} isMemberOnly />}
           />
           <Route
+            path="/study/:studyId/notice/:noticeId"
+            element={<ProtectedRoute element={<StudyPage />} isMemberOnly />}
+          />
+          <Route
             path="/study/:studyId/:userAnswerId"
             element={
               <ProtectedRoute element={<StudyQuestionPage />} isMemberOnly />
