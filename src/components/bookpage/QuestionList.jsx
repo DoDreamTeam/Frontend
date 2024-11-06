@@ -187,12 +187,20 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
           })
         ) : (
           <div className="w-full mb-16 text-center">
-            <div className="flex flex-col justify-center items-center h-80">
-              <div className="text-xl font-medium text-center my-4">
-                문제가 존재하지 않습니다.
-                <br /> 문제를 추가해주세요!
+            {keyword ? (
+              <div className="flex flex-col justify-center items-center h-80">
+                <div className="text-xl font-medium text-center my-4">
+                  검색어와 일치하는 문제가 없습니다.
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center h-80">
+                <div className="text-xl font-medium text-center my-4">
+                  문제가 존재하지 않습니다.
+                  <br /> 문제를 추가해주세요!
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
