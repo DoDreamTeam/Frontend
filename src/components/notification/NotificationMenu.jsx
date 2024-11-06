@@ -148,6 +148,13 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
     });
   };
 
+  // 전체 알림 읽음 처리
+  const markAllAsRead = () => {
+    notifications.forEach((notification) => {
+      markAsReadMutation.mutate(notification.id);
+    });
+  };
+
   // 드롭다운 메뉴 열기/닫기 상태 관리
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
@@ -176,7 +183,7 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
               key={index}
               className={`flex items-center px-4 py-2 cursor-pointer ${
                 notification.read
-                  ? "bg-transparent hober:bg-gray-100"
+                  ? "bg-transparent hover:bg-gray-100"
                   : "bg-blue-100 hover:bg-blue-200"
               }`}
             >
@@ -237,12 +244,21 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
       </ul>
       {notifications.length > 0 && (
         <div className="text-center py-2 border-t mt-2">
-          <button
-            onClick={removeAllNotifications}
-            className="text-blue-500 hover:text-blue-700"
-          >
-            전체 삭제
-          </button>
+          {notifications.some((notification) => !notification.read) ? (
+            <button
+              onClick={markAllAsRead}
+              className="text-blue-500 hover:text-blue-700 mr-2"
+            >
+              전체 읽음 처리
+            </button>
+          ) : (
+            <button
+              onClick={removeAllNotifications}
+              className="text-blue-500 hover:text-blue-700"
+            >
+              전체 삭제
+            </button>
+          )}
         </div>
       )}
     </div>
