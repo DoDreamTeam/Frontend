@@ -25,15 +25,16 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
 
   const [excludeAnswered, setExcludeAnswered] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null); // 선택된 질문 ID
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
   const handleSearchKeyword = (e) => {
     setKeyword(e.target.value);
   };
 
   const handleSearch = () => {
-    setPage(0); // Reset to the first page on search
-    refetch(); // Refetch data based on new keyword
+    setPage(0);
+    refetch();
   };
 
   const getQuestionList = async (page) => {
@@ -74,12 +75,19 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
         `/books/${bookId}/questions/${selectedQuestionId}`
       );
       if (response.status === 204) {
-        // 질문 삭제 후 페이지 새로고침
-        window.location.reload();
+        setIsDeleteSuccess(true); // 삭제 성공 상태를 true로 설정
+        openModal();
       }
     } catch (error) {
       console.error("Delete question ERROR: ", error);
     }
+  };
+
+  // 삭제 성공 후 확인 버튼 클릭 시 새로고침
+  const handleSuccessModalClose = () => {
+    closeModal();
+    setSelectedQuestionId(null); // 선택된 질문 ID 초기화
+    window.location.reload(); // 페이지 새로고침
   };
 
   return (
@@ -252,6 +260,23 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
           </button>
         </div>
       </Modal>
+
+      {/* 삭제 성공 모달 */}
+      {isDeleteSuccess && (
+        <Modal style="w-120 text-center">
+          <div className="text-2xl font-semibold m-6">
+            성공적으로 삭제되었습니다!
+          </div>
+          <div className="flex justify-center mt-4 w-full">
+            <button
+              className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
+              onClick={handleSuccessModalClose}
+            >
+              확인
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
