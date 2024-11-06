@@ -141,6 +141,13 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
     markAsReadMutation.mutate(notificationId);
   };
 
+  // 전체 알림 삭제
+  const removeAllNotifications = () => {
+    notifications.forEach((notification) => {
+      removeNotificationMutation.mutate(notification.id);
+    });
+  };
+
   // 드롭다운 메뉴 열기/닫기 상태 관리
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
@@ -216,7 +223,7 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
                         className="px-4 py-2 text-sm text-red-500 hover:bg-red-100 cursor-pointer"
                         onClick={() =>
                           handleRemoveNotification(notification.id)
-                        } // 삭제
+                        }
                       >
                         삭제
                       </li>
@@ -231,7 +238,7 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
       {notifications.length > 0 && (
         <div className="text-center py-2 border-t mt-2">
           <button
-            //onClick={markAllAsRead}
+            onClick={removeAllNotifications}
             className="text-blue-500 hover:text-blue-700"
           >
             전체 삭제
