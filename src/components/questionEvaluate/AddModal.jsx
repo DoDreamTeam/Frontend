@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Pagination from "../ui/Pagination";
 
 const AddModal = () => {
   const { id, questionId } = useParams();
@@ -151,45 +152,11 @@ const AddModal = () => {
       {books.length > 0 && (
         <>
           {/* 페이지네이션 */}
-          <div className="flex justify-center mt-8 mb-10">
-            <button
-              onClick={() => setPage(currentPage - 1, totalPages)}
-              disabled={currentPage === 0}
-              className={`p-2 ${
-                currentPage === 0
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-200"
-              }`}
-            >
-              <FaChevronLeft className="text-gray-600 text-sm" />
-            </button>
-
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setPage(index, totalPages)}
-                className={`mx-1 p-2 ${
-                  index === currentPage
-                    ? "font-bold text-blue-400"
-                    : "text-gray-500 hover:text-gray-200"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-
-            <button
-              onClick={() => setPage(currentPage + 1, totalPages)}
-              disabled={currentPage === totalPages - 1}
-              className={`p-2 ${
-                currentPage === totalPages - 1
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-200"
-              }`}
-            >
-              <FaChevronRight className="text-gray-600 text-sm" />
-            </button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data.page.totalPages}
+            setPage={setPage}
+          />
 
           {/* 추가하기 */}
           <button

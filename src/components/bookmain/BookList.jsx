@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import usePagination from "../../hooks/usePagination";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { categoryNames } from "../../utils/categoryUtils";
+import Pagination from "../ui/Pagination";
 
 const BookList = ({ searchResults }) => {
   const itemsPerPage = 12;
@@ -98,45 +99,11 @@ const BookList = ({ searchResults }) => {
 
       {/* 페이지네이션 */}
       {searchResults ? null : (
-        <div className="flex justify-center mt-8 mb-10">
-          <button
-            onClick={() => setPage(currentPage - 1, data.page.totalPages)}
-            disabled={currentPage === 0}
-            className={`p-2 ${
-              currentPage === 0
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            <FaChevronLeft className="text-gray-500 text-sm" />
-          </button>
-
-          {Array.from({ length: data.page.totalPages }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setPage(index, data.page.totalPages)}
-              className={`mx-1 p-2 ${
-                index === currentPage
-                  ? "font-bold text-blue-400"
-                  : "text-gray-500 hover:text-gray-200"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => setPage(currentPage + 1, data.page.totalPages)}
-            disabled={currentPage === data.page.totalPages - 1}
-            className={`p-2 ${
-              currentPage === data.page.totalPages - 1
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:text-gray-200"
-            }`}
-          >
-            <FaChevronRight className="text-gray-500 text-sm" />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={data.page.totalPages}
+          setPage={setPage}
+        />
       )}
     </div>
   );

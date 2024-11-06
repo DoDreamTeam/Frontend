@@ -13,6 +13,7 @@ import SearchInput from "../ui/SearchInput";
 import { useUser } from "../../context/UserProvider";
 import { MdEdit, MdDelete } from "react-icons/md";
 import useModal from "../../hooks/useModal";
+import Pagination from "../ui/Pagination";
 
 const QuestionList = ({ bookId, bookOwnerName }) => {
   const { userInfo } = useUser();
@@ -25,15 +26,16 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
 
   const [excludeAnswered, setExcludeAnswered] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null); // 선택된 질문 ID
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
   const handleSearchKeyword = (e) => {
     setKeyword(e.target.value);
   };
 
   const handleSearch = () => {
-    setPage(0); // Reset to the first page on search
-    refetch(); // Refetch data based on new keyword
+    setPage(0);
+    refetch();
   };
 
   const getQuestionList = async (page) => {
@@ -74,12 +76,19 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
         `/books/${bookId}/questions/${selectedQuestionId}`
       );
       if (response.status === 204) {
-        // 질문 삭제 후 페이지 새로고침
-        window.location.reload();
+        setIsDeleteSuccess(true); // 삭제 성공 상태를 true로 설정
+        openModal();
       }
     } catch (error) {
       console.error("Delete question ERROR: ", error);
     }
+  };
+
+  // 삭제 성공 후 확인 버튼 클릭 시 새로고침
+  const handleSuccessModalClose = () => {
+    closeModal();
+    setSelectedQuestionId(null); // 선택된 질문 ID 초기화
+    window.location.reload(); // 페이지 새로고침
   };
 
   return (
@@ -179,57 +188,31 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
           })
         ) : (
           <div className="w-full mb-16 text-center">
-            <div className="flex flex-col justify-center items-center h-80">
-              <div className="text-xl font-medium text-center my-4">
-                문제가 존재하지 않습니다.
-                <br /> 문제를 추가해주세요!
+            {keyword ? (
+              <div className="flex flex-col justify-center items-center h-80">
+                <div className="text-xl font-medium text-center my-4">
+                  검색어와 일치하는 문제가 없습니다.
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center h-80">
+                <div className="text-xl font-medium text-center my-4">
+                  문제가 존재하지 않습니다.
+                  <br /> 문제를 추가해주세요!
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* 페이지네이션 */}
       {questions.length > 0 && (
-        <div className="flex justify-center mt-8 mb-10">
-          <button
-            onClick={() => setPage(currentPage - 1, data.page.totalPages)}
-            disabled={currentPage === 0}
-            className={`p-2 ${
-              currentPage === 0
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            <FaChevronLeft className="text-gray-600 text-sm" />
-          </button>
-
-          {Array.from({ length: data.page.totalPages }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setPage(index, data.page.totalPages)}
-              className={`mx-1 p-2 ${
-                index === currentPage
-                  ? "font-bold text-blue-400"
-                  : "text-gray-500 hover:text-gray-200"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => setPage(currentPage + 1, data.page.totalPages)}
-            disabled={currentPage === data.page.totalPages - 1}
-            className={`p-2 ${
-              currentPage === data.page.totalPages - 1
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            <FaChevronRight className="text-gray-600 text-sm" />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={data.page.totalPages}
+          setPage={setPage}
+        />
       )}
 
       {/* 삭제 모달 */}
@@ -252,6 +235,23 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
           </button>
         </div>
       </Modal>
+
+      {/* 삭제 성공 모달 */}
+      {isDeleteSuccess && (
+        <Modal style="w-120 text-center">
+          <div className="text-2xl font-semibold m-6">
+            성공적으로 삭제되었습니다!
+          </div>
+          <div className="flex justify-center mt-4 w-full">
+            <button
+              className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
+              onClick={handleSuccessModalClose}
+            >
+              확인
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

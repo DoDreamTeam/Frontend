@@ -3,12 +3,14 @@ import SolveQuestionForm from "../components/questionEvaluate/SolveQuestionForm"
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/api";
 import AddToMyBooks from "../components/questionEvaluate/AddToMyBooks";
+import { useAuth } from "../context/AuthContext";
 
 const QuestionPage = () => {
   const { id, questionId } = useParams();
   const [question, setQuestion] = useState("");
   const [bookTitle, setBookTitle] = useState("");
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -46,7 +48,7 @@ const QuestionPage = () => {
         <div className="text-3xl text-blue-600 font-bold mb-4 text-left">
           Q.
         </div>
-        <AddToMyBooks />
+        {isAuthenticated && <AddToMyBooks />}
       </div>
       {question && (
         <div className="mb-16">
