@@ -64,7 +64,7 @@ const QuestionForm = ({ id }) => {
       setQuestion(""); // 질문 입력 필드 초기화
       setAnswer(""); // 답변 입력 필드 초기화
     } else {
-      navigate(`/book/${id}/questions`); // 문제집 페이지로 리다이렉션
+      navigate(`/book/${id}`); // 문제집 페이지로 리다이렉션
     }
   };
 
@@ -113,7 +113,7 @@ const QuestionForm = ({ id }) => {
           </button>
           <button
             type="button"
-            onClick={() => navigate(`/book/${id}/questions`)}
+            onClick={() => navigate(`/book/${id}`)}
             className="w-full border hover:bg-gray-100 px-4 py-2 rounded-md"
           >
             취소

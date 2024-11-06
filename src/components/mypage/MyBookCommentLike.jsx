@@ -5,6 +5,7 @@ import api from '../../api/api';
 import { formatDate } from '../../utils/formatDateUtils';
 import { FaRegFaceSadCry } from 'react-icons/fa6';
 
+
 const MyBookCommentLike = () => {
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
@@ -18,7 +19,7 @@ const MyBookCommentLike = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await api.get('/mypage/book/comment', {
+        const response = await api.get("/mypage/book/comment", {
           params: { page: currentCommentPage },
         });
         if (response.data.content) {
@@ -36,7 +37,7 @@ const MyBookCommentLike = () => {
 
     const fetchLikes = async () => {
       try {
-        const response = await api.get('/mypage/book/comment/like', {
+        const response = await api.get("/mypage/book/comment/like", {
           params: { page: currentLikePage },
         });
         if (response.data.content) {
@@ -87,7 +88,7 @@ const MyBookCommentLike = () => {
         <button
           onClick={() => handleTabChange(true)}
           className={`p-2 transition-all duration-200 hover:bg-gray-200 rounded ${
-            showComments ? 'font-bold text-black underline' : ''
+            showComments ? "font-bold text-black underline" : ""
           }`}
         >
           댓글
@@ -95,7 +96,7 @@ const MyBookCommentLike = () => {
         <button
           onClick={() => handleTabChange(false)}
           className={`p-2 transition-all duration-200 hover:bg-gray-200 rounded ${
-            !showComments ? 'font-bold text-black underline' : ''
+            !showComments ? "font-bold text-black underline" : ""
           }`}
         >
           좋아요
@@ -109,7 +110,7 @@ const MyBookCommentLike = () => {
               <div
                 key={item.id}
                 className="flex justify-between p-2 cursor-pointer"
-                onClick={() => navigate(`/book/${item.bookId}/questions`)}
+                onClick={() => navigate(`/book/${item.bookId}`)}
               >
                 <div className="mr-8 ml-7">
                   {currentCommentPage * itemsPerPage + index + 1}

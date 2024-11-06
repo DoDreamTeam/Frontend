@@ -40,7 +40,7 @@ const EditForm = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(["book", id]); // 수정 후 캐시 무효화
-      navigate(`/book/${id}/questions`); // 수정 후 문제집 상세 페이지로 이동
+      navigate(`/book/${id}`); // 수정 후 문제집 상세 페이지로 이동
     },
     onError: (error) => {
       console.error("Update Book Error: ", error);
@@ -106,7 +106,7 @@ const EditForm = () => {
         </button>
         <button
           type="button"
-          onClick={() => navigate(`/book/${id}/questions`)}
+          onClick={() => navigate(`/book/${id}`)}
           className="w-full border hover:bg-gray-100 px-4 py-2 rounded-md"
         >
           취소

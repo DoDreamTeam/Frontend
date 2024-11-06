@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import SolveQuestionForm from "../components/questionEvaluate/SolveQuestionForm";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/api";
+import AddToMyBooks from "../components/questionEvaluate/AddToMyBooks";
+import { useAuth } from "../context/AuthContext";
 
 const QuestionPage = () => {
   const { id, questionId } = useParams();
   const [question, setQuestion] = useState("");
   const [bookTitle, setBookTitle] = useState("");
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -36,12 +39,17 @@ const QuestionPage = () => {
     <div className="w-full mb-16">
       <div
         className="text-xl text-black font-bold mb-16 text-left hover:text-gray-500 cursor-pointer hover:underline"
-        onClick={() => navigate(`/book/${id}/questions`)}
+        onClick={() => navigate(`/book/${id}`)}
       >
         {bookTitle}
       </div>
 
-      <div className="text-3xl text-blue-600 font-bold mb-4 text-left">Q.</div>
+      <div className="flex justify-between">
+        <div className="text-3xl text-blue-600 font-bold mb-4 text-left">
+          Q.
+        </div>
+        {isAuthenticated && <AddToMyBooks />}
+      </div>
       {question && (
         <div className="mb-16">
           <div className="text-xl">{question}</div>

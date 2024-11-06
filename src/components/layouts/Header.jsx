@@ -8,35 +8,38 @@ import NotificationMenu from "../notification/NotificationMenu";
 import LoginButton from "../auth/LoginButton";
 import LogoutButton from "../auth/LogoutButton";
 import { useUser } from "../../context/UserProvider";
+import api from "../../api/api";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 현재 위치 정보를 가져옴
+  const { userInfo } = useUser(); // 사용자 정보 가져오기
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const { userInfo } = useUser();
-
-  const notifications = [
-    {
-      message: "[정처기 실기 대비] 문제집에 새로운 댓글이  달렸습니다!",
-      read: false,
-    },
-    {
-      message: "[정처기 실기 스터디] 누군가 스터디 가입 승인을 요청했습니다.",
-      read: true,
-    },
-    {
-      message: "[정처기 실기 스터디] 누군가 스터디 가입 승인을 요청했습니다.",
-      read: true,
-    },
-    {
-      message: "[면접 대비 스터디] 스터디 인증글에 새로운 댓글이  달렸습니다!",
-      read: false,
-    },
-  ];
+  const [notifications, setNotifications] = useState([]); // 알림 상태 추가
 
   // 사용자 정보가 있으면 인증
   const isAuthenticated = !!userInfo;
+
+  // 알림 가져오기
+  const getNotifications = async () => {
+    try {
+      if (userInfo && userInfo.userId) {
+        const response = await api.get(`/notification/${userInfo.userId}`);
+        setNotifications(response.data);
+      }
+    } catch (error) {
+      console.error("알림 가져오기 실패", error);
+    }
+  };
+
+  // 알림 상태가 변경될 때마다 알림을 다시 가져옴
+  useEffect(() => {
+    if (isAuthenticated) {
+      getNotifications();
+    }
+  }, [isAuthenticated, userInfo]); // 인증 상태와 사용자 정보가 변경될 때마다 실행
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -99,12 +102,13 @@ const Header = () => {
                   <NotificationMenu
                     notifications={notifications}
                     closeMenu={toggleNotifications}
+                    setNotifications={setNotifications}
                   />
                 )}
               </div>
               <div className="relative flex items-center">
                 <img
-                  src={userInfo.profileImage || defaultProfile}
+                  src={userInfo?.profileImage || defaultProfile}
                   alt="Profile"
                   className="w-8 h-8 rounded-full cursor-pointer border-2 border-gray-300"
                   onClick={toggleMenu}

@@ -54,7 +54,7 @@ const EditQuestionForm = () => {
     mutationFn: updateQuestion,
     onSuccess: () => {
       showAlert("문제가 성공적으로 수정되었습니다.", "success");
-      navigate(`/book/${id}/questions`);
+      navigate(`/book/${id}`);
     },
     onError: (error) => {
       console.error("Update Question ERROR: ", error);
@@ -124,7 +124,7 @@ const EditQuestionForm = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate(`/book/${id}/questions`)}
+            onClick={() => navigate(`/book/${id}`)}
             className="w-full border hover:bg-gray-100 px-4 py-2 rounded-md"
           >
             취소

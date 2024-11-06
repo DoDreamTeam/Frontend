@@ -22,12 +22,6 @@ const useModal = () => {
         <div
           className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl p-6 bg-white shadow-md ${style} z-60`}
         >
-          {/* <button
-            className="absolute top-4 right-4 text-black bg-transparent text-xl mr-4"
-            onClick={closeModal}
-          >
-            X
-          </button> */}
           <div className="flex flex-col items-center">{children}</div>
         </div>
       </div>

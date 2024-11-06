@@ -36,7 +36,7 @@ const CreateBookForm = () => {
 
       try {
         const createdBook = await createBookMutation.mutateAsync(bookData);
-        navigate(`/book/${createdBook.id}`, {
+        navigate(`/book/${createdBook.id}/questions/add`, {
           state: {
             id: createdBook.id,
             title: createdBook.title,

@@ -1,7 +1,12 @@
 import React from "react";
+import SelectStudy from "../components/addToStudy/SelectStudy";
 
 const AddToStudy = () => {
-  return <div>스터디에 추가하기</div>;
+  return (
+    <div className="w-full mb-16">
+      <SelectStudy />
+    </div>
+  );
 };
 
 export default AddToStudy;
