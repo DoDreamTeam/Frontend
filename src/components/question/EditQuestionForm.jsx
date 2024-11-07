@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/api";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import useAlert from "../../hooks/useAlert";
+import useModal from "../../hooks/useModal";
+import EditSuccessModal from "../ui/EditSuccessModal";
 
 const EditQuestionForm = () => {
   const { id, questionId } = useParams();
   const navigate = useNavigate();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const { showAlert, Alert } = useAlert();
+  const { openModal, closeModal, Modal } = useModal();
 
   const maxQuestionLength = 255;
   const maxAnswerLength = 1000;
@@ -53,12 +54,10 @@ const EditQuestionForm = () => {
   const updateQuestionMutation = useMutation({
     mutationFn: updateQuestion,
     onSuccess: () => {
-      showAlert("문제가 성공적으로 수정되었습니다.", "success");
-      navigate(`/book/${id}`);
+      openModal();
     },
     onError: (error) => {
       console.error("Update Question ERROR: ", error);
-      showAlert("문제 수정 중 오류가 발생했습니다.", "error");
     },
   });
 
@@ -77,6 +76,11 @@ const EditQuestionForm = () => {
         console.error("Error while updating question: ", error);
       }
     }
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
+    navigate(`/book/${id}`);
   };
 
   return (
@@ -132,7 +136,10 @@ const EditQuestionForm = () => {
         </div>
       </form>
 
-      <Alert />
+      {/* 수정 성공 Modal */}
+      <Modal style="w-120 text-center">
+        <EditSuccessModal handleCloseModal={handleCloseModal} />
+      </Modal>
     </>
   );
 };

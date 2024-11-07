@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { FaBookmark } from "react-icons/fa";
 import api from "../../api/api";
 import { useUser } from "../../context/UserProvider";
-import useAlert from "../../hooks/useAlert";
+import useModal from "../../hooks/useModal";
+import LoginRequestModal from "./LoginRequestModal";
 
 const BookmarkButton = ({
   bookId,
@@ -13,7 +14,8 @@ const BookmarkButton = ({
 }) => {
   const { userInfo } = useUser();
   const queryClient = useQueryClient();
-  const { showAlert, Alert } = useAlert();
+  const { openModal, closeModal, Modal } = useModal();
+  const [isMyBook, setIsMyBook] = useState(false);
 
   const toggleBookmark = useMutation({
     mutationFn: async () => {
@@ -28,16 +30,21 @@ const BookmarkButton = ({
 
   const handleClick = () => {
     if (!userInfo) {
-      showAlert("로그인 후 북마크를 사용할 수 있습니다.");
+      openModal();
       return;
     }
 
     if (userInfo.userName === bookOwnerName) {
-      showAlert("본인이 만든 문제집을 북마크할 수 없습니다.");
+      setIsMyBook(true);
+      openModal();
       return;
     }
 
     toggleBookmark.mutate();
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
   };
 
   return (
@@ -48,8 +55,26 @@ const BookmarkButton = ({
         />
       </button>
 
-      {/* alert */}
-      <Alert />
+      {/* 비회원이 좋아요 누를 때 Modal */}
+      <Modal>
+        <LoginRequestModal handleCloseModal={handleCloseModal} />
+      </Modal>
+
+      {isMyBook && (
+        <Modal>
+          <div className="text-2xl font-semibold m-6">
+            본인이 쓴 댓글은 좋아요를 누를 수 없습니다.
+            <div className="flex justify-center mt-4 w-full">
+              <button
+                className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
+                onClick={closeModal}
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
