@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import api from "../../api/api";
 import usePagination from "../../hooks/usePagination";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
-import { IoMdPeople } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
-import useAlert from "../../hooks/useAlert";
 import Pagination from "../ui/Pagination";
 import useModal from "../../hooks/useModal";
 
