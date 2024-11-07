@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import defaultProfile from "../../assets/default_profile.jpg";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserProvider";
@@ -6,12 +6,14 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import BookmarkButton from "../ui/BookmarkButton";
 import useModal from "../../hooks/useModal";
 import useAlert from "../../hooks/useAlert";
+import DeleteSuccessModal from "../ui/DeleteSuccessModal";
+import api from "../../api/api";
 
 const BookInfo = ({ bookData, onBookmarkToggle }) => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
   const { openModal, closeModal, Modal } = useModal();
-  const { showAlert, Alert } = useAlert();
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
   const { title, username, userProfile, userId, bookmarked } = bookData;
 
@@ -20,13 +22,17 @@ const BookInfo = ({ bookData, onBookmarkToggle }) => {
     try {
       const response = await api.delete(`/books/${bookData.id}`);
       if (response.status === 204) {
-        navigate("/book");
-        closeModal();
-        showAlert("정상적으로 문제집이 삭제되었습니다.");
+        setIsDeleteSuccess(true);
+        openModal();
       }
     } catch (error) {
       console.error("Delete Book Error: ", error);
     }
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
+    navigate("/book");
   };
 
   return (
@@ -105,8 +111,12 @@ const BookInfo = ({ bookData, onBookmarkToggle }) => {
         </div>
       </Modal>
 
-      {/* 삭제 확인 alert */}
-      <Alert />
+      {/* 삭제 확인 Modal */}
+      {isDeleteSuccess && (
+        <Modal>
+          <DeleteSuccessModal handleSuccessModalClose={handleCloseModal} />
+        </Modal>
+      )}
     </div>
   );
 };
