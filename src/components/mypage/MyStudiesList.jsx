@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import api from '../../api/api';
-import { Link, useNavigate } from 'react-router-dom';
-import { IoMdPeople } from 'react-icons/io';
-import { FaRegFaceSadCry } from 'react-icons/fa6';
+import React, { useEffect, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import api from "../../api/api";
+import { Link, useNavigate } from "react-router-dom";
+import { IoMdPeople } from "react-icons/io";
+import { FaRegFaceSadCry } from "react-icons/fa6";
 
 const MyStudiesList = () => {
   const [studies, setStudies] = useState([]);
@@ -18,7 +18,7 @@ const MyStudiesList = () => {
 
   const fetchStudies = async () => {
     try {
-      const response = await api.get('/study/my', {
+      const response = await api.get("/study/my", {
         params: { page: currentStudyPage, size: itemsPerPage },
       });
       if (response.data.content) {
@@ -30,7 +30,7 @@ const MyStudiesList = () => {
         setTotalPagesStudy(0);
       }
     } catch (error) {
-      console.error('스터디를 가져오는 중 오류 발생:', error);
+      console.error("스터디를 가져오는 중 오류 발생:", error);
     }
   };
 
@@ -43,7 +43,7 @@ const MyStudiesList = () => {
   };
 
   return (
-    <div>
+    <div className="w-[1200px] max-w-screen-lg mx-auto mb-10">
       <div className="flex items-center justify-between mb-8 mt-8">
         <div className="text-xl font-semibold">내가 참여 중인 스터디</div>
       </div>
@@ -69,7 +69,7 @@ const MyStudiesList = () => {
               <div
                 key={study.id}
                 className="relative p-4"
-                style={{ display: 'flex', alignItems: 'center' }}
+                style={{ display: "flex", alignItems: "center" }}
               >
                 <div className="absolute top-1/2 left-0 ml-7 text-center transform -translate-y-1/2">
                   {currentStudyPage * itemsPerPage + index + 1}
@@ -82,7 +82,7 @@ const MyStudiesList = () => {
                   {study.title}
                 </span>
 
-                <div className="absolute top-1/2 right-80 flex items-center space-x-2 transform -translate-y-1/2">
+                <div className="absolute top-1/2 right-80 flex items-center space-x-2 transform -translate-y-1/2 mr-2">
                   <img
                     src={study.profileImage}
                     className="w-6 h-6 rounded-full"
@@ -115,8 +115,8 @@ const MyStudiesList = () => {
                 onClick={() => handlePageChange(index)}
                 className={`mx-1 ${
                   index === currentStudyPage
-                    ? 'font-bold text-blue-400'
-                    : 'text-gray-500'
+                    ? "font-bold text-blue-400"
+                    : "text-gray-500"
                 }`}
               >
                 {index + 1}
