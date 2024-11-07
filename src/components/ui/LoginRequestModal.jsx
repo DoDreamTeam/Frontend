@@ -1,9 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const LoginRequestModal = ({ closeModal }) => {
-  const navigate = useNavigate();
-
+const LoginRequestModal = ({ handleCloseModal }) => {
   return (
     <div className="text-center p-4">
       <h2 className="text-xl font-semibold">로그인해야 합니다</h2>
