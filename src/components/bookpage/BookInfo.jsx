@@ -5,7 +5,6 @@ import { useUser } from "../../context/UserProvider";
 import { MdEdit, MdDelete } from "react-icons/md";
 import BookmarkButton from "../ui/BookmarkButton";
 import useModal from "../../hooks/useModal";
-import useAlert from "../../hooks/useAlert";
 import DeleteSuccessModal from "../ui/DeleteSuccessModal";
 import api from "../../api/api";
 
