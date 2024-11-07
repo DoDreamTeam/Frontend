@@ -1,0 +1,13 @@
+version: '3'
+services:
+  front:
+    build: 
+      context: .
+    container_name: dodream-front-container
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt/archive/dodream.store/fullchain1.pem:/etc/ssl/certs/fullchain.pem:ro
+      - /etc/letsencrypt/archive/dodream.store/privkey1.pem:/etc/ssl/private/privkey.pem:ro
