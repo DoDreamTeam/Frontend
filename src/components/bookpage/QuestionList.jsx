@@ -28,6 +28,7 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
   const [keyword, setKeyword] = useState("");
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false); // 로그인 모달 상태
 
   const handleSearchKeyword = (e) => {
     setKeyword(e.target.value);
@@ -39,11 +40,18 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
   };
 
   const getQuestionList = async (page) => {
-    const response = await api.get(
-      keyword
-        ? `/books/${bookId}/questions/search?keyword=${keyword}&page=${page}&size=${questionsPerPage}`
-        : `/books/${bookId}/questions?page=${page}&size=${questionsPerPage}&type=${excludeAnswered}`
-    );
+    // 로그인된 상태에서 '내가 푼 문제 제외'를 클릭했을 때만 my API 호출
+    const url =
+      excludeAnswered && userInfo
+        ? `/books/${bookId}/questions/my?page=${page}&size=${questionsPerPage}`
+        : `/books/${bookId}/questions?page=${page}&size=${questionsPerPage}`;
+
+    // 검색어가 있을 경우 검색 API 호출
+    const searchUrl = keyword
+      ? `/books/${bookId}/questions/search?keyword=${keyword}`
+      : url;
+
+    const response = await api.get(searchUrl);
     return response.data;
   };
 
@@ -91,12 +99,25 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
     window.location.reload(); // 페이지 새로고침
   };
 
+  // '내가 푼 문제 제외' 클릭 시 로그인 모달 띄우기
+  const handleExcludeAnsweredClick = () => {
+    if (userInfo) {
+      setExcludeAnswered(true);
+      refetch(); // 데이터 새로고침
+    } else {
+      setShowLoginModal(true); // 로그인 모달 띄우기
+    }
+  };
+
   return (
     <div className="mb-16">
       <div className="flex justify-between items-center mb-4 border-b border-gray-300 pb-2">
         <div className="w-full">
           <button
-            onClick={() => setExcludeAnswered(false)}
+            onClick={() => {
+              setExcludeAnswered(false); // 최신순 버튼 클릭 시 최신순 조회
+              refetch(); // 데이터 새로고침
+            }}
             className={`py-2 px-4 mx-1 ${
               !excludeAnswered ? "font-bold" : "text-gray-400"
             }`}
@@ -104,7 +125,7 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
             최신순
           </button>
           <button
-            onClick={() => setExcludeAnswered(true)}
+            onClick={handleExcludeAnsweredClick} // '내가 푼 문제 제외' 클릭 시 로그인 여부 확인
             className={`py-2 px-4 mx-1 ${
               excludeAnswered ? "font-bold" : "text-gray-400"
             }`}
@@ -213,6 +234,29 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
           totalPages={data.page.totalPages}
           setPage={setPage}
         />
+      )}
+
+      {/* 로그인 모달 */}
+      {showLoginModal && (
+        <Modal style="w-120 text-center">
+          <div className="text-2xl font-semibold m-6">
+            로그인 후 '내가 푼 문제 제외' 기능을 이용할 수 있습니다!
+          </div>
+          <div className="flex justify-center mt-4 w-full">
+            <button
+              className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
+              onClick={() => navigate("/login")} // 로그인 페이지로 이동
+            >
+              로그인
+            </button>
+            <button
+              className="w-3/4 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-400 m-4"
+              onClick={() => setShowLoginModal(false)} // 모달 닫기
+            >
+              취소
+            </button>
+          </div>
+        </Modal>
       )}
 
       {/* 삭제 모달 */}
