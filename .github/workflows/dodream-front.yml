@@ -27,7 +27,7 @@ jobs:
             echo -e "VITE_NAVER_ID=${{ secrets.NAVER_ID }}" >> .env
             echo -e "VITE_NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }}" >> .env
 
-            git_output=$(sudo git pull origin main 2>&1)
+            git_output=$(sudo git pull origin dev 2>&1)
             
             docker compose up -d --build
 
