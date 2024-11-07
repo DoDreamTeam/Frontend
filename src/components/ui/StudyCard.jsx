@@ -93,7 +93,7 @@ const StudyCard = ({
       {/* 스터디 제목 */}
       <div
         className="text-lg mt-3 mb-1 flex-grow hover:underline hover:text-gray-400 cursor-pointer"
-        onClick={() => navigate(`/study/${id}/studyroom`)}
+        onClick={() => navigate(`/study/${id}`)}
       >
         {title}
       </div>
