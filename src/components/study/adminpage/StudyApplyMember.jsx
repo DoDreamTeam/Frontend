@@ -51,7 +51,7 @@ const StudyApplyMember = ({ studyId, updateMembers }) => {
               : member
           )
         );
-        fetchMembers(); // 상태 업데이트 후 바로 새 데이터를 fetch
+        fetchMembers();
         closeModal();
       }
     } catch (error) {

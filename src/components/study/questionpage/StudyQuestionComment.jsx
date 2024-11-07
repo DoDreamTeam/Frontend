@@ -1,6 +1,6 @@
 import React from 'react';
-import StudyCommentList from '../comment/StudyCommentList';
-import StudyCommentForm from '../comment/StudyCommentForm';
+import StudyCommentList from '../studycomment/StudyCommentList';
+import StudyCommentForm from '../studycomment/StudyCommentForm';
 
 const StudyQuestionComment = ({ userAnswerId }) => {
   return (
