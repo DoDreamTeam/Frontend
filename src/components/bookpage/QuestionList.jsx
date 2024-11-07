@@ -1,24 +1,20 @@
 import React, { useState } from "react";
 import api from "../../api/api";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import usePagination from "../../hooks/usePagination";
-import {
-  evaluationStyles,
-  evaluationMessages,
-} from "../../utils/evaluationUtils";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { formatDate } from "../../utils/formatDateUtils";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import SearchInput from "../ui/SearchInput";
 import { useUser } from "../../context/UserProvider";
-import { MdEdit, MdDelete } from "react-icons/md";
+import usePagination from "../../hooks/usePagination";
+import SearchInput from "../ui/SearchInput";
 import useModal from "../../hooks/useModal";
 import Pagination from "../ui/Pagination";
+import QuestionItem from "./question/QuestionItem";
+import LoginRequestModal from "../ui/LoginRequestModal";
+import DeleteConfirmationModal from "../ui/DeleteConfirmModal";
+import DeleteSuccessModal from "../ui/DeleteSuccessModal";
 
 const QuestionList = ({ bookId, bookOwnerName }) => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { openModal, closeModal, Modal } = useModal();
 
   const { currentPage, setPage } = usePagination(0);
@@ -28,7 +24,7 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
   const [keyword, setKeyword] = useState("");
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false); // 로그인 모달 상태
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleSearchKeyword = (e) => {
     setKeyword(e.target.value);
@@ -40,13 +36,11 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
   };
 
   const getQuestionList = async (page) => {
-    // 로그인된 상태에서 '내가 푼 문제 제외'를 클릭했을 때만 my API 호출
     const url =
       excludeAnswered && userInfo
         ? `/books/${bookId}/questions/my?page=${page}&size=${questionsPerPage}`
         : `/books/${bookId}/questions?page=${page}&size=${questionsPerPage}`;
 
-    // 검색어가 있을 경우 검색 API 호출
     const searchUrl = keyword
       ? `/books/${bookId}/questions/search?keyword=${keyword}`
       : url;
@@ -66,25 +60,13 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
 
   const questions = data.content;
 
-  const renderEvaluationButton = (evaluation) => {
-    if (!evaluation) {
-      return <button className={evaluationStyles["학습하기"]}>학습하기</button>;
-    }
-
-    const buttonLabel = evaluationMessages[evaluation.evaluationType];
-    const buttonStyle = evaluationStyles[evaluation.evaluationType];
-
-    return <button className={buttonStyle}>{buttonLabel}</button>;
-  };
-
-  // 문제 삭제
   const handleDelete = async () => {
     try {
       const response = await api.delete(
         `/books/${bookId}/questions/${selectedQuestionId}`
       );
       if (response.status === 204) {
-        setIsDeleteSuccess(true); // 삭제 성공 상태를 true로 설정
+        setIsDeleteSuccess(true);
         openModal();
       }
     } catch (error) {
@@ -92,20 +74,18 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
     }
   };
 
-  // 삭제 성공 후 확인 버튼 클릭 시 새로고침
   const handleSuccessModalClose = () => {
     closeModal();
-    setSelectedQuestionId(null); // 선택된 질문 ID 초기화
-    window.location.reload(); // 페이지 새로고침
+    setSelectedQuestionId(null);
+    window.location.reload();
   };
 
-  // '내가 푼 문제 제외' 클릭 시 로그인 모달 띄우기
   const handleExcludeAnsweredClick = () => {
     if (userInfo) {
       setExcludeAnswered(true);
-      refetch(); // 데이터 새로고침
+      refetch();
     } else {
-      setShowLoginModal(true); // 로그인 모달 띄우기
+      setShowLoginModal(true);
     }
   };
 
@@ -115,8 +95,8 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
         <div className="w-full">
           <button
             onClick={() => {
-              setExcludeAnswered(false); // 최신순 버튼 클릭 시 최신순 조회
-              refetch(); // 데이터 새로고침
+              setExcludeAnswered(false);
+              refetch();
             }}
             className={`py-2 px-4 mx-1 ${
               !excludeAnswered ? "font-bold" : "text-gray-400"
@@ -125,7 +105,7 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
             최신순
           </button>
           <button
-            onClick={handleExcludeAnsweredClick} // '내가 푼 문제 제외' 클릭 시 로그인 여부 확인
+            onClick={handleExcludeAnsweredClick}
             className={`py-2 px-4 mx-1 ${
               excludeAnswered ? "font-bold" : "text-gray-400"
             }`}
@@ -144,83 +124,34 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
       <div className="h-60">
         {questions.length > 0 ? (
           questions.map((question, index) => {
-            const isUserQuestion =
-              userInfo && userInfo.userId === question.evaluation?.userId;
-
             return (
-              <div
+              <QuestionItem
                 key={question.id}
-                className="flex items-center mb-2 border-b border-gray-200 pb-2"
-              >
-                <div className="w-12 text-center mr-2">
-                  {currentPage * questionsPerPage + index + 1}
-                </div>
-                <div
-                  className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap hover:underline cursor-pointer"
-                  onClick={() =>
-                    navigate(`/book/${bookId}/questions/${question.id}`)
-                  }
-                >
-                  {question.question}
-                </div>
-                <div>
-                  {userInfo?.userName === bookOwnerName && (
-                    <div className="flex justify-center mt-2">
-                      <button className="mx-1">
-                        <MdEdit
-                          className="hover:text-blue-400"
-                          onClick={() =>
-                            navigate(
-                              `/book/${bookId}/questions/${question.id}/edit`
-                            )
-                          }
-                        />
-                      </button>
-                      <button className="mx-1">
-                        <MdDelete
-                          className="hover:text-blue-400"
-                          onClick={() => {
-                            setSelectedQuestionId(question.id); // 선택된 질문 ID 설정
-                            openModal();
-                          }}
-                        />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <div className="ml-4 flex items-center">
-                  <div
-                    className="text-gray-500 mr-2 text-sm"
-                    style={{ minWidth: "100px" }}
-                  >
-                    {formatDate(question.createdAt)}
-                  </div>
-                  <div
-                    className="flex justify-center"
-                    style={{ minWidth: "80px" }}
-                  >
-                    {renderEvaluationButton(
-                      isUserQuestion ? question.evaluation : null
-                    )}
-                  </div>
-                </div>
-              </div>
+                question={question}
+                index={index}
+                currentPage={currentPage}
+                userInfo={userInfo}
+                bookId={bookId}
+                bookOwnerName={bookOwnerName}
+                onEditClick={(id) =>
+                  navigate(`/book/${bookId}/questions/${id}/edit`)
+                }
+                onDeleteClick={(id) => {
+                  setSelectedQuestionId(id);
+                  openModal();
+                }}
+              />
             );
           })
         ) : (
           <div className="w-full mb-16 text-center">
             {keyword ? (
-              <div className="flex flex-col justify-center items-center h-80">
-                <div className="text-xl font-medium text-center my-4">
-                  검색어와 일치하는 문제가 없습니다.
-                </div>
+              <div className="text-xl font-medium text-center my-4">
+                검색어와 일치하는 문제가 없습니다.
               </div>
             ) : (
-              <div className="flex flex-col justify-center items-center h-80">
-                <div className="text-xl font-medium text-center my-4">
-                  문제가 존재하지 않습니다.
-                  <br /> 문제를 추가해주세요!
-                </div>
+              <div className="text-xl font-medium text-center my-4">
+                문제가 존재하지 않습니다. <br /> 문제를 추가해주세요!
               </div>
             )}
           </div>
@@ -236,64 +167,27 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
         />
       )}
 
-      {/* 로그인 모달 */}
+      {/* 모달 */}
       {showLoginModal && (
         <Modal style="w-120 text-center">
-          <div className="text-2xl font-semibold m-6">
-            로그인 후 '내가 푼 문제 제외' 기능을 이용할 수 있습니다!
-          </div>
-          <div className="flex justify-center mt-4 w-full">
-            <button
-              className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
-              onClick={() => navigate("/login")} // 로그인 페이지로 이동
-            >
-              로그인
-            </button>
-            <button
-              className="w-3/4 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-400 m-4"
-              onClick={() => setShowLoginModal(false)} // 모달 닫기
-            >
-              취소
-            </button>
-          </div>
+          <LoginRequestModal closeModal={closeModal} />
         </Modal>
       )}
 
-      {/* 삭제 모달 */}
-      <Modal style="w-120 text-center">
-        <div className="text-2xl font-semibold m-6">
-          정말 문제를 삭제하시겠습니까?
-        </div>
-        <div className="flex justify-around mt-4 w-full">
-          <button
-            className="w-3/4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 m-4"
-            onClick={handleDelete}
-          >
-            삭제
-          </button>
-          <button
-            className="w-3/4 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-400 m-4"
-            onClick={closeModal}
-          >
-            취소
-          </button>
-        </div>
-      </Modal>
+      {selectedQuestionId && (
+        <Modal style="w-120 text-center">
+          <DeleteConfirmationModal
+            handleDelete={handleDelete}
+            closeModal={closeModal}
+          />
+        </Modal>
+      )}
 
-      {/* 삭제 성공 모달 */}
       {isDeleteSuccess && (
         <Modal style="w-120 text-center">
-          <div className="text-2xl font-semibold m-6">
-            성공적으로 삭제되었습니다!
-          </div>
-          <div className="flex justify-center mt-4 w-full">
-            <button
-              className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
-              onClick={handleSuccessModalClose}
-            >
-              확인
-            </button>
-          </div>
+          <DeleteSuccessModal
+            handleSuccessModalClose={handleSuccessModalClose}
+          />
         </Modal>
       )}
     </div>
