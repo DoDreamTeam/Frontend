@@ -67,6 +67,7 @@ const StudyList = ({ searchResults }) => {
               id={study.id}
               title={study.title}
               description={study.description}
+              userId={study.userId}
               username={study.username}
               userCount={study.userCount}
               profileImage={study.profileImage}
