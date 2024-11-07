@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import usePagination from "../../../hooks/usePagination";
-import api from "../../../api/api";
-import { useQuery } from "@tanstack/react-query";
-import StudyComment from "./StudyComment";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import Pagination from "../../ui/Pagination";
+import React, { useEffect } from 'react';
+import usePagination from '../../../hooks/usePagination';
+import api from '../../../api/api';
+import { useQuery } from '@tanstack/react-query';
+import StudyComment from './StudyComment';
+import Pagination from '../../ui/Pagination';
 
 const StudyCommentList = ({ userAnswerId }) => {
   const { currentPage, setPage } = usePagination(0);
@@ -18,7 +17,7 @@ const StudyCommentList = ({ userAnswerId }) => {
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["studycomments", userAnswerId, currentPage],
+    queryKey: ['studycomments', userAnswerId, currentPage],
     queryFn: () => getCommentList(currentPage),
     enabled: !!userAnswerId,
   });

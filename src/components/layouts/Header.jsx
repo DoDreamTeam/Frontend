@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import logo from "../../assets/logo.png";
-import defaultProfile from "../../assets/default_profile.jpg";
-import { IoMdNotifications } from "react-icons/io";
-import { FaCaretDown } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom";
-import NotificationMenu from "../notification/NotificationMenu";
-import LoginButton from "../auth/LoginButton";
-import LogoutButton from "../auth/LogoutButton";
-import { useUser } from "../../context/UserProvider";
-import api from "../../api/api";
+import React, { useState, useEffect } from 'react';
+import logo from '../../assets/logo.png';
+import defaultProfile from '../../assets/default_profile.jpg';
+import { IoMdNotifications } from 'react-icons/io';
+import { FaCaretDown } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
+import NotificationMenu from '../notification/NotificationMenu';
+import LoginButton from '../auth/LoginButton';
+import LogoutButton from '../auth/LogoutButton';
+import { useUser } from '../../context/UserProvider';
+import api from '../../api/api';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const Header = () => {
         setNotifications(response.data);
       }
     } catch (error) {
-      console.error("알림 가져오기 실패", error);
+      console.error('알림 가져오기 실패', error);
     }
   };
 
@@ -68,7 +68,7 @@ const Header = () => {
       <div className="flex justify-between items-center w-full max-w-screen-lg">
         <div
           className="flex items-center cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => navigate('/')}
         >
           <img src={logo} alt="logo" className="h-[180px]" />
         </div>
@@ -76,13 +76,13 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           <span
             className="cursor-pointer hover:text-blue-400"
-            onClick={() => handleMenuClick("/book")}
+            onClick={() => handleMenuClick('/book')}
           >
             문제집
           </span>
           <span
             className="cursor-pointer hover:text-blue-400"
-            onClick={() => handleMenuClick("/study")}
+            onClick={() => handleMenuClick('/study')}
           >
             스터디
           </span>
@@ -121,13 +121,13 @@ const Header = () => {
                     <ul className="py-1">
                       <li
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleMenuClick("/book/create")}
+                        onClick={() => handleMenuClick('/book/create')}
                       >
                         문제집 만들기
                       </li>
                       <li
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleMenuClick("/study/create")}
+                        onClick={() => handleMenuClick('/study/create')}
                       >
                         스터디 만들기
                       </li>

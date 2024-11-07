@@ -1,9 +1,9 @@
-import React from "react";
-import { FaSearch } from "react-icons/fa";
+import React from 'react';
+import { FaSearch } from 'react-icons/fa';
 
 const SearchInput = ({ value, onChange, placeholder, onSearch }) => {
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       onSearch();
     }
   };

@@ -48,7 +48,7 @@ const StudyNoticeEdit = ({ studyId }) => {
   }
 
   return (
-    <div>
+    <div className="mt-4">
       <div className="flex items-center mb-10">
         <div className="mr-5 text-3xl font-semibold">공지사항</div>
         <button onClick={handleEditClick} className="cursor-pointer">
@@ -75,7 +75,7 @@ const StudyNoticeEdit = ({ studyId }) => {
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className="mr-2 text-lg w-full rounded-lg border-b-2 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mr-2 text-lg w-full rounded-lg border-b-2 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg"
                   rows={4}
                   placeholder="공지사항 내용을 입력해주세요."
                 />

@@ -24,6 +24,7 @@ const StudyMember = ({ studyId, members: propMembers }) => {
   }, [currentMemberPage, itemsPerPage]);
 
   useEffect(() => {
+    fetchMembers();
     if (propMembers) {
       setLocalMembers(propMembers);
     }
@@ -74,15 +75,22 @@ const StudyMember = ({ studyId, members: propMembers }) => {
     try {
       await api.delete(`/study/${studyId}/members/${selectedMemberId}`);
       closeModal();
-      fetchMembers(); // 상태 업데이트 후 데이터 fetch
+      fetchMembers();
     } catch (error) {
       console.error('회원 삭제 중 오류 발생', error);
       closeModal();
     }
   };
 
-  const handleChangeMember = () => {
-    closeModal();
+  const handleChangeMember = async () => {
+    try {
+      await api.patch(`/study/${studyId}/members/leader/${selectedMemberId}`);
+      closeModal();
+      navigate(`/study/${studyId}`);
+    } catch (error) {
+      console.error('리더 변경 중 오류 발생', error);
+      closeModal();
+    }
   };
 
   if (loading) {
