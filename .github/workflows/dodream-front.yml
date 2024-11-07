@@ -1,0 +1,47 @@
+name: FRONT-WORKFLOW
+on:
+  push:
+    branches: [ "dev" ]
+jobs:
+  front-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            # 오류 발생 시 스크립트 중단
+            set -e
+            
+            # SSH 접속 후 작업 디렉토리로 이동
+            echo "SSH 접속"
+            cd dodream-front
+
+            # 환경 설정 파일 생성
+            echo "환경 설정 파일 생성"
+            echo -e "VITE_REST_SERVER=${{ secrets.REST_SERVER }}" >> .env
+            echo -e "VITE_GOOGLE_ID=${{ secrets.GOOGLE_ID }}" >> .env
+            echo -e "VITE_GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> .env
+            echo -e "VITE_KAKAO_ID=${{ secrets.KAKAO_ID }}" >> .env
+            echo -e "VITE_KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" >> .env
+            echo -e "VITE_NAVER_ID=${{ secrets.NAVER_ID }}" >> .env
+            echo -e "VITE_NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }}" >> .env
+
+            git_output=$(sudo git pull origin main 2>&1)
+            
+            docker compose up -d --build
+
+            - name: slack-notification
+            uses: 8398a7/action-slack@v3
+            with:
+              status: ${{ job.status }}
+              author_name: ${{ steps.get_author_name.outputs.author_name }}
+              fields: repo,commit,message,author # action,eventName,ref,workflow,job,took 추가할 수 있음
+              mention: here
+              if_mention: failure,cancelled
+            env:
+              SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+            if: always() # Pick up events even if the job fails or is canceled.
