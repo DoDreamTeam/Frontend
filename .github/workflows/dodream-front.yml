@@ -17,7 +17,6 @@ jobs:
             echo "SSH 접속"
             cd dodream-front
 
-            # 환경 설정 파일 생성
             echo "환경 설정 파일 생성"
             echo -e "VITE_REST_SERVER=${{ secrets.REST_SERVER }}" >> .env
             echo -e "VITE_GOOGLE_ID=${{ secrets.GOOGLE_ID }}" >> .env
