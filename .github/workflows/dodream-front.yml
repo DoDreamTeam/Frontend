@@ -26,7 +26,10 @@ jobs:
             echo -e "VITE_NAVER_ID=${{ secrets.NAVER_ID }}" >> .env
             echo -e "VITE_NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }}" >> .env
 
-            git_output=$(sudo git pull origin dev 2>&1)
+            echo "Checking Git repository..."
+            git_output=$(sudo git pull origin dev 2>&1) || { echo "Git pull failed"; echo "$git_output"; exit 1; }
+
+            echo "$git_output"
             
             docker compose up -d --build
 
