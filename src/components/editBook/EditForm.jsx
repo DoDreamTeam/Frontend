@@ -27,17 +27,35 @@ const EditForm = () => {
   useEffect(() => {
     if (data) {
       setTitle(data.title);
-      setCategory(data.category);
+      setCategory(data.category); // 기존 카테고리 값으로 초기화
     }
   }, [data]);
 
+  // 카테고리 한글 -> 영문으로 변환하는 함수
+  const mapCategoryToServerValue = (categoryName) => {
+    switch (categoryName) {
+      case "CS":
+        return "CATEGORY_CS";
+      case "자격증":
+        return "CATEGORY_CERT";
+      case "기타":
+        return "CATEGORY_ETC";
+      default:
+        return data?.category || ""; // 카테고리가 변경되지 않으면 기존 값을 사용
+    }
+  };
+
   // 문제집 수정
   const updateBookMutation = useMutation({
-    mutationFn: () =>
-      api.patch(`/books/${id}`, {
+    mutationFn: () => {
+      // 한글 카테고리를 서버에서 사용하는 영문 카테고리로 변환
+      const mappedCategory = mapCategoryToServerValue(category);
+
+      return api.patch(`/books/${id}`, {
         title,
-        category,
-      }),
+        category: mappedCategory, // 변환된 카테고리 값 전송
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["book", id]); // 수정 후 캐시 무효화
       navigate(`/book/${id}`); // 수정 후 문제집 상세 페이지로 이동
@@ -50,6 +68,10 @@ const EditForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     updateBookMutation.mutate();
+  };
+
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -79,7 +101,7 @@ const EditForm = () => {
         </label>
         <select
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={handleCategoryChange} // 카테고리 값 변경 시 처리
           className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="" disabled>

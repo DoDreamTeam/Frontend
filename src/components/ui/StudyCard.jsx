@@ -8,6 +8,7 @@ import { statusNames, statusStyles } from "../../utils/statusUtils";
 const StudyCard = ({
   id,
   title,
+  userId,
   username,
   userCount,
   profileImage,
@@ -27,8 +28,7 @@ const StudyCard = ({
         >
           {categoryNames[category] || category}
         </div>
-        <button
-          className={`text-xs font-semibold ${statusStyles[status]}`}>
+        <button className={`text-xs font-semibold ${statusStyles[status]}`}>
           {statusNames[status] || status}
         </button>
       </div>
@@ -52,7 +52,12 @@ const StudyCard = ({
             alt="Profile"
             className="h-6 w-6 rounded-full mr-2"
           />
-          <span>{username}</span>
+          <span
+            className="hover:underline cursor-pointer"
+            onClick={() => navigate(`/mypage/${userId}`)}
+          >
+            {username}
+          </span>
         </div>
         <div className="flex items-center text-sm text-gray-500">
           <MdOutlinePeopleOutline className="mr-1" />

@@ -19,7 +19,6 @@ const StudyList = ({ searchResults }) => {
     const response = await api.get(
       `/study?page=${page}&size=${itemsPerPage}${categoryParam}`
     );
-    console.log(response);
     return response.data;
   };
 
@@ -64,9 +63,11 @@ const StudyList = ({ searchResults }) => {
         {filteredStudys.length > 0 ? (
           filteredStudys.map((study) => (
             <StudyCard
+              key={study.id}
               id={study.id}
               title={study.title}
               description={study.description}
+              userId={study.userId}
               username={study.username}
               userCount={study.userCount}
               profileImage={study.profileImage}

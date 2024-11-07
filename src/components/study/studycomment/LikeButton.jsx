@@ -1,9 +1,10 @@
-import React from 'react';
-import { useUser } from '../../../context/UserProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useAlert from '../../../hooks/useAlert';
-import api from '../../../api/api';
-import { FaHeart } from 'react-icons/fa';
+import React, { useState } from "react";
+import { useUser } from "../../../context/UserProvider";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../../api/api";
+import { FaHeart } from "react-icons/fa";
+import useModal from "../../../hooks/useModal";
+import LoginRequestModal from "../../ui/LoginRequestModal";
 
 const LikeButton = ({
   userAnswerId,
@@ -14,7 +15,8 @@ const LikeButton = ({
 }) => {
   const { userInfo } = useUser();
   const queryClient = useQueryClient();
-  const { showAlert, Alert } = useAlert();
+  const { openModal, closeModal, Modal } = useModal();
+  const [isMyComment, setIsMyComment] = useState(false);
 
   const toggleLike = useMutation({
     mutationFn: async () => {
@@ -24,33 +26,58 @@ const LikeButton = ({
       return response.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries('studycomments');
+      queryClient.invalidateQueries("studycomments");
       onLikeToggle(data.isLiked);
     },
   });
 
   const handleClick = () => {
     if (!userInfo) {
-      showAlert('로그인 후 좋아요를 누를 수 있습니다.');
+      openModal();
       return;
     }
 
     if (userInfo.userName === commentOwnerName) {
-      showAlert('본인이 작성한 댓글은 좋아요할 수 없습니다.');
+      setIsMyComment(true);
+      openModal();
       return;
     }
 
     toggleLike.mutate();
   };
 
+  const handleCloseModal = () => {
+    closeModal();
+  };
+
   return (
     <div className="flex items-center">
       <button onClick={handleClick} disabled={toggleLike.isLoading}>
         <FaHeart
-          className={isLiked ? 'text-red-500 mr-1' : 'text-gray-500 mr-1'}
+          className={isLiked ? "text-red-500 mr-1" : "text-gray-500 mr-1"}
         />
-        <Alert />
       </button>
+
+      {/* 비회원이 좋아요 누를 때 Modal */}
+      <Modal>
+        <LoginRequestModal handleCloseModal={handleCloseModal} />
+      </Modal>
+
+      {isMyComment && (
+        <Modal>
+          <div className="text-2xl font-semibold m-6">
+            본인이 쓴 댓글은 좋아요를 누를 수 없습니다.
+            <div className="flex justify-center mt-4 w-full">
+              <button
+                className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
+                onClick={closeModal}
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

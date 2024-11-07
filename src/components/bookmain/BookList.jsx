@@ -3,7 +3,6 @@ import BookCard from "../../components/ui/BookCard";
 import api from "../../api/api";
 import { useQuery } from "@tanstack/react-query";
 import usePagination from "../../hooks/usePagination";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { categoryNames } from "../../utils/categoryUtils";
 import Pagination from "../ui/Pagination";
 
@@ -13,12 +12,17 @@ const BookList = ({ searchResults }) => {
   const [sortOrder, setSortOrder] = useState("최신순");
   const { currentPage, setPage } = usePagination(0);
 
+  // 책 목록을 가져오는 함수
   const getBookList = async (page) => {
     const categoryParam = category !== "전체" ? `&category=${category}` : "";
-    const response = await api.get(
-      `/books?page=${page}&size=${itemsPerPage}${categoryParam}`
-    );
-    return response.data;
+    try {
+      const response = await api.get(
+        `/books?page=${page}&size=${itemsPerPage}${categoryParam}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error; // 에러를 던져서 useQuery에서 처리하도록 합니다.
+    }
   };
 
   const { data, isLoading, error } = useQuery({
@@ -26,13 +30,19 @@ const BookList = ({ searchResults }) => {
     queryFn: () => getBookList(currentPage),
   });
 
+  // 로딩 중일 때
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
 
-  const books = searchResults || data?.content || [];
+  // 오류 발생 시
+  if (error) {
+    console.error("Error fetching books:", error);
+  }
+
+  // `data`가 없거나, 데이터가 빈 배열일 경우 처리
+  const books = searchResults || (data && data.content) || [];
   const totalBooks = searchResults
     ? searchResults.length
-    : data.page.totalElements;
+    : data?.page?.totalElements || 0;
 
   const filteredBooks = books.sort((a, b) => {
     if (sortOrder === "최신순") {
@@ -92,7 +102,12 @@ const BookList = ({ searchResults }) => {
           ))
         ) : (
           <p className="col-span-4 text-center text-gray-500">
-            검색 결과와 일치하는 문제집이 없습니다.
+            {category !== "전체" &&
+            data &&
+            data.content &&
+            data.content.length === 0
+              ? `해당 카테고리에 존재하는 문제집이 없습니다.`
+              : "검색 결과와 일치하는 문제집이 없습니다."}
           </p>
         )}
       </div>
@@ -101,7 +116,7 @@ const BookList = ({ searchResults }) => {
       {searchResults ? null : (
         <Pagination
           currentPage={currentPage}
-          totalPages={data.page.totalPages}
+          totalPages={data?.page?.totalPages || 0}
           setPage={setPage}
         />
       )}

@@ -28,6 +28,7 @@ const BestStudyList = () => {
           <StudyCard
             id={study.id}
             title={study.title}
+            userId={study.userId}
             username={study.username}
             userCount={study.userCount}
             participants={study.status}
