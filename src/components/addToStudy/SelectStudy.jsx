@@ -8,14 +8,15 @@ import { IoMdPeople } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import useAlert from "../../hooks/useAlert";
 import Pagination from "../ui/Pagination";
+import useModal from "../../hooks/useModal";
 
 const SelectStudy = () => {
   const navigate = useNavigate();
   const { bookId, questionId } = useParams();
   const { currentPage, setPage } = usePagination(0);
   const itemsPerPage = 5;
-  const [selectedStudies, setSelectedStudies] = useState([]); // 선택된 스터디들
-  const { showAlert, Alert } = useAlert();
+  const [selectedStudies, setSelectedStudies] = useState([]);
+  const { openModal, closeModal, Modal } = useModal();
 
   // 내가 참여중인 스터디 리스트 가져오기
   const getMyStudies = async (page) => {
@@ -42,9 +43,7 @@ const SelectStudy = () => {
       return response.data;
     },
     onSuccess: () => {
-      showAlert("스터디에 추가되었습니다!", "success");
-      // 다시 해당 문제집 메인 페이지로 이동
-      navigate(`/book/${bookId}`);
+      openModal();
     },
     onError: (err) => {
       console.error("스터디에 추가 ERROR : ", err);
@@ -69,6 +68,12 @@ const SelectStudy = () => {
       return;
     }
     mutation.mutate(selectedStudies);
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
+    // 다시 해당 문제집 메인 페이지로 이동
+    navigate(`/book/${bookId}`);
   };
 
   return (
@@ -176,7 +181,20 @@ const SelectStudy = () => {
         </>
       )}
 
-      <Alert />
+      {/* 추가 시 Modal */}
+      <Modal style="w-120 text-center">
+        <div className="text-2xl font-semibold m-6">
+          스터디에 추가되었습니다.
+          <div className="flex justify-around mt-4 w-full">
+            <button
+              className="w-3/4 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-400 m-4"
+              onClick={handleCloseModal}
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
