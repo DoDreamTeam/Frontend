@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FaRegFaceSadCry } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 
-const MypageBookmarkBooks = () => {
+const MyPageBookmarkBooks = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const getBookmarkedBooks = async () => {
@@ -112,4 +112,4 @@ const MypageBookmarkBooks = () => {
   );
 };
 
-export default MypageBookmarkBooks;
+export default MyPageBookmarkBooks;
