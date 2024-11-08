@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import banner1 from '../../assets/banner1.png';
+import banner2 from '../../assets/banner2.png';
 
 const Banner = () => {
   const settings = {
@@ -26,7 +27,11 @@ const Banner = () => {
           />
         </div>
         <div className="bg-gray-300 flex items-center justify-center h-96 rounded-lg">
-          <h3 className="text-xl font-bold text-center">문제집 설명</h3>
+          <img
+            src={banner2}
+            alt="Banner 2"
+            className="w-full h-full object-cover rounded-lg"
+          />
         </div>
         <div className="bg-gray-300 flex items-center justify-center h-96 rounded-lg">
           <h3 className="text-xl font-bold text-center">스터디 설명</h3>
