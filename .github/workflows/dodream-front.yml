@@ -14,7 +14,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             set -e
-            cd /home/ubuntu/dodream-front
+            cd /home/ubuntu/Frontend
             
             echo "SSH 접속"
             echo "환경 설정 파일 생성"
