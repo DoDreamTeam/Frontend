@@ -44,7 +44,6 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
     const bookCommentRegex = /\/api\/books\/(\d+)\/comments/;
     const studyAnswerCommentRegex = /\/api\/study\/answer\/(\d+)\/comments/;
     const studyMemberRequestRegex = /\/api\/study\/(\d+)\/members/;
-    const studyMemberApproveRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
     const studyExitRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
     const studyLeaderChangeRegex = /\/api\/study\/leader\/(\d+)/;
 
@@ -66,12 +65,6 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
         const requestMatch = url.match(studyMemberRequestRegex);
         const studyIdForRequest = requestMatch[1];
         navigate(`/study/${studyIdForRequest}/admin`);
-        break;
-
-      case studyMemberApproveRegex.test(url):
-        const approveMatch = url.match(studyMemberApproveRegex); // 수정된 부분
-        const studyIdForApprove = approveMatch[1]; // 정규식을 통해 studyId를 추출
-        navigate(`/study/${studyIdForApprove}`); // /study/{studyId}로 이동
         break;
 
       case studyExitRegex.test(url):
