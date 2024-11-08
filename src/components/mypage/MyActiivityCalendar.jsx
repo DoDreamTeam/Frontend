@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ActivityCalendar from 'react-activity-calendar';
-import GetUser from './getUser';
+import GetUser from './GetUser';
 import api from '../../api/api';
 
 const MyActivityCalendar = ({ userId }) => {
