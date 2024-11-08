@@ -1,6 +1,6 @@
 import React from 'react';
 import MyProfileMe from '../components/mypage/MyProfileMe';
-import MypageBookmarkBooks from '../components/mypage/MyPageBookMarkBooks';
+import MyPageBookmarkBooks from '../components/mypage/MyPageBookmarkBooks';
 import MypageBooksAll from '../components/mypage/MyPageBooksAll';
 import MyBookCommentLike from '../components/mypage/MyBookCommentLike';
 
@@ -11,7 +11,7 @@ const MyBooks = () => {
         <MyProfileMe />
       </div>
       <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
-        <MypageBookmarkBooks />
+        <MyPageBookmarkBooks />
       </div>
       <div className="w-full max-w-screen-lg mb-6 border-t border-gray-180 pt-5">
         <MypageBooksAll />
