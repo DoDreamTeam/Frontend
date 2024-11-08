@@ -69,9 +69,9 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
         break;
 
       case studyMemberApproveRegex.test(url):
-        const approveMatch = url.test(studyMemberApproveRegex);
-        const studyIdForApprove = approveMatch[1];
-        navigate(`/study/${studyIdForApprove}`);
+        const approveMatch = url.match(studyMemberApproveRegex); // 수정된 부분
+        const studyIdForApprove = approveMatch[1]; // 정규식을 통해 studyId를 추출
+        navigate(`/study/${studyIdForApprove}`); // /study/{studyId}로 이동
         break;
 
       case studyExitRegex.test(url):
