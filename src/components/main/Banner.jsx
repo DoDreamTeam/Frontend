@@ -4,6 +4,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import banner1 from '../../assets/banner1.png';
 import banner2 from '../../assets/banner2.png';
+import banner3 from '../../assets/banner3.png';
 
 const Banner = () => {
   const settings = {
@@ -34,7 +35,11 @@ const Banner = () => {
           />
         </div>
         <div className="bg-gray-300 flex items-center justify-center h-96 rounded-lg">
-          <h3 className="text-xl font-bold text-center">스터디 설명</h3>
+          <img
+            src={banner3}
+            alt="Banner 3"
+            className="w-full h-full object-cover rounded-lg"
+          />
         </div>
       </Slider>
     </div>
