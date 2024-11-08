@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { MdEdit } from 'react-icons/md';
-import { getUserId } from '../../mypage/GetUserId';
-import api from '../../../api/api';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { MdEdit } from "react-icons/md";
+import { getUserId } from "../../mypage/GetUserId";
+import api from "../../../api/api";
 
 const StudyInfo = ({ studyId }) => {
   const [studyInfo, setStudyInfo] = useState(null);
@@ -20,7 +20,7 @@ const StudyInfo = ({ studyId }) => {
         const response = await api.get(`study/${studyId}`);
         setStudyInfo(response.data);
       } catch (error) {
-        console.error('Error fetching studyInfo:', error);
+        console.error("Error fetching studyInfo:", error);
       } finally {
         setLoading(false);
       }
@@ -65,7 +65,7 @@ const StudyInfo = ({ studyId }) => {
       </div>
       <div className="flex items-center mb-4">
         <div className="mr-2 text-lg text-gray-700 mt-10 mb-10">
-          {studyInfo.description || '한줄 소개가 없습니다! (❁´◡`❁)'}
+          {studyInfo.description || "한줄 소개가 없습니다! (❁´◡`❁)"}
         </div>
       </div>
     </div>

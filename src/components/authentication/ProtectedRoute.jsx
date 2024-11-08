@@ -35,7 +35,6 @@ const ProtectedRoute = ({ element, isMemberOnly = false }) => {
   return (
     <>
       {element}
-
       {/* 로그인 안내 모달 */}
       {isModalOpen && (
         <Modal>
