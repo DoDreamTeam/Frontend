@@ -50,7 +50,7 @@ const MyActivityCalendar = ({ userId }) => {
         activityData.push({
           count,
           date: formattedDate,
-          level: Math.min(Math.floor(count / 1), 4),
+          level: Math.min(Math.floor(count / 3), 4),
         });
       }
 
@@ -104,7 +104,6 @@ const MyActivityCalendar = ({ userId }) => {
     weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   };
 
-  // 로딩 또는 오류 상태 처리
   if (data.length === 0) return <div>Loading data...</div>;
 
   const explicitTheme = {
