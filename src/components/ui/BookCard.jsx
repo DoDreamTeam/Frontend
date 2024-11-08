@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { categoryNames, categoryStyles } from "../../utils/categoryUtils";
-import { FaBookmark } from "react-icons/fa";
-import api from "../../api/api";
-import defaultProfile from "../../assets/default_profile.jpg";
-import BookmarkButton from "./BookmarkButton";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { categoryNames, categoryStyles } from '../../utils/categoryUtils';
+import { FaBookmark } from 'react-icons/fa';
+import api from '../../api/api';
+import defaultProfile from '../../assets/default_profile.jpg';
+import BookmarkButton from './BookmarkButton';
 
 const BookCard = ({
   id,
@@ -25,7 +25,7 @@ const BookCard = ({
       <div className="flex justify-between items-center mb-1">
         <div
           className={`text-sm font-semibold p-2 rounded ${categoryStyles[category]}`}
-          style={{ borderRadius: "20px" }}
+          style={{ borderRadius: '20px' }}
         >
           {categoryNames[category] || category}
         </div>
