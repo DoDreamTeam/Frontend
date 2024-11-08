@@ -42,7 +42,7 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
   const handleNotificationClick = (url) => {
     // 각 URL을 처리하기 위한 정규식 패턴
     const bookCommentRegex = /\/api\/books\/(\d+)\/comments/;
-    const studyAnswerCommentRegex = /\/api\/study\/answer\/(\d+)\/comments/;
+    //const studyAnswerCommentRegex = /\/api\/study\/answer\/(\d+)\/comments/;
     const studyMemberRequestRegex = /\/api\/study\/(\d+)\/members/;
     const studyMemberApproveRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
     const studyExitRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
@@ -56,11 +56,11 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
         navigate(`/book/${bookId}`);
         break;
 
-      case studyAnswerCommentRegex.test(url):
-        const answerMatch = url.match(studyAnswerCommentRegex);
-        const studyAnswerId = answerMatch[1];
-        navigate(`/study/${studyAnswerId}`);
-        break;
+      // case studyAnswerCommentRegex.test(url):
+      //   const answerMatch = url.match(studyAnswerCommentRegex);
+      //   const studyAnswerId = answerMatch[1];
+      //   navigate(`/study/${studyAnswerId}`);
+      //   break;
 
       case studyMemberRequestRegex.test(url):
         const requestMatch = url.match(studyMemberRequestRegex);
