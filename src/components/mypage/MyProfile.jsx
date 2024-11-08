@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCaretDown } from 'react-icons/fa';
-import GetUser from './getUser';
+import GetUser from './GetUser';
 import { getUserId } from './GetUserId';
 
 const MyProfile = ({ userId }) => {
