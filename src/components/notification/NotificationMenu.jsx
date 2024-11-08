@@ -44,6 +44,7 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
     const bookCommentRegex = /\/api\/books\/(\d+)\/comments/;
     const studyAnswerCommentRegex = /\/api\/study\/answer\/(\d+)\/comments/;
     const studyMemberRequestRegex = /\/api\/study\/(\d+)\/members/;
+    const studyMemberApproveRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
     const studyExitRegex = /\/api\/study\/(\d+)\/members\/(\d+)/;
     const studyLeaderChangeRegex = /\/api\/study\/leader\/(\d+)/;
 
@@ -64,19 +65,25 @@ const NotificationMenu = ({ notifications, closeMenu, setNotifications }) => {
       case studyMemberRequestRegex.test(url):
         const requestMatch = url.match(studyMemberRequestRegex);
         const studyIdForRequest = requestMatch[1];
-        navigate(`/study/${studyIdForRequest}/admin`);
+        navigate(`/study/${studyIdForRequest}`);
+        break;
+
+      case studyMemberApproveRegex.test(url):
+        const approveMatch = url.match(studyMemberApproveRegex);
+        const studyIdForApprove = approveMatch[1];
+        navigate(`/study/${studyIdForApprove}`);
         break;
 
       case studyExitRegex.test(url):
         const exitMatch = url.test(studyExitRegex);
         const studyIdForExit = exitMatch[1];
-        navigate(`/study/${studyIdForExit}/admin`);
+        navigate(`/study/${studyIdForExit}`);
         break;
 
       case studyLeaderChangeRegex.test(url):
         const leaderChangeMatch = url.match(studyLeaderChangeRegex);
         const studyIdForLeaderChange = leaderChangeMatch[1];
-        navigate(`/study/${studyIdForLeaderChange}/admin`);
+        navigate(`/study/${studyIdForLeaderChange}`);
         break;
 
       default:
