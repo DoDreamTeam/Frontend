@@ -7,7 +7,7 @@ import NaverIcon from "../../assets/naver.png";
 import { useLocation } from "react-router-dom";
 
 const LoginButton = () => {
-  const { openModal, Modal } = useModal();
+  const { openModal, Modal, closeModal } = useModal();
   const location = useLocation();
 
   const handleGoogleLogin = () => {
@@ -58,6 +58,12 @@ const LoginButton = () => {
 
       <Modal>
         <div className="flex flex-col items-center p-6">
+          <button
+            onClick={closeModal}
+            className="absolute top-3 right-3 text-xl font-semibold mr-4"
+          >
+            X
+          </button>
           <img src={logo} alt="logo" className="mb-4 h-20" />
           <div className="text-xl mb-3">Dodream에 오신 걸 환영합니다!</div>
           <div className="text-m mb-8">
