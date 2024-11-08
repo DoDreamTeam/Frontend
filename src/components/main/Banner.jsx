@@ -1,7 +1,8 @@
-import React from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import React from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import banner1 from '../../assets/banner1.png';
 
 const Banner = () => {
   const settings = {
@@ -18,7 +19,11 @@ const Banner = () => {
     <div className="w-full h-96 mb-10">
       <Slider {...settings}>
         <div className="bg-gray-300 flex items-center justify-center h-96 rounded-lg">
-          <h3 className="text-xl font-bold text-center">dodream 서비스 설명</h3>
+          <img
+            src={banner1}
+            alt="Banner 1"
+            className="w-full h-full object-cover rounded-lg"
+          />
         </div>
         <div className="bg-gray-300 flex items-center justify-center h-96 rounded-lg">
           <h3 className="text-xl font-bold text-center">문제집 설명</h3>

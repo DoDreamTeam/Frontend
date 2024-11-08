@@ -48,7 +48,8 @@ const MyAnswer = () => {
           params: { evaluation: evaluationParam, page: currentAnswerPage },
         });
       }
-      if (response.data.content) {
+
+      if (response && response.data && response.data.content) {
         setAnswers(response.data.content);
         setTotalPagesAnswer(response.data.page.totalPages);
         setTotalAnswersCount(response.data.page.totalElements);
@@ -59,7 +60,14 @@ const MyAnswer = () => {
         setItemsPerPage(0);
       }
     } catch (error) {
-      console.error('Error fetching answers:', error);
+      if (error.response && error.response.status === 404) {
+        console.warn('해당 응답이 없습니다.');
+        setAnswers([]);
+        setTotalAnswersCount(0);
+        setItemsPerPage(0);
+      } else {
+        console.error('Error fetching answers:', error);
+      }
     }
   };
 

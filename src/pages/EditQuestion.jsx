@@ -1,5 +1,5 @@
-import React from "react";
-import EditQuestionForm from "../components/question/EditQuestionForm";
+import React from 'react';
+import EditQuestionForm from '../components/question/EditQuestionForm';
 
 const EditQuestion = () => {
   return (

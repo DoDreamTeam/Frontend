@@ -51,12 +51,17 @@ const StudyInfo = ({ studyId }) => {
           <img
             src={studyInfo.profileImage}
             alt={`${studyInfo.username}'s profile`}
-            className="w-8 h-8 rounded-full mr-4"
+            className="w-8 h-8 rounded-full mr-4 cursor-pointer"
           />
         ) : (
           <div className="w-10 h-10 rounded-full bg-black mr-4" />
         )}
-        <div className="text-l font-semibold">{studyInfo.username}</div>
+        <div
+          className="text-l font-semibold cursor-pointer"
+          onClick={() => navigate(`/mypage/${studyInfo.userId}`)}
+        >
+          {studyInfo.username}
+        </div>
       </div>
       <div className="flex items-center mb-4">
         <div className="mr-2 text-lg text-gray-700 mt-10 mb-10">
