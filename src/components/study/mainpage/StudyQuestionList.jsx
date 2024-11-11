@@ -43,11 +43,11 @@ const StudyQuestionList = ({ studyId }) => {
       }
 
       if (response.data.content) {
-        setQuestions(response.data.content); // 새로운 페이지의 데이터로 업데이트
+        setQuestions(response.data.content);
         setTotalPages(response.data.page.totalPages);
         setItemsPerPage(response.data.page.size);
       } else {
-        setQuestions([]); // 빈 데이터 처리
+        setQuestions([]);
         setTotalPages(0);
         setItemsPerPage(0);
       }
@@ -57,12 +57,13 @@ const StudyQuestionList = ({ studyId }) => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber); // 페이지 번호 변경
+    setCurrentPage(pageNumber);
   };
 
   const handleViewChange = (viewOption) => {
-    setSelectedView(viewOption); // 보기 옵션 변경
-    setCurrentPage(0); // 보기 변경 시 페이지를 0으로 초기화
+    setSelectedView(viewOption);
+    setCurrentPage(0);
+    setQuestions([]);
   };
 
   const handleQuestionClick = (id) => {
@@ -70,11 +71,11 @@ const StudyQuestionList = ({ studyId }) => {
   };
 
   const handleSearchResults = (results) => {
-    setQuestions(results); // 검색 결과 업데이트
+    setQuestions(results);
   };
 
   useEffect(() => {
-    fetchQuestions(); // 페이지, 보기 옵션, 검색어가 변경될 때마다 데이터 fetch
+    fetchQuestions();
   }, [currentPage, selectedView, searchQuery]);
 
   return (
