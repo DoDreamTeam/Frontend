@@ -25,7 +25,6 @@ const StudyQuestionList = ({ studyId }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  // API 호출
   const fetchQuestions = async () => {
     try {
       let response;
@@ -35,7 +34,6 @@ const StudyQuestionList = ({ studyId }) => {
         search: searchQuery,
       };
 
-      // view에 맞는 API 호출
       if (selectedView === VIEW_OPTIONS.ALL) {
         response = await api.get(`/study/${studyId}/studyroom`, { params });
       } else if (selectedView === VIEW_OPTIONS.MY_ANSWERS) {
@@ -47,7 +45,7 @@ const StudyQuestionList = ({ studyId }) => {
       }
 
       if (response && response.data.content) {
-        setQuestions(response.data.content); // 새로운 데이터로 업데이트
+        setQuestions(response.data.content);
         setTotalPages(response.data.page.totalPages);
         setItemsPerPage(response.data.page.size);
       } else {
@@ -62,13 +60,13 @@ const StudyQuestionList = ({ studyId }) => {
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < totalPages) {
-      setCurrentPage(pageNumber); // 페이지 변경 시 `currentPage` 상태만 갱신
+      setCurrentPage(pageNumber);
     }
   };
 
   const handleViewChange = (viewOption) => {
     setSelectedView(viewOption);
-    setCurrentPage(0); // 보기 변경 시 1페이지로 초기화
+    setCurrentPage(0);
   };
 
   const handleQuestionClick = (id) => {
@@ -76,11 +74,10 @@ const StudyQuestionList = ({ studyId }) => {
   };
 
   const handleSearchResults = (results) => {
-    setQuestions(results); // 검색 후 결과로 상태 업데이트
-    setCurrentPage(0); // 검색 후 페이지 1로 초기화
+    setQuestions(results);
+    setCurrentPage(0);
   };
 
-  // 페이지, 보기 옵션, 검색어가 변경될 때마다 fetch 호출
   useEffect(() => {
     fetchQuestions();
   }, [currentPage, selectedView, searchQuery]); // `currentPage`, `selectedView`, `searchQuery` 변경 시마다 호출
@@ -142,11 +139,10 @@ const StudyQuestionList = ({ studyId }) => {
           <div className="flex flex-col gap-4">
             {questions.map((question, index) => (
               <div
-                key={question.id} // id를 key로 사용하여 중복 방지
+                key={question.id}
                 className="flex justify-between p-2 border-b border-gray-300 pt-5"
               >
                 <div className="mr-8 ml-7">
-                  {/* 페이지네이션을 반영한 정확한 인덱스 계산 */}
                   {currentPage * itemsPerPage + index + 1}
                 </div>
                 <span
@@ -186,7 +182,6 @@ const StudyQuestionList = ({ studyId }) => {
             ))}
           </div>
 
-          {/* 페이지네이션 */}
           <div className="flex justify-center mt-8 mb-10">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
