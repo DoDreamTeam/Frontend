@@ -1,34 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import api from "../../../api/api";
-import { Link, useNavigate } from "react-router-dom";
-import { formatDate } from "../../../utils/formatDateUtils";
-import { FaRegFaceSadCry } from "react-icons/fa6";
+import React, { useState, useEffect } from 'react';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import api from '../../../api/api';
+import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../../../utils/formatDateUtils';
+import { FaRegFaceSadCry } from 'react-icons/fa6';
 import {
   evaluationStyles,
   evaluationMessages,
-} from "../../../utils/evaluationUtils";
-import StudyQuestionSearch from "./StudyQuestionSearch"; // 추가된 컴포넌트 임포트
+} from '../../../utils/evaluationUtils';
+import StudyQuestionSearch from './StudyQuestionSearch';
 
 const VIEW_OPTIONS = {
-  ALL: "최신순",
-  MY_ANSWERS: "내가 푼 문제",
-  EXCLUDE_MY_ANSWERS: "내 답안 제외",
+  ALL: '최신순',
+  MY_ANSWERS: '내가 푼 문제',
+  EXCLUDE_MY_ANSWERS: '내 답안 제외',
 };
 
 const StudyQuestionList = ({ studyId }) => {
   const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedView, setSelectedView] = useState(VIEW_OPTIONS.ALL);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchQuestions();
-  }, [currentPage, selectedView, searchQuery]);
 
   const fetchQuestions = async () => {
     try {
@@ -50,15 +45,14 @@ const StudyQuestionList = ({ studyId }) => {
       if (response.data.content) {
         setQuestions(response.data.content);
         setTotalPages(response.data.page.totalPages);
-        setTotalQuestionsCount(response.data.page.totalElements);
         setItemsPerPage(response.data.page.size);
       } else {
         setQuestions([]);
-        setTotalQuestionsCount(0);
+        setTotalPages(0);
         setItemsPerPage(0);
       }
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      console.error('Error fetching questions:', error);
     }
   };
 
@@ -69,16 +63,20 @@ const StudyQuestionList = ({ studyId }) => {
   const handleViewChange = (viewOption) => {
     setSelectedView(viewOption);
     setCurrentPage(0);
+    setQuestions([]);
   };
 
   const handleQuestionClick = (id) => {
     navigate(`/study/${studyId}/${id}`);
   };
 
-  // Search 결과를 업데이트하는 함수
   const handleSearchResults = (results) => {
     setQuestions(results);
   };
+
+  useEffect(() => {
+    fetchQuestions();
+  }, [currentPage, selectedView, searchQuery]);
 
   return (
     <div>
@@ -87,8 +85,8 @@ const StudyQuestionList = ({ studyId }) => {
           <button
             className={`py-2 px-4 rounded ${
               selectedView === VIEW_OPTIONS.ALL
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100"
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100'
             }`}
             onClick={() => handleViewChange(VIEW_OPTIONS.ALL)}
           >
@@ -97,8 +95,8 @@ const StudyQuestionList = ({ studyId }) => {
           <button
             className={`py-2 px-4 rounded ${
               selectedView === VIEW_OPTIONS.MY_ANSWERS
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100"
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100'
             }`}
             onClick={() => handleViewChange(VIEW_OPTIONS.MY_ANSWERS)}
           >
@@ -107,8 +105,8 @@ const StudyQuestionList = ({ studyId }) => {
           <button
             className={`py-2 px-4 rounded ${
               selectedView === VIEW_OPTIONS.EXCLUDE_MY_ANSWERS
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100"
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100'
             }`}
             onClick={() => handleViewChange(VIEW_OPTIONS.EXCLUDE_MY_ANSWERS)}
           >
@@ -119,7 +117,7 @@ const StudyQuestionList = ({ studyId }) => {
         <div className="flex items-center">
           <StudyQuestionSearch
             studyId={studyId}
-            selectedView={selectedView} // selectedView를 전달
+            selectedView={selectedView}
             setSearchResults={handleSearchResults}
           />
         </div>
@@ -168,9 +166,9 @@ const StudyQuestionList = ({ studyId }) => {
                   <span
                     className={`${evaluationStyles[question.evaluation]}`}
                     style={{
-                      width: "80px",
-                      padding: "4px",
-                      textAlign: "center",
+                      width: '80px',
+                      padding: '4px',
+                      textAlign: 'center',
                     }}
                   >
                     {evaluationMessages[question.evaluation]}
@@ -194,8 +192,8 @@ const StudyQuestionList = ({ studyId }) => {
                 onClick={() => handlePageChange(index)}
                 className={`mx-1 ${
                   index === currentPage
-                    ? "font-bold text-blue-400"
-                    : "text-gray-500"
+                    ? 'font-bold text-blue-400'
+                    : 'text-gray-500'
                 }`}
               >
                 {index + 1}
