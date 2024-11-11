@@ -20,12 +20,13 @@ const Footer = () => {
           </div>
         </div>
         <div className="flex space-x-4">
-          <span
+          <a
             className="cursor-pointer text-gray-600 hover:text-gray-400"
-            onClick={() => alert("서비스 소개 클릭!")}
+            href="https://github.com/DoDreamTeam/Backend/wiki"
+            target="_blank"
           >
             서비스 소개
-          </span>
+          </a>
           <a
             href="https://github.com/DoDreamTeam"
             target="_blank"
