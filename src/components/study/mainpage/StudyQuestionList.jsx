@@ -25,25 +25,29 @@ const StudyQuestionList = ({ studyId }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
+  // API 호출
   const fetchQuestions = async () => {
     try {
       let response;
+      const params = {
+        page: currentPage,
+        size: itemsPerPage,
+        search: searchQuery,
+      };
+
+      // view에 맞는 API 호출
       if (selectedView === VIEW_OPTIONS.ALL) {
-        response = await api.get(`/study/${studyId}/studyroom`, {
-          params: { page: currentPage, search: searchQuery },
-        });
+        response = await api.get(`/study/${studyId}/studyroom`, { params });
       } else if (selectedView === VIEW_OPTIONS.MY_ANSWERS) {
-        response = await api.get(`/study/${studyId}/studyroom/my`, {
-          params: { page: currentPage, search: searchQuery },
-        });
+        response = await api.get(`/study/${studyId}/studyroom/my`, { params });
       } else if (selectedView === VIEW_OPTIONS.EXCLUDE_MY_ANSWERS) {
         response = await api.get(`/study/${studyId}/studyroom/other`, {
-          params: { page: currentPage, search: searchQuery },
+          params,
         });
       }
 
-      if (response.data.content) {
-        setQuestions(response.data.content);
+      if (response && response.data.content) {
+        setQuestions(response.data.content); // 새로운 데이터로 업데이트
         setTotalPages(response.data.page.totalPages);
         setItemsPerPage(response.data.page.size);
       } else {
@@ -57,13 +61,14 @@ const StudyQuestionList = ({ studyId }) => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 0 && pageNumber < totalPages) {
+      setCurrentPage(pageNumber); // 페이지 변경 시 `currentPage` 상태만 갱신
+    }
   };
 
   const handleViewChange = (viewOption) => {
     setSelectedView(viewOption);
-    setCurrentPage(0);
-    setQuestions([]);
+    setCurrentPage(0); // 보기 변경 시 1페이지로 초기화
   };
 
   const handleQuestionClick = (id) => {
@@ -71,12 +76,14 @@ const StudyQuestionList = ({ studyId }) => {
   };
 
   const handleSearchResults = (results) => {
-    setQuestions(results);
+    setQuestions(results); // 검색 후 결과로 상태 업데이트
+    setCurrentPage(0); // 검색 후 페이지 1로 초기화
   };
 
+  // 페이지, 보기 옵션, 검색어가 변경될 때마다 fetch 호출
   useEffect(() => {
     fetchQuestions();
-  }, [currentPage, selectedView, searchQuery]);
+  }, [currentPage, selectedView, searchQuery]); // `currentPage`, `selectedView`, `searchQuery` 변경 시마다 호출
 
   return (
     <div>
@@ -135,10 +142,11 @@ const StudyQuestionList = ({ studyId }) => {
           <div className="flex flex-col gap-4">
             {questions.map((question, index) => (
               <div
-                key={question.questionId}
+                key={question.id} // id를 key로 사용하여 중복 방지
                 className="flex justify-between p-2 border-b border-gray-300 pt-5"
               >
                 <div className="mr-8 ml-7">
+                  {/* 페이지네이션을 반영한 정확한 인덱스 계산 */}
                   {currentPage * itemsPerPage + index + 1}
                 </div>
                 <span
@@ -182,7 +190,7 @@ const StudyQuestionList = ({ studyId }) => {
           <div className="flex justify-center mt-8 mb-10">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 0}
+              disabled={currentPage === 0 || totalPages === 0}
             >
               <FaChevronLeft className="text-gray-500 text-sm" />
             </button>
@@ -201,7 +209,7 @@ const StudyQuestionList = ({ studyId }) => {
             ))}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages - 1}
+              disabled={currentPage === totalPages - 1 || totalPages === 0}
             >
               <FaChevronRight className="text-gray-500 text-sm" />
             </button>
