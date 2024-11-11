@@ -5,7 +5,7 @@ import api from '../../api/api';
 import { formatDate } from '../../utils/formatDateUtils';
 import { FaRegFaceSadCry } from 'react-icons/fa6';
 
-const MyBookCommentLike = () => {
+const MyStudyCommentLike = () => {
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [currentCommentPage, setCurrentCommentPage] = useState(0);
@@ -184,4 +184,4 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => (
   </div>
 );
 
-export default MyBookCommentLike;
+export default MyStudyCommentLike;

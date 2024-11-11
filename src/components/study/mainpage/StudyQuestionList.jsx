@@ -28,21 +28,23 @@ const StudyQuestionList = ({ studyId }) => {
   const fetchQuestions = async () => {
     try {
       let response;
+      const params = {
+        page: currentPage,
+        size: itemsPerPage,
+        search: searchQuery,
+      };
+
       if (selectedView === VIEW_OPTIONS.ALL) {
-        response = await api.get(`/study/${studyId}/studyroom`, {
-          params: { page: currentPage, search: searchQuery },
-        });
+        response = await api.get(`/study/${studyId}/studyroom`, { params });
       } else if (selectedView === VIEW_OPTIONS.MY_ANSWERS) {
-        response = await api.get(`/study/${studyId}/studyroom/my`, {
-          params: { page: currentPage, search: searchQuery },
-        });
+        response = await api.get(`/study/${studyId}/studyroom/my`, { params });
       } else if (selectedView === VIEW_OPTIONS.EXCLUDE_MY_ANSWERS) {
         response = await api.get(`/study/${studyId}/studyroom/other`, {
-          params: { page: currentPage, search: searchQuery },
+          params,
         });
       }
 
-      if (response.data.content) {
+      if (response && response.data.content) {
         setQuestions(response.data.content);
         setTotalPages(response.data.page.totalPages);
         setItemsPerPage(response.data.page.size);
@@ -57,13 +59,14 @@ const StudyQuestionList = ({ studyId }) => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 0 && pageNumber < totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   const handleViewChange = (viewOption) => {
     setSelectedView(viewOption);
     setCurrentPage(0);
-    setQuestions([]);
   };
 
   const handleQuestionClick = (id) => {
@@ -72,11 +75,12 @@ const StudyQuestionList = ({ studyId }) => {
 
   const handleSearchResults = (results) => {
     setQuestions(results);
+    setCurrentPage(0);
   };
 
   useEffect(() => {
     fetchQuestions();
-  }, [currentPage, selectedView, searchQuery]);
+  }, [currentPage, selectedView, searchQuery]); // `currentPage`, `selectedView`, `searchQuery` 변경 시마다 호출
 
   return (
     <div>
@@ -135,7 +139,7 @@ const StudyQuestionList = ({ studyId }) => {
           <div className="flex flex-col gap-4">
             {questions.map((question, index) => (
               <div
-                key={question.questionId}
+                key={question.id}
                 className="flex justify-between p-2 border-b border-gray-300 pt-5"
               >
                 <div className="mr-8 ml-7">
@@ -178,11 +182,10 @@ const StudyQuestionList = ({ studyId }) => {
             ))}
           </div>
 
-          {/* 페이지네이션 */}
           <div className="flex justify-center mt-8 mb-10">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 0}
+              disabled={currentPage === 0 || totalPages === 0}
             >
               <FaChevronLeft className="text-gray-500 text-sm" />
             </button>
@@ -201,7 +204,7 @@ const StudyQuestionList = ({ studyId }) => {
             ))}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages - 1}
+              disabled={currentPage === totalPages - 1 || totalPages === 0}
             >
               <FaChevronRight className="text-gray-500 text-sm" />
             </button>
