@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import api from '../../../api/api';
-import { Link, useNavigate } from 'react-router-dom';
-import { formatDate } from '../../../utils/formatDateUtils';
-import { FaRegFaceSadCry } from 'react-icons/fa6';
+import React, { useState, useEffect } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import api from "../../../api/api";
+import { Link, useNavigate } from "react-router-dom";
+import { formatDate } from "../../../utils/formatDateUtils";
+import { FaRegFaceSadCry } from "react-icons/fa6";
 import {
   evaluationStyles,
   evaluationMessages,
-} from '../../../utils/evaluationUtils';
-import StudyQuestionSearch from './StudyQuestionSearch'; // 추가된 컴포넌트 임포트
+} from "../../../utils/evaluationUtils";
+import StudyQuestionSearch from "./StudyQuestionSearch"; // 추가된 컴포넌트 임포트
 
 const VIEW_OPTIONS = {
-  ALL: '최신순',
-  MY_ANSWERS: '내가 푼 문제',
-  EXCLUDE_MY_ANSWERS: '내 답안 제외',
+  ALL: "최신순",
+  MY_ANSWERS: "내가 푼 문제",
+  EXCLUDE_MY_ANSWERS: "내 답안 제외",
 };
 
 const StudyQuestionList = ({ studyId }) => {
@@ -23,7 +23,7 @@ const StudyQuestionList = ({ studyId }) => {
   const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedView, setSelectedView] = useState(VIEW_OPTIONS.ALL);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const StudyQuestionList = ({ studyId }) => {
         setItemsPerPage(0);
       }
     } catch (error) {
-      console.error('Error fetching questions:', error);
+      console.error("Error fetching questions:", error);
     }
   };
 
@@ -87,8 +87,8 @@ const StudyQuestionList = ({ studyId }) => {
           <button
             className={`py-2 px-4 rounded ${
               selectedView === VIEW_OPTIONS.ALL
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100'
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100"
             }`}
             onClick={() => handleViewChange(VIEW_OPTIONS.ALL)}
           >
@@ -97,8 +97,8 @@ const StudyQuestionList = ({ studyId }) => {
           <button
             className={`py-2 px-4 rounded ${
               selectedView === VIEW_OPTIONS.MY_ANSWERS
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100'
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100"
             }`}
             onClick={() => handleViewChange(VIEW_OPTIONS.MY_ANSWERS)}
           >
@@ -107,8 +107,8 @@ const StudyQuestionList = ({ studyId }) => {
           <button
             className={`py-2 px-4 rounded ${
               selectedView === VIEW_OPTIONS.EXCLUDE_MY_ANSWERS
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100'
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100"
             }`}
             onClick={() => handleViewChange(VIEW_OPTIONS.EXCLUDE_MY_ANSWERS)}
           >
@@ -144,7 +144,7 @@ const StudyQuestionList = ({ studyId }) => {
                   {currentPage * itemsPerPage + index + 1}
                 </div>
                 <span
-                  className="flex-grow mx-12 cursor-pointer hover:underline"
+                  className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer hover:underline"
                   onClick={() => handleQuestionClick(question.id)}
                 >
                   {question.question}
@@ -168,9 +168,9 @@ const StudyQuestionList = ({ studyId }) => {
                   <span
                     className={`${evaluationStyles[question.evaluation]}`}
                     style={{
-                      width: '80px',
-                      padding: '4px',
-                      textAlign: 'center',
+                      width: "80px",
+                      padding: "4px",
+                      textAlign: "center",
                     }}
                   >
                     {evaluationMessages[question.evaluation]}
@@ -194,8 +194,8 @@ const StudyQuestionList = ({ studyId }) => {
                 onClick={() => handlePageChange(index)}
                 className={`mx-1 ${
                   index === currentPage
-                    ? 'font-bold text-blue-400'
-                    : 'text-gray-500'
+                    ? "font-bold text-blue-400"
+                    : "text-gray-500"
                 }`}
               >
                 {index + 1}
