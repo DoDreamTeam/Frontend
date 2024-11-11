@@ -1,18 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { FaChevronLeft, FaChevronRight, FaCaretDown } from 'react-icons/fa';
-import api from '../../api/api';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from "react";
+import { FaChevronLeft, FaChevronRight, FaCaretDown } from "react-icons/fa";
+import api from "../../api/api";
+import { Link, useNavigate } from "react-router-dom";
 import {
   evaluationStyles,
   evaluationMessages,
-} from '../../utils/evaluationUtils';
-import { formatDate } from '../../utils/formatDateUtils';
-import { FaRegFaceSadCry } from 'react-icons/fa6';
+} from "../../utils/evaluationUtils";
+import { formatDate } from "../../utils/formatDateUtils";
+import { FaRegFaceSadCry } from "react-icons/fa6";
 
 const EVALUATION_OPTIONS = {
-  전체: '전체',
-  EVALUATION_SOSO: '애매해요',
-  EVALUATION_UNKNOWN: '모르겠어요',
+  전체: "전체",
+  EVALUATION_SOSO: "애매해요",
+  EVALUATION_UNKNOWN: "모르겠어요",
 };
 
 const MyAnswer = () => {
@@ -36,14 +36,14 @@ const MyAnswer = () => {
     try {
       let response;
       if (currentEvaluation === EVALUATION_OPTIONS.전체) {
-        response = await api.get('mypage/book/answer', {
+        response = await api.get("mypage/book/answer", {
           params: { page: currentAnswerPage },
         });
       } else {
         const evaluationParam =
           currentEvaluation === EVALUATION_OPTIONS.EVALUATION_SOSO
-            ? 'EVALUATION_SOSO'
-            : 'EVALUATION_UNKNOWN';
+            ? "EVALUATION_SOSO"
+            : "EVALUATION_UNKNOWN";
         response = await api.get(`mypage/book/answer/evaluation`, {
           params: { evaluation: evaluationParam, page: currentAnswerPage },
         });
@@ -61,12 +61,12 @@ const MyAnswer = () => {
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        console.warn('해당 응답이 없습니다.');
+        console.warn("해당 응답이 없습니다.");
         setAnswers([]);
         setTotalAnswersCount(0);
         setItemsPerPage(0);
       } else {
-        console.error('Error fetching answers:', error);
+        console.error("Error fetching answers:", error);
       }
     }
   };
@@ -96,9 +96,9 @@ const MyAnswer = () => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener("mousedown", handleOutsideClick);
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [menuOpen]);
 
@@ -112,7 +112,7 @@ const MyAnswer = () => {
           <div
             className="flex items-center border border-gray-300 rounded-md px-2 py-1 cursor-pointer"
             onClick={() => setMenuOpen((prev) => !prev)}
-            style={{ minWidth: '150px' }}
+            style={{ minWidth: "150px" }}
           >
             <span className="mr-2">{currentEvaluation}</span>
             <FaCaretDown />
@@ -161,7 +161,7 @@ const MyAnswer = () => {
                   {currentAnswerPage * itemsPerPage + index + 1}
                 </div>
                 <span
-                  className="flex-grow mx-12 cursor-pointer hover:underline"
+                  className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap hover:underline cursor-pointer"
                   onClick={() =>
                     handleAnswerClick(
                       answer.questionId,
@@ -169,7 +169,7 @@ const MyAnswer = () => {
                       answer.id
                     )
                   }
-                  style={{ display: 'inline-block' }}
+                  style={{ display: "inline-block" }}
                 >
                   {answer.title}
                 </span>
@@ -182,9 +182,9 @@ const MyAnswer = () => {
                       evaluationStyles[answer.evaluation]
                     } inline-block`}
                     style={{
-                      width: '80px',
-                      padding: '4px',
-                      textAlign: 'center',
+                      width: "80px",
+                      padding: "4px",
+                      textAlign: "center",
                     }}
                   >
                     {evaluationMessages[answer.evaluation]}
@@ -207,8 +207,8 @@ const MyAnswer = () => {
                 onClick={() => handlePageChange(index)}
                 className={`mx-1 ${
                   index === currentAnswerPage
-                    ? 'font-bold text-blue-400'
-                    : 'text-gray-500'
+                    ? "font-bold text-blue-400"
+                    : "text-gray-500"
                 }`}
               >
                 {index + 1}
