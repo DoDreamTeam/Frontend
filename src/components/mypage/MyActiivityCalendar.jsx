@@ -29,7 +29,7 @@ const MyActivityCalendar = ({ userId }) => {
 
       if (answers && answers.length > 0) {
         answers.forEach((answer) => {
-          const date = new Date(answer.createdAt).toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+          const date = new Date(answer.createdAt).toISOString().split('T')[0];
           if (
             date >= startDate.toISOString().split('T')[0] &&
             date <= endDate.toISOString().split('T')[0]
@@ -47,10 +47,23 @@ const MyActivityCalendar = ({ userId }) => {
         const formattedDate = date.toISOString().split('T')[0];
         const count = answerCountByDate[formattedDate] || 0;
 
+        let level;
+        if (count >= 1 && count <= 1) {
+          level = 1;
+        } else if (count >= 2 && count <= 4) {
+          level = 2;
+        } else if (count >= 5 && count <= 7) {
+          level = 3;
+        } else if (count >= 8 && count <= 10) {
+          level = 4;
+        } else {
+          level = 0;
+        }
+
         activityData.push({
           count,
           date: formattedDate,
-          level: Math.min(Math.floor(count / 3), 4),
+          level,
         });
       }
 
@@ -80,6 +93,7 @@ const MyActivityCalendar = ({ userId }) => {
       setData(activityData);
     }
   };
+
   const currentYear = new Date().getFullYear();
   const labels = {
     legend: {
