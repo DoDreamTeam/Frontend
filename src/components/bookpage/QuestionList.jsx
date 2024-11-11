@@ -31,7 +31,7 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
   };
 
   const handleSearch = () => {
-    setPage(0);
+    setPage(0); // 검색할 때 항상 첫 페이지로 돌아가게 설정
     refetch();
   };
 
@@ -83,6 +83,7 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
   const handleExcludeAnsweredClick = () => {
     if (userInfo) {
       setExcludeAnswered(true);
+      setPage(0); // '내가 푼 문제 제외' 클릭 시 첫 페이지로 돌아가게 설정
       refetch();
     } else {
       setShowLoginModal(true);
@@ -96,6 +97,7 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
           <button
             onClick={() => {
               setExcludeAnswered(false);
+              setPage(0); // '최신순' 클릭 시 첫 페이지로 돌아가게 설정
               refetch();
             }}
             className={`py-2 px-4 mx-1 ${
@@ -122,7 +124,13 @@ const QuestionList = ({ bookId, bookOwnerName }) => {
       </div>
 
       <div className="h-60">
-        {questions.length > 0 ? (
+        {excludeAnswered && questions.length === 0 ? (
+          <div className="w-full mb-16 text-center">
+            <div className="text-xl font-medium text-center my-4">
+              전부 풀었습니다.
+            </div>
+          </div>
+        ) : questions.length > 0 ? (
           questions.map((question, index) => {
             return (
               <QuestionItem
