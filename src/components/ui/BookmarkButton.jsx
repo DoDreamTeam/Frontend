@@ -55,7 +55,7 @@ const BookmarkButton = ({
         />
       </button>
 
-      {/* 비회원이 좋아요 누를 때 Modal */}
+      {/* 비회원이 북마크 누를 때 Modal */}
       <Modal>
         <LoginRequestModal handleCloseModal={handleCloseModal} />
       </Modal>
@@ -63,7 +63,7 @@ const BookmarkButton = ({
       {isMyBook && (
         <Modal>
           <div className="text-2xl font-semibold m-6">
-            본인이 쓴 댓글은 좋아요를 누를 수 없습니다.
+            본인이 만든 문제집은 북마크할 수 없습니다.
             <div className="flex justify-center mt-4 w-full">
               <button
                 className="w-3/4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 m-4"
